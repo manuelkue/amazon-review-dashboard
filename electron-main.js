@@ -1,10 +1,13 @@
 const { app, BrowserWindow } = require('electron')
+const puppeteer = require('puppeteer');
 let win
 
 function createWindow () {
   win = new BrowserWindow({ width: 800, height: 600 })
-  win.loadFile('dist/index.html')
+  win.loadFile('build/index.html')
   win.webContents.openDevTools()
+
+  crawlReviewIDs('https://amzn.to/2LNaqPo')
 
   win.on('closed', () => {
     // Dereferenzieren des Fensterobjekts, normalerweise würden Sie Fenster
@@ -36,6 +39,43 @@ app.on('activate', () => {
   }
 })
 
+
+
+
+
 // In dieser Datei können Sie den Rest des App-spezifischen 
 // Hauptprozess-Codes einbinden. Sie können den Code auch 
 // auf mehrere Dateien aufteilen und diese hier einbinden.
+
+async function crawlReviewIDs(userProfileURL){
+  const startTime = new Date().getTime()
+  let endTime;
+  const browser = await puppeteer.launch({ headless: false })
+  const page = await browser.newPage()
+  await page.setViewport({ width: 1920, height: 1080 });
+
+  if(true){
+    await page.setRequestInterception(true);
+  
+    page.on('request', (req) => {
+        if(req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image'){
+            req.abort();
+        }
+        else {
+            req.continue();
+        }
+    });
+  }
+
+  await page.goto(userProfileURL)
+  const name = await page.$eval('span.nav-line-2', el => el.innerText)
+
+  endTime = new Date().getTime()
+  
+  console.log("endTime ", endTime, "startTime ", startTime)
+  console.log("name ", name, "\nResponse after ", +endTime - startTime, "ms")
+  
+  await page.waitFor(30000);
+  await page.close();
+  await browser.close()
+}
