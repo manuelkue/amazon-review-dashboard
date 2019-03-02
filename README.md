@@ -1,6 +1,6 @@
-# AmazonReviewDashboard-Electron-Application
+# Amazon Review Dashboard
 
-An Electron App for using the Amazon Review Dashboard. Based on React
+An Electron Application for using the Amazon Review Dashboard. Based on React.
 
 ## Available Scripts
 
