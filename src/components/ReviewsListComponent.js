@@ -6,7 +6,8 @@ class ReviewsListComponent extends Component{
     constructor() {
         super()
         this.state = {
-            reviewsBy: "Manuel"
+            reviewsBy: "Manuel",
+            helpfulVotes: "1.400"
         }
     }
 
@@ -18,6 +19,7 @@ class ReviewsListComponent extends Component{
         return (
             <div className="reviews-list">
                 <p>Reviews of {this.state.reviewsBy}</p>
+                <p>Helpful votes {this.state.helpfulVotes}</p>
                 <form>
                     {reviewsComponents}
                 </form>
