@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import reviewsData from "../data/Reviews";
 import ReviewItemComponent from "./ReviewItemComponent";
-import { ReviewInterface, ReviewsListInterface } from "../Interfaces/interfaces";
 
 class ReviewsListComponent extends Component{
     constructor() {
