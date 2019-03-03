@@ -16,16 +16,16 @@ class ReviewItemComponent extends Component{
     }
 
     render(){
-        const labelStyle = {
-            textDecoration: (this.state.isChecked && 'line-through') || undefined
-        }
-
         return(
-            <label className="review-item">
-                <span>{this.props.review.id})</span>
-                <input type="checkbox" checked={this.state.isChecked} onChange={this.toggleChecked}/>
-                <span style={labelStyle}>{this.props.review.text}</span>
-            </label>
+            <div className="review-item">
+                <div>{this.props.review.externalId}</div>
+                <div>{this.props.review.product.title || <i>not available anymore</i>}</div>
+                <div>{this.props.review.title}</div>
+                <div>{this.props.review.product.averageRating}</div>
+                <div>{this.props.review.rating}</div>
+                <div>{this.props.review.helpfulVotes}</div>
+                <div>{new Date(this.props.review.sortTimestamp).toLocaleDateString()}</div>
+            </div>
         )
 
     }

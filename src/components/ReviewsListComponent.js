@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import reviewsData from "../data/Reviews";
 import ReviewItemComponent from "./ReviewItemComponent";
+import utilities from "../utilities/utilities"
 const { ipcRenderer } = window.require('electron')
 
 class ReviewsListComponent extends Component{
@@ -8,9 +9,13 @@ class ReviewsListComponent extends Component{
         super()
         this.state = {
             scrapeStatus: null,
+            rank: null,
             helpfulVotes: null,
-            reviesCount: null,
-            reviewsBy: "Manuel"
+            reviewsCount: null,
+            reviewsBy: null,
+            loadingProgress: 0,
+
+            reviews: []
         }
         
         setTimeout(() => {
@@ -20,27 +25,30 @@ class ReviewsListComponent extends Component{
                 scrapeStatus: 'Scraping...'
             })
         }, 1000)
-    }
 
-    render() {
-        const reviewsComponents = reviewsData.map(review =>
-            <ReviewItemComponent key={review.id} review={review} />
-        )
-
-        ipcRenderer.on('scraping', (event, reviews) => {
-            console.log(reviews)
-        })
         ipcRenderer.on('profileScraped', (event, profile) => {
             console.log("UserProfile", profile)
             this.setState({
+                rank: profile.rank,
                 helpfulVotes: profile.helpfulVotes.helpfulVotesData.count,
-                reviesCount: profile.reviews.reviewsCountData.count
+                reviewsCount: profile.reviews.reviewsCountData.count,
+                reviewsBy: profile.name
+            })
+        })        
+        ipcRenderer.on('reviewsScrapedSoFar', (event, reviewsCount) => {
+            this.setState({
+                loadingProgress: (this.state.reviewsCount)? utilities.round((reviewsCount / this.state.reviewsCount) * 100, 0) : 0
             })
         })
-        ipcRenderer.on('scrapeComplete', (event, reviews) => {
-            console.log("Scrape complete", reviews)
+        ipcRenderer.on('reviewsScraped', (event, reviews) => {
+            console.log("reviews", reviews)
             this.setState({
-                scrapeStatus: 'Scraping completed'
+                reviews
+            })
+        })
+        ipcRenderer.on('scrapeComplete', (event, duration) => {
+            this.setState({
+                scrapeStatus: `Scraping completed after ${duration} ms`
             })
         })
         ipcRenderer.on('scrapeError', (event, message) => {
@@ -49,16 +57,37 @@ class ReviewsListComponent extends Component{
                 scrapeStatus: message
             })
         })
+    }
+
+    render() {
+        const reviewsComponents = this.state.reviews.map(review =>
+            <ReviewItemComponent key={review.id} review={review} />
+        )
 
         return (
-            <div className="reviews-list">
-                <p>Status: {this.state.scrapeStatus}</p>
-                <p>Helpful votes: {this.state.helpfulVotes}</p>
-                <p>Reviews: {this.state.reviesCount}</p>
-                <p>Author: {this.state.reviewsBy}</p>
-                <form>
+            <div>
+                <div className="profile-details">
+                    <div>Status: {this.state.scrapeStatus}</div>
+                    <div>Name: {this.state.reviewsBy}</div>
+                    <div>Rank: {this.state.rank}</div>
+                    <div>Helpful votes: {this.state.helpfulVotes}</div>
+                    <div>Reviews: {this.state.reviewsCount}</div>
+                </div>
+                <div className="reviews-list">
+                    <div className="review-item reviews-header">
+                        <div>External Id</div>
+                        <div>Product Title</div>
+                        <div>Review Title</div>
+                        <div>Average Rating</div>
+                        <div>Your Rating</div>
+                        <div>Helpful Votes</div>
+                        <div>Datum</div>
+                    </div>
                     {reviewsComponents}
-                </form>
+                    {!this.state.reviews.length && 
+                        <div className="review-item review-notification"><span>Reviews loaded: {this.state.loadingProgress}%</span></div>
+                    }
+                </div>
             </div>
         )
     }

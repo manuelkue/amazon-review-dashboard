@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const puppeteer = require('puppeteer');
 let win
 
-const maxScrapingTime = 10000;
+const maxScrapingTime = 300000;
 let scraping;
 
 ////////////////////////
@@ -10,12 +10,12 @@ let scraping;
 ////////////////////////
 
 ipcMain.on('startCrawl', (event, arg) => {
-  console.log(arg)
-  crawlReviews('https://www.amazon.de/gp/profile/amzn1.account.AHUDYEBSEIX6KAE3Q3NNKR5PAFVQ')
+  console.log(arg, "\n")
+  crawlReviews('https://www.amazon.de/gp/profile/amzn1.account.AG4PLE2SL7LDA33T24LPR3BF2K4A', true)
 })
 
 
-async function crawlReviews(userProfileURL){
+async function crawlReviews(userProfileURL, completeCrawl){
   const scrapeStartTime = new Date().getTime()
   scraping = true;
   let profile = {};
@@ -43,48 +43,72 @@ async function crawlReviews(userProfileURL){
           req.continue();
       }
   });
-  page.on('response', response => {
-    if(response.url().includes('profilewidget')){
-      response.text()
-      .then(async json => {
-        const reviewCluster = JSON.parse(json);
-        reviews.push(...reviewCluster['contributions']);
-        console.log("reviewsCount", reviews.length);
-        if(!reviewCluster.nextPageToken){
-          console.log("\n#############\nScrapeComplete");
-          console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
-          console.log("reviewsCount", reviews.length);
-          scraping = false;
-          win.webContents.send('scrapeComplete', reviews)
-          await closeConnection (page, browser)
-        }else{
-          page.evaluate(() => {
-            window.scrollBy(0, window.innerHeight)
-          });
-        }
+  
+  let getProfileJSON
 
-      })
-      .catch(err => {
-        blockedByAmazon(err, page, browser)
-      })
-    }
-    if(response.url().includes('gamification')){
-      response.text()
-      .then(async json => {
-        profile = Object.assign(profile, JSON.parse(json))
-      })
-      .catch(err => {
-        blockedByAmazon(err, page, browser)
-      })
-    }
-  })
+    page.on('response', response => {
+      if(completeCrawl && response.url().includes('profilewidget')){
+        response.json()
+        .then(async json => {
+          const reviewCluster = json;
+          reviews.push(...reviewCluster['contributions']);
+          console.log("reviewsCount", reviews.length);
+          win.webContents.send('reviewsScrapedSoFar', reviews.length)
+          if(!reviewCluster.nextPageToken){
+            console.log("\n#############\nScrapeComplete");
+            console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
+            console.log("reviewsCount", reviews.length);
+            scraping = false;
+            win.webContents.send('reviewsScraped', reviews)
+            win.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
+            await closeConnection (page, browser)
+          }else{
+            page.evaluate(() => {
+              window.scrollBy(0, window.innerHeight)
+            });
+          
+          }
+  
+        })
+        .catch(err => {
+          blockedByAmazon(err, page, browser)
+        })
+      }
+      if(response.url().includes('gamification')){
+        response.json()
+        .then(json => {
+          getProfileJSON = new Promise((resolve, reject) => {
+            profile = Object.assign(profile, json)
+            resolve(profile)
+          })
+        })
+        .catch(err => {
+          blockedByAmazon(err, page, browser)
+        })
+      }
+    })
+
+  let name 
+  let rank 
 
   await page.goto(userProfileURL)
-  const name = await page.$eval('.name-container span', el => el.innerText)
-  const rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-  console.log(rank);
-  profile = Object.assign(profile, {name, rank})
-  win.webContents.send('profileScraped', profile)
+  const getProfileHTML = new Promise(async (resolve, reject) => {
+    name = await page.$eval('.name-container span', el => el.innerText)
+    rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
+    profile = Object.assign(profile, {name, rank})
+    resolve(profile)
+  })
+
+  Promise.all([getProfileJSON, getProfileHTML]).then(values => {
+    console.log(values);
+    win.webContents.send('profileScraped', profile)
+  })
+ 
+  // If no completeCrawl scraping has to be deactivated here
+  if (!completeCrawl){
+    scraping = false
+    win.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
+  }
   console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
 }
 
@@ -104,7 +128,7 @@ async function closeConnection (page, browser){
       catch{
         console.log("connection already closed")
       }
-    }, 2000)
+    }, 20000)
 }
 
 ////////////////////////

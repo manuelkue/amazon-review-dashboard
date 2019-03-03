@@ -1,11 +1,19 @@
-.App {
-  text-align: center;
+:root{
+  --spacing-s: 5px;
+  --spacing-m: 10px;
+  --spacing-l: 15px;
+  --spacing-xl: 25px;
+
+  --color-white: #fff;
+  --color-light: #efefef;
+  --color-medium: #838383;
+  --color-dark: #2c2e33;
+  --color-text-dark: #1f2024;
+  --color-text-light: #f7f7f7;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.App {
+  padding: var(--spacing-xl);
 }
 
 .App-header {
@@ -23,11 +31,47 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.profile-details{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: var(--spacing-m);
+}
+.profile-details div{
+  background: var(--color-light);
+  padding: var(--spacing-m);
+  color: var(--color-text-dark);
+}
+
+.reviews-list{
+  margin:  var(--spacing-xl) 0 0 0;
+}
+
+.reviews-header{
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.review-item{
+  display: grid;
+  grid-template-columns: 1.5fr 3.5fr 3.5fr 1fr 1fr 1fr 1fr;
+  grid-gap: var(--spacing-xl);
+  margin: 0 0 var(--spacing-m) 0;
+  background: var(--color-light);
+  padding: var(--spacing-m);
+  color: var(--color-text-dark);
+}
+
+.review-item > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.review-item > div:last-of-type{
+  justify-self: end;
+}
+
+.review-notification > span{
+  grid-column: 1/8;
+  font-style: italic;
 }
