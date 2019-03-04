@@ -15,12 +15,16 @@
   --spacing-xl: 25px;
 
   --color-white: #fff;
-  --color-light: #efefef;
-  --color-light2: #dde8f3;
-  --color-medium: #838383;
-  --color-dark: #2c2e33;
-  --color-text-dark: #1f2024;
-  --color-text-light: #f7f7f7;
+  --color-light: rgb(242,242,242);
+  --color-light2: rgb(209,235,235);
+  --color-medium: rgb(152,152,152);
+  --color-dark: rgb(77,77,77);
+  --color-text-dark: rgb(77,77,77);
+  --color-text-light: rgb(242,242,242);
+
+  --color-primary: rgb(0,160,163);
+  --color-secondary: rgb(250,158,0);
+  --color-secondary: rgb(181,22,77);
 }
 
 .App {
