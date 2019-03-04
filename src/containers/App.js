@@ -17,6 +17,7 @@ class App extends Component {
       super(props)
       this.state = {
         user:{
+          id:null,
           rank: "null",
           helpfulVotes: "null",
           reviewsCount: "null",

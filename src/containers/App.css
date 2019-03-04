@@ -16,6 +16,7 @@
 
   --color-white: #fff;
   --color-light: #efefef;
+  --color-light2: #dde8f3;
   --color-medium: #838383;
   --color-dark: #2c2e33;
   --color-text-dark: #1f2024;
@@ -78,6 +79,10 @@
   background: var(--color-light);
   padding: var(--spacing-m);
   color: var(--color-text-dark);
+}
+
+.clicked{
+  background: var(--color-light2);
 }
 
 .review-item > div:nth-of-type(1) {
