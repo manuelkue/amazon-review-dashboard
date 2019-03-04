@@ -1,11 +1,9 @@
-import React from "react"
+import React, {Component} from "react"
 
-function HeaderComponent(){
+export const Header = props => {
     return(
         <header className="navbar">
             <span>Header</span>
         </header>
     )
 }
-
-export default HeaderComponent
