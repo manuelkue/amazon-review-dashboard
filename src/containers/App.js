@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import {Header} from '../components/Header'
+import {Sidebar} from '../components/Sidebar'
 import {Profile} from '../components/Profile'
 import {ReviewsList} from '../components/ReviewsList'
 import {Footer} from '../components/Footer'
@@ -112,10 +112,15 @@ class App extends Component {
   render() {
     return (
         <div className="App">
-          <Header />
-          <Profile user={this.state.user} />
-          <ReviewsList reviews={this.state.reviews} config={this.state.config}  />
-          <Footer />
+          <Sidebar user={this.state.user}/>
+          <div class='nav'>
+            <div className='link'>Link</div>
+            <div className='link'>Link2</div>
+            <div className='link'>Link3</div>
+          </div>
+          <div class='main'>
+            <ReviewsList reviews={this.state.reviews} config={this.state.config} />
+          </div>
         </div>
     );
   }

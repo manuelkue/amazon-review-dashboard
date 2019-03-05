@@ -1,6 +1,7 @@
 :root{
   
   --border-width: 2px;
+  --controls-container-width: 50px;
 
   /* Screen widths to respond to via media queries */
   --sm: 576px;
@@ -28,7 +29,8 @@
 }
 
 .App {
-  padding: var(--spacing-xl);
+  display: grid;
+  grid-template-columns: 1fr var(--controls-container-width) 3fr;
 }
 
 .App-header {
@@ -44,6 +46,11 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.sidebar{
+  display: grid;
+  grid-template-rows: 120px var(--controls-container-width) 1fr;
 }
 
 .profile{
@@ -64,6 +71,28 @@
 .profile > div > span:nth-of-type(2){
   font-style: italic;
   justify-self: end;
+}
+
+.syncarea{
+  background: var(--color-dark);
+}
+
+.nav{
+  background: var(--color-dark);
+  display:grid;
+  grid-template-rows: var(--controls-container-width);
+  gap: var(--spacing-m);
+}
+
+.nav .link{
+  color:var(--color-light);
+}
+.nav .link:hover{
+  color:var(--color-light2);
+}
+.nav .selected{
+  color:var(--color-primary);
+  background: var(--color-light)
 }
 
 .reviews-list{
