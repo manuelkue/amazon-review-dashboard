@@ -1,17 +1,20 @@
 import React from "react"
 
-export const Syncarea = props => {
+export const Syncarea = ({config, startCrawlClickHandler}) => {
     return(
         <div className="syncarea">
             <div className="syncButtonsWrapper">
-                <div className="syncButton">
-                    <i className="material-icons">refresh</i>
+                <div className="syncButton" onClick={() => startCrawlClickHandler(true)}>
+                    <i className={"material-icons" + (config.isScrapingComplete? ' loading' : '') }>refresh</i>
                     <span>Complete</span>
                 </div>
-                <div className="syncButton">
-                    <i className="material-icons">refresh</i>
+                <div className="syncButton" onClick={() => startCrawlClickHandler(false)}>
+                    <i className={"material-icons" + (config.isScrapingPartially? ' loading' : '') }>refresh</i>
                     <span>Partially</span>
                 </div>
+            </div>
+            <div className='syncStatus'>
+                <span>Status:</span> <span>{config.scrapeStatus}</span>
             </div>
             <div className="syncStats">
                 <i className="material-icons">history</i>

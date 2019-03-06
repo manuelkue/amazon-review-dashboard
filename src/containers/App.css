@@ -65,6 +65,20 @@
   --color-tertiary: rgb(181,22,77);
 }
 
+
+.loading {
+  animation: rotation 1s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(359deg);
+  }
+}
+
 .App {
   display: flex;
   flex-direction: row;
@@ -130,6 +144,14 @@
   padding: 0 var(--spacing-l);
 }
 
+.profile .stats > div span{
+  width:fit-content;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .syncarea{
 }
 
@@ -164,6 +186,10 @@
   margin-right: var(--spacing-m);
   font-size: 40px;
   color: var(--color-primary);
+}
+
+.syncStatus{
+  margin-bottom: var(--spacing-l)
 }
 
 .syncStats{
@@ -216,7 +242,6 @@
 }
 
 .reviews-list{
-  margin:  var(--spacing-xl) 0 0 0;
 }
 
 .reviews-header{

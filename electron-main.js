@@ -17,9 +17,9 @@ const storage = new Storage({
 // Puppeteer
 ////////////////////////
 
-ipcMain.on('startCrawl', (event, arg) => {
-  console.log(arg, "\n")
-  crawlReviews('https://www.amazon.de/gp/profile/amzn1.account.AG73C2QECBL4OTKMUZYNMGMAI5OA', true)
+ipcMain.on('startCrawl', (event, startCrawl) => {
+  console.log("crawling from", startCrawl.url, "\n")
+  crawlReviews(startCrawl.url, startCrawl.complete)
 })
 
 
@@ -28,7 +28,7 @@ async function crawlReviews(userProfileURL, completeCrawl){
   scraping = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ headless: false })
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
   setTimeout(async () => {
@@ -102,7 +102,8 @@ async function crawlReviews(userProfileURL, completeCrawl){
     name = await page.$eval('.name-container span', el => el.innerText)
       .catch(() => console.error('$eval name not successfull'))
     rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-      .catch(() => console.error('$eval rank not successfull'))
+      .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
+      rank = rank || "10.000+"
     mainWindow.webContents.send('profileNameRank', {name, rank})
  
   // If no completeCrawl scraping has to be deactivated here

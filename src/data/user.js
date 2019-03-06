@@ -1,6 +1,6 @@
 const userData = {
     id:'AHIML2WDUBRNHH47SS5PZEWVBOJA',
-    name: 'Manu',
+    name: 'Manuel Küfeldt',
     rank: '129',
     helpfulVotes: 222,
     reviewsCount: 800

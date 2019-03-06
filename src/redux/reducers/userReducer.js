@@ -1,5 +1,5 @@
 const initialUserState = {
-    name: 'Manu',
+    name: 'Manuel Küfeldt',
     rank: '',
     helpfulVotes: 0,
     reviewsCount: 0

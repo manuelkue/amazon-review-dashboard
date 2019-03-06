@@ -15,7 +15,6 @@ export const ReviewsList = ({reviews, config})  => {
     return (
         <div>
             <div className="reviews-list">
-                <div><span>Status:</span> <span>{config.scrapeStatus}</span></div>
                 <div className="review-item reviews-header">
                     <div>External Id</div>
                     <div>Product Title</div>
