@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 import {Sidebar} from '../components/Sidebar'
-import {Profile} from '../components/Profile'
 import {ReviewsList} from '../components/ReviewsList'
-import {Footer} from '../components/Footer'
 import {connect} from 'react-redux'
 import methods from "../utilities/methods";
 import reviewsData from '../data/reviews'
@@ -113,12 +111,12 @@ class App extends Component {
     return (
         <div className="App">
           <Sidebar user={this.state.user}/>
-          <div class='nav'>
-            <div className='link'>Link</div>
-            <div className='link'>Link2</div>
-            <div className='link'>Link3</div>
+          <div className='nav'>
+            <div className='link'><i className="material-icons">history</i></div>
+            <div className='link'><i className="material-icons">list</i></div>
+            <div className='link'><i className="material-icons">settings</i></div>
           </div>
-          <div class='main'>
+          <div className='main'>
             <ReviewsList reviews={this.state.reviews} config={this.state.config} />
           </div>
         </div>

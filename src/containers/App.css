@@ -1,3 +1,40 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(https://example.com/MaterialIcons-Regular.woff2) format('woff2'),
+    url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
+    url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
+}
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+
 :root{
   
   --border-width: 2px;
@@ -17,7 +54,7 @@
 
   --color-white: #fff;
   --color-light: rgb(242,242,242);
-  --color-light2: rgb(209,235,235);
+  --color-light2: rgb(223, 223, 223);
   --color-medium: rgb(152,152,152);
   --color-dark: rgb(77,77,77);
   --color-text-dark: rgb(77,77,77);
@@ -25,12 +62,12 @@
 
   --color-primary: rgb(0,160,163);
   --color-secondary: rgb(250,158,0);
-  --color-secondary: rgb(181,22,77);
+  --color-tertiary: rgb(181,22,77);
 }
 
 .App {
-  display: grid;
-  grid-template-columns: 1fr var(--controls-container-width) 3fr;
+  display: flex;
+  flex-direction: row;
 }
 
 .App-header {
@@ -49,50 +86,133 @@
 }
 
 .sidebar{
-  display: grid;
-  grid-template-rows: 120px var(--controls-container-width) 1fr;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-l);
+  color: var(--color-text-dark);
 }
 
 .profile{
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: var(--spacing-m);
+  display: flex;
+  flex-direction: row;
 }
 
-.profile > div{
-  background: var(--color-light);
-  padding: var(--spacing-m);
-  color: var(--color-text-dark);
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  justify-content: space-between;
+.profile .picturewrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.profile > div > span:nth-of-type(2){
-  font-style: italic;
-  justify-self: end;
+.profile .picturewrapper img{
+  background: var(--color-dark) url('../assets/images/baseline-person-24px.svg') no-repeat;
+  background-size: 150%;
+  background-position: center;
+  display: block;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+
+.profile .stats{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: var(--spacing-m) 0;
+}
+
+.profile .stats .material-icons{
+  font-size:  var(--spacing-xl);
+  margin: var(--spacing-s) var(--spacing-m) 0 0;
+}
+
+.profile .stats > div{
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-l);
 }
 
 .syncarea{
-  background: var(--color-dark);
 }
 
-.nav{
+.syncButtonsWrapper{
+  display: flex;
+  flex-direction: row;
   background: var(--color-dark);
-  display:grid;
-  grid-template-rows: var(--controls-container-width);
-  gap: var(--spacing-m);
+  border-radius: 500px;
+  width: fit-content;
+  margin: var(--spacing-xl) auto;
+}
+
+.syncButton{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-light);
+  margin: var(--spacing-s);
+  border-radius: 500px;
+  padding: var(--spacing-m);
+  padding-right: var(--spacing-xl);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.syncButton:hover{
+  background: var(--color-light2);
+}
+
+.syncButton .material-icons{
+  margin-right: var(--spacing-m);
+  font-size: 40px;
+  color: var(--color-primary);
+}
+
+.syncStats{
+  display: flex;
+}
+
+.syncStats .material-icons{
+  margin-right: var(--spacing-l);
+}
+
+.syncStatsBodyContent{
+  display: flex;
+  margin-top: var(--spacing-l);
+}
+
+.syncStatsEntry{
+  display: flex;
+  margin-right: var(--spacing-l);
+}
+
+.syncStatsEntry .material-icons{
+  margin-right: var(--spacing-s);
+  font-size: 20px;
+  color: var(--color-secondary);
+}
+
+
+.nav{
+  display: flex;
+  flex-direction: column;
+  background: var(--color-dark);
+  min-height: 100vh;
 }
 
 .nav .link{
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color:var(--color-light);
+  cursor: pointer;
 }
 .nav .link:hover{
-  color:var(--color-light2);
+  color:var(--color-secondary);
 }
 .nav .selected{
   color:var(--color-primary);
-  background: var(--color-light)
+  background: var(--color-light);
 }
 
 .reviews-list{
@@ -140,15 +260,9 @@
 }
 
 @media (min-width: 576px){
-  .profile{
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (min-width: 992px){
-  .profile{
-    grid-template-columns: 1fr 1fr;
-  }
   .review-item{
     grid-template-columns: 1.5fr 3.5fr 3.5fr 1fr 1fr 1fr 1fr;
   }
@@ -169,7 +283,4 @@
 }
 
 @media (min-width: 1200px){
-  .profile{
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
 }

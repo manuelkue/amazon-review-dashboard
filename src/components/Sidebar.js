@@ -1,6 +1,6 @@
 import React from "react"
-import Profile from "./Profile"
-import Syncarea from "./Syncarea"
+import {Profile} from "./Profile"
+import {Syncarea} from "./Syncarea"
 
 export const Sidebar = props => {
     return(
