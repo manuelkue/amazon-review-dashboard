@@ -15,6 +15,13 @@ import userData from '../data/user'
 
 const { ipcRenderer } = window.require('electron')
 
+const reviewStorage = new Storage({
+  configName: 'reviews',
+  defaults: {
+    reviews: []
+  }
+});
+
 class App extends Component {
   constructor(props) {
       super(props)
@@ -27,12 +34,13 @@ class App extends Component {
           name: "null",
         },
         config:{
-          scrapeStatus: "null",
+          userURL:'https://www.amazon.de/gp/profile/amzn1.account.AHIML2WDUBRNHH47SS5PZEWVBOJA',
+          scrapeStatus: "-",
           scrapeProgress: 0,
           isScrapingComplete: false,
           isScrapingPartially: false
         },
-          reviews: []
+          reviews: reviewStorage.get('reviews')
       }
       
       
@@ -42,25 +50,6 @@ class App extends Component {
           windowBounds: { width: 800, height: 600 }
         }
       });
-      const reviewStorage = new Storage({
-        configName: 'reviews',
-        defaults: {
-          reviews: []
-        }
-      });
-
-
-
-      //Mock Data
-      setTimeout(() => {
-        this.setState({
-          user: userData,
-          reviews: reviewsData
-        })
-      },1000)
-
-      
-      methods.saveReviews(reviewsData);
 
       ipcRenderer.on('profileReviewsHelpfulCounts', (event, profile) => {
           this.setState({
@@ -70,7 +59,6 @@ class App extends Component {
               reviewsCount: profile.reviews.reviewsCountData.count
             }
           })
-          console.log("state", this.state)
       })    
       ipcRenderer.on('profileNameRank', (event, profile) => {
           this.setState({
@@ -83,13 +71,14 @@ class App extends Component {
           console.log("state", this.state)
       })      
       ipcRenderer.on('reviewsScrapedSoFar', (event, reviewsCount) => {
+        //@TODO: Save reviews scraped so far, to get newest reviews if Amazon blocks
           this.setState({
             config:{
               ...this.state.config,
               scrapeProgress: (this.state.user.reviewsCount)? methods.round(reviewsCount * 100 / this.state.user.reviewsCount, 0) : 0
             }
           })
-          console.log("state", this.state)
+          console.log("ScrapeProgress", this.state.config.scrapeProgress)
       })
       ipcRenderer.on('reviewsScrapedInterrupted', (event, reviews) => {
           // @TODO show the user that only partially fetched and how much
@@ -100,10 +89,12 @@ class App extends Component {
       })
       ipcRenderer.on('reviewsScraped', (event, reviews) => {
           console.log("reviews", reviews)
-          methods.saveReviews(reviews);
-          this.setState({
-              reviews
-          })
+        methods.saveReviews(reviews);
+        this.setState({
+          user: userData,
+          reviews: reviewStorage.get('reviews')
+        })
+//@TODO, async?? first setState, then save complete?
       })
       ipcRenderer.on('scrapeComplete', (event, duration) => {
           this.setState({
@@ -130,7 +121,7 @@ class App extends Component {
   }
 
   startCrawlClickHandler(complete){
-    ipcRenderer.send('startCrawl', {url: 'https://www.amazon.de/gp/profile/amzn1.account.AG4PLE2SL7LDA33T24LPR3BF2K4A', complete:complete})
+    ipcRenderer.send('startCrawl', {url: this.state.config.userURL, complete:complete})
     this.setState({
         config:{
           ...this.state.config,
@@ -162,6 +153,9 @@ class App extends Component {
           </div>
         </Router>
     );
+  }
+
+  componentDidMount(){
   }
 }
 

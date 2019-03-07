@@ -1,3 +1,4 @@
+import {methods} from '../utilities/methods'
 
 export class Review {
 
@@ -14,6 +15,8 @@ export class Review {
     date
     reviewHistory
     updatedParams
+
+    selected
 
     constructor(externalId, userId, syncTimestamp, productTitle, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, reviewHistory) {
         this.externalId = externalId
@@ -34,7 +37,6 @@ export class Review {
     showUpdatedParams(review){
         let updatedParams = []
         if(this.externalId === review.externalId && this.syncTimestamp < review.syncTimestamp){
-            console.log("foundSameReviewNewTimestamp", review)
             this.productTitle !== review.productTitle && updatedParams.push('productTitle')
             this.reviewTitle  !== review.reviewTitle && updatedParams.push('reviewTitle')
             this.reviewText !== review.reviewText && updatedParams.push('reviewText')
@@ -51,12 +53,16 @@ export class Review {
     }
 
     saveToHistoryIfUpdated(review){
-        console.log("thisReview", this)
         if(this.showUpdatedParams(review)){
             review.updatedParams = this.showUpdatedParams(review)
-            this.reviewHistory.push({...this});
+            let historyItem = {syncTimestamp : methods.cloneElement(this.syncTimestamp)}
             review.updatedParams.forEach(param => {
-                this[param] = review[param]
+                historyItem[param] = methods.cloneElement(this[param]);
+            })
+            this.reviewHistory.push(historyItem);
+            
+            review.updatedParams.forEach(param => {
+                this[param] = methods.cloneElement(review[param])
                 this.syncTimestamp = review.syncTimestamp + ''
                 this.averageRating = review.averageRating + ''
                 this.updatedParams = [...review.updatedParams]

@@ -8,10 +8,12 @@ import ReviewItem from "./ReviewItem";
 
 export const ReviewsList = ({reviews, config})  => {
 
-    const reviewsComponents = reviews.map(review =>
-        <ReviewItem key={review.id} review={review} />
-    )
-
+    //@TODO: Only show if review.userId === config.userId
+    const reviewsComponents = reviews.filter(review => config.userURL.includes(review.userId))
+        .map(review => 
+            <ReviewItem key={review.externalId} review={review} />
+        )
+        
     return (
             <div className="reviews-list">
                 <div className="review-item reviews-header">
@@ -25,7 +27,7 @@ export const ReviewsList = ({reviews, config})  => {
                 </div>
                 <div style={{display: 'block', height:5+'px', background: 'var(--color-secondary)', width: config.scrapeProgress + '%'}}></div>
                 {reviewsComponents}
-                {!reviews.length && 
+                {!reviewsComponents.length && 
                     <div className="review-item review-notification"><span>Reviews loaded: {config.scrapeProgress}%</span></div>
                 }
             </div>

@@ -7,6 +7,16 @@ export const methods = {
         return Math.round(value * multiplier) / multiplier;
     },
 
+    cloneElement(element){
+        switch(typeof element){
+            case 'number': return element + 0
+            case 'string': return element + ''
+            case 'boolean': return !!element
+            case 'number': return element + 0
+            default: return null
+        }
+    },
+
     saveReviews(newReviews){
       const reviewStorage = new Storage({
         configName: 'reviews',
@@ -38,7 +48,7 @@ export const methods = {
         r = new Review(
             r.externalId,
             'AG4PLE2SL7LDA33T24LPR3BF2K4A',
-            new Date().getTime(),
+            + new Date().getTime(),
             r.product.title,
             r.title,
             r.text,
