@@ -156,7 +156,9 @@ app.on('ready', ()=>{
     mainWindow = null
   })
 
-  mainWindow.loadFile('build/index.html')
+  //@TODO in production change to load file
+  //mainWindow.loadFile('build/index.html')
+  mainWindow.loadURL('http://localhost:3000/')
   mainWindow.webContents.openDevTools()
 })
 

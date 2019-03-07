@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
+import { Route, NavLink, BrowserRouter as Router } from 'react-router-dom'
 import './App.css';
 
 import {Sidebar} from '../components/Sidebar'
 import {ReviewsList} from '../components/ReviewsList'
+import {History} from '../components/History'
+import {Settings} from '../components/Settings'
 import {connect} from 'react-redux'
-import methods from "../utilities/methods";
+import {methods} from "../utilities/methods";
+import {Storage} from "../utilities/Storage";
+import {Review} from "../Models/Review";
 import reviewsData from '../data/reviews'
 import userData from '../data/user'
 
@@ -29,14 +34,30 @@ class App extends Component {
         },
           reviews: []
       }
+      
+      
+      const configStorage = new Storage({
+        configName: 'user-preferences',
+        defaults: {
+          windowBounds: { width: 800, height: 600 }
+        }
+      });
+      const reviewStorage = new Storage({
+        configName: 'reviews',
+        defaults: {
+          reviews: []
+        }
+      });
+
+
 
       //Mock Data
-      // setTimeout(() => {
-      //   this.setState({
-      //     user: userData,
-      //     reviews: reviewsData
-      //   })
-      // },1000)
+      setTimeout(() => {
+        this.setState({
+          user: userData,
+          reviews: reviewsData
+        })
+      },1000)
 
       ipcRenderer.on('profileReviewsHelpfulCounts', (event, profile) => {
           this.setState({
@@ -76,6 +97,7 @@ class App extends Component {
       })
       ipcRenderer.on('reviewsScraped', (event, reviews) => {
           console.log("reviews", reviews)
+          methods.saveReviews(reviews);
           this.setState({
               reviews
           })
@@ -105,7 +127,7 @@ class App extends Component {
   }
 
   startCrawlClickHandler(complete){
-    ipcRenderer.send('startCrawl', {url: 'https://www.amazon.de/gp/profile/amzn1.account.AGUP6NOURWV4NFAP3VBYROSCRHLQ', complete:complete})
+    ipcRenderer.send('startCrawl', {url: 'https://www.amazon.de/gp/profile/amzn1.account.AG4PLE2SL7LDA33T24LPR3BF2K4A', complete:complete})
     this.setState({
         config:{
           ...this.state.config,
@@ -119,17 +141,23 @@ class App extends Component {
   render() {
 
     return (
-        <div className="App">
-          <Sidebar user={this.state.user} config={this.state.config} startCrawlClickHandler={this.startCrawlClickHandler.bind(this)}/>
-          <div className='nav'>
-            <div className='link'><i className="material-icons">history</i></div>
-            <div className='link'><i className="material-icons">list</i></div>
-            <div className='link'><i className="material-icons">settings</i></div>
+        <Router>
+          <div className="App">
+            <Sidebar user={this.state.user} config={this.state.config} startCrawlClickHandler={this.startCrawlClickHandler.bind(this)}/>
+            <div className='nav'>
+              <NavLink exact to="/" className='link' activeClassName='selected'><i className="material-icons">history</i></NavLink>
+              <NavLink to="/reviews" className='link' activeClassName='selected'><i className="material-icons">list</i></NavLink>
+              <NavLink to="/settings" className='link' activeClassName='selected'><i className="material-icons">settings</i></NavLink>
+            </div>
+            <div className='main'>
+            
+              <Route exact path="/"   render={() => <History config={this.state.config}  />}/>
+              <Route path="/reviews"  render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} />}/>
+              <Route path="/settings" render={() => <Settings config={this.state.config} />} />
+
+            </div>
           </div>
-          <div className='main'>
-            <ReviewsList reviews={this.state.reviews} config={this.state.config} />
-          </div>
-        </div>
+        </Router>
     );
   }
 }

@@ -13,7 +13,6 @@ export const ReviewsList = ({reviews, config})  => {
     )
 
     return (
-        <div>
             <div className="reviews-list">
                 <div className="review-item reviews-header">
                     <div>External Id</div>
@@ -24,11 +23,11 @@ export const ReviewsList = ({reviews, config})  => {
                     <div>Helpful Votes</div>
                     <div>Datum</div>
                 </div>
+                <div style={{display: 'block', height:5+'px', background: 'var(--color-secondary)', width: config.scrapeProgress + '%'}}></div>
                 {reviewsComponents}
                 {!reviews.length && 
                     <div className="review-item review-notification"><span>Reviews loaded: {config.scrapeProgress}%</span></div>
                 }
             </div>
-        </div>
     )
 }

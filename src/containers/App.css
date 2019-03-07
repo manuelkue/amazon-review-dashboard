@@ -53,6 +53,7 @@
   --spacing-xl: 25px;
 
   --color-white: #fff;
+  --color-lighter: rgb(249, 249, 249);
   --color-light: rgb(242,242,242);
   --color-light2: rgb(223, 223, 223);
   --color-medium: rgb(152,152,152);
@@ -77,6 +78,10 @@
   to {
       transform: rotate(359deg);
   }
+}
+
+body{
+  background: var(--color-light);
 }
 
 .App {
@@ -220,8 +225,16 @@
 .nav{
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+  box-sizing: border-box;
+  padding-top: var(--spacing-s);
   background: var(--color-dark);
   min-height: 100vh;
+  border-top-left-radius: 8px;
+}
+
+.nav a{
+  text-decoration: none;
 }
 
 .nav .link{
@@ -233,34 +246,76 @@
   color:var(--color-light);
   cursor: pointer;
 }
+
 .nav .link:hover{
   color:var(--color-secondary);
 }
-.nav .selected{
+
+.nav .link.selected{
   color:var(--color-primary);
   background: var(--color-light);
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  position: relative;
+  width: calc(100% - 5px);
+  cursor: default;
+}
+
+.nav .selected::before{
+  content: '';
+  display: block;
+  width:8px;
+  height:8px;
+  position: absolute;
+  right:0;
+  top:-8px;
+  background-image: radial-gradient(circle at 0 0, rgba(204,0,0,0) 8px, var(--color-light) 9px);
+}
+
+.nav .selected:first-of-type:before{
+  content: unset;
+}
+
+.nav .selected::after{
+  content: '';
+  display: block;
+  width:8px;
+  height:8px;
+  position: absolute;
+  right:0;
+  bottom:-8px;
+  background-image: radial-gradient(circle at 0 100%, rgba(204,0,0,0) 8px, var(--color-light) 9px);
+}
+
+.main{
+  background: var(--color-light);
+  width: 100%;
+  border-top: var(--spacing-s) solid var(--color-dark);
 }
 
 .reviews-list{
 }
 
-.reviews-header{
-  font-weight: 600;
-  text-transform: uppercase;
-}
 
 .review-item{
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: var(--spacing-xl);
-  margin: 0 0 var(--spacing-m) 0;
-  background: var(--color-light);
-  padding: var(--spacing-m);
+  background: var(--color-lighter);
+  padding: var(--spacing-l) var(--spacing-m);
+  margin-bottom: 1px;
   color: var(--color-text-dark);
+  cursor: pointer;
+}
+.reviews-header{
+  font-weight: 600;
+  text-transform: uppercase;
+  background: unset;
 }
 
 .clicked{
-  background: var(--color-light2);
+  background: var(--color-primary);
+  color: var(--color-light);
 }
 
 .review-item > div:nth-of-type(1) {
