@@ -59,6 +59,9 @@ class App extends Component {
         })
       },1000)
 
+      
+      methods.saveReviews(reviewsData);
+
       ipcRenderer.on('profileReviewsHelpfulCounts', (event, profile) => {
           this.setState({
             user:{

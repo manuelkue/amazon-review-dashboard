@@ -7,7 +7,7 @@ export const methods = {
         return Math.round(value * multiplier) / multiplier;
     },
 
-    saveReviews(reviews){
+    saveReviews(newReviews){
       const reviewStorage = new Storage({
         configName: 'reviews',
         defaults: {
@@ -33,26 +33,31 @@ export const methods = {
           ))
       });
 
-      reviews.forEach(r => {
+      newReviews.forEach(r => {
+
+        r = new Review(
+            r.externalId,
+            'AG4PLE2SL7LDA33T24LPR3BF2K4A',
+            new Date().getTime(),
+            r.product.title,
+            r.title,
+            r.text,
+            r.product.averageRating,
+            r.rating,
+            r.helpfulVotes,
+            0,
+            r.sortTimestamp,
+            []
+        )
+
           if (savedReviews.map(rev => rev.externalId).includes(r.externalId)){
               savedReviews.find(rev => rev.externalId === r.externalId).saveToHistoryIfUpdated(r)
           }else{
-              savedReviews.push(new Review(
-                r.externalId,
-                'AG4PLE2SL7LDA33T24LPR3BF2K4A',
-                new Date().getTime,
-                r.product.title,
-                r.title,
-                r.text,
-                r.product.averageRating,
-                r.rating,
-                r.helpfulVotes,
-                0,
-                r.sortTimestamp,
-                []
-            ))
+              savedReviews.push(r)
+            console.log("foundNew", r)
           }
       })
+      console.log("savedReviews", savedReviews);
 
       reviewStorage.set('reviews', savedReviews)
 

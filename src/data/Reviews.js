@@ -969,6 +969,50 @@ const reviewsData = [
           prime: false
         }
       ]
+    },
+    {
+      id: 'amzn1.productreview.R2QSPMRIQLHU76',
+      externalId: 'R2QSPMRIQLHU76',
+      sortTimestamp: 1548371887530,
+      rating: 3,
+      visibility: 'public',
+      helpfulVotes: 5,
+      title: '4er Praktisch & funktional mit geringem Rauschen 2',
+      text: 'Text 2 Um einerseits meine kabelgebundenen Kopfhörer auf der Arbeit etwas freier verwenden zu können und andererseits im Auto einen kompakten Adapter für den AUX-Eingang zu besitzen, kaufte ich mir diesen kleinen Bluetooth-Stick.<br /><br />Er wird auf Anhieb vom Handy gefunden und funktioniert nach dem Einstecken des Ausgabemediums sofort. Am Smartphone wird in der Notifikationsleiste der Akkustand angezeigt und die Lautstärke des Adapters reicht auch, um höherohmige Kopfhörer zu betreiben.<br /><br />In meinem Fall testete ich ihn hierfür mit den Beyerdynamic DT 770 Pro (80 Ohm).<br />Leider bemerkte ich hier auch direkt ein leises Rauschen, das jeweils bei bestimmten Wiedergabefrequenzen auftritt. Dieses ist jedoch am ehesten bei den DT 770 auffällig und fällt mir z.B. an meinen kleinen SoundMAGIC E80 kaum auf.<br />Daraus ist zu schließen, dass der Adapter trotz seiner eigentlich ausreichenden Ausgangsleistung leider aufgrund nicht ganz optimaler Kompatibilität mit höherohmigen Kopfhörern entweder nur für niedrigohmige Kopfhörer - oder aktive Ausgabemedien (Autoradio, Verstärker, aktive Boxen), die die Lautstärke selbst hochregeln können, zu empfehlen ist.<br /><br />Die vom Hersteller angegebene Akkulaufzeit von 3h (Musik) kann ich bei mittlerer Lautstärke ohne Weiteres bestätigen. In meinem Fall spielt er bei dem Pegel sogar eher Richtung 4 oder 5 Stunden.<br /><br />Sehr schön finde ich die Möglichkeit, den Adapter durch den mitgelieferten Adapter von 3,5mm Klinke weiblich auf 3,5mm Klinke männlich zu ändern und ihn so ganz flexibel entweder für Kopfhörer, AUX-Kabel oder direkt einen AUX-Anschluss verwenden zu können.<br /><br />Insgesamt kann ich ihn wegen des günstigen Preises, seiner ausreichenden Akkulaufzeit und der recht universellen Verwendbarkeit gerne weiter empfehlen.<br />Wer Kopfhörer mit höherem Widerstand (>30 Ohm) bluetoothfähig machen möchte, sollte wegen der Rauschproblematik jedoch zu einem anderen Adapter greifen.',
+      writtenInLanguageCode: 'de_DE',
+      images: [],
+      product: {
+        asin: 'B07CWRQK28',
+        title: '2er GAKOV Bluetooth Receiver, GA4849 tragbarer Bluetooth 4.1 Wireless Bluetooth Auto Adapter & Freisprecheinrichtung Mini Musik Adapter für zuhause/Auto Audio Musik Streaming Stereo System 2.5/3.5 mm',
+        link: '/GAKOV-Bluetooth-GA4849-tragbarer-Freisprecheinrichtung/dp/B07CWRQK27',
+        image: 'https://images-na.ssl-images-amazon.com/images/I/51pnrDffXFL.jpg',
+        reviewCount: 5,
+        averageRating: 4.7,
+        fullStarCount: 4,
+        hasHalfStar: true,
+        missing: false,
+        attachmentType: 'PRODUCT',
+        prime: false
+      },
+      verifiedPurchase: true,
+      vine: false,
+      zebra: false,
+      type: 'productreview',
+      attachments: [
+        {
+          asin: 'B07CWRQK28',
+          title: '2er GAKOV Bluetooth Receiver, GA4849 tragbarer Bluetooth 4.1 Wireless Bluetooth Auto Adapter & Freisprecheinrichtung Mini Musik Adapter für zuhause/Auto Audio Musik Streaming Stereo System 2.5/3.5 mm',
+          link: '/GAKOV-Bluetooth-GA4849-tragbarer-Freisprecheinrichtung/dp/B07CWRQK27',
+          image: 'https://images-na.ssl-images-amazon.com/images/I/51pnrDffXFL.jpg',
+          reviewCount: 5,
+          averageRating: 4.7,
+          fullStarCount: 4,
+          hasHalfStar: true,
+          missing: false,
+          attachmentType: 'PRODUCT',
+          prime: false
+        }
+      ]
     }
   ]
 

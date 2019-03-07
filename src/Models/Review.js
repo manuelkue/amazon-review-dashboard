@@ -34,6 +34,7 @@ export class Review {
     showUpdatedParams(review){
         let updatedParams = []
         if(this.externalId === review.externalId && this.syncTimestamp < review.syncTimestamp){
+            console.log("foundSameReviewNewTimestamp", review)
             this.productTitle !== review.productTitle && updatedParams.push('productTitle')
             this.reviewTitle  !== review.reviewTitle && updatedParams.push('reviewTitle')
             this.reviewText !== review.reviewText && updatedParams.push('reviewText')
@@ -41,11 +42,16 @@ export class Review {
             this.helpfulVotes !== review.helpfulVotes && updatedParams.push('helpfulVotes')
             this.comments !== review.comments && updatedParams.push('comments')
         }
-        if(updatedParams.length) return updatedParams
-        return false;
+        if(updatedParams.length) {
+            console.log("updatedParams", updatedParams)
+            return updatedParams
+        }else{
+            return false
+        }
     }
 
     saveToHistoryIfUpdated(review){
+        console.log("thisReview", this)
         if(this.showUpdatedParams(review)){
             review.updatedParams = this.showUpdatedParams(review)
             this.reviewHistory.push({...this});
