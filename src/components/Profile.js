@@ -8,7 +8,7 @@ export const Profile = ({user}) => {
     return(
         <div className="profile">
             <div className="picturewrapper">
-                <img src={profilePicture} />
+                <img src='https://images-eu.ssl-images-amazon.com/images/S/amazon-avatars-global/8f6aa344-e661-43b5-b002-2e627fe6e3b0._CR83,0,333,333_SX460_.jpg' />
             </div>
             <div className="stats">
                 <div><span><i className="material-icons">face</i></span><span>{user.name}</span></div>

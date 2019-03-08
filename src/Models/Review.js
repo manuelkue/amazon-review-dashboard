@@ -6,6 +6,7 @@ export class Review {
     userId
     syncTimestamp
     productTitle
+    productAsin
     reviewTitle
     reviewText
     averageRating
@@ -18,11 +19,12 @@ export class Review {
 
     selected
 
-    constructor(externalId, userId, syncTimestamp, productTitle, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, reviewHistory) {
+    constructor(externalId, userId, syncTimestamp, productTitle, productAsin, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, reviewHistory) {
         this.externalId = externalId
         this.userId = userId
         this.syncTimestamp = syncTimestamp
         this.productTitle = productTitle
+        this.productAsin = productAsin
         this.reviewTitle = reviewTitle
         this.reviewText = reviewText
         this.averageRating = averageRating
@@ -63,10 +65,11 @@ export class Review {
             
             review.updatedParams.forEach(param => {
                 this[param] = methods.cloneElement(review[param])
-                this.syncTimestamp = review.syncTimestamp + ''
-                this.averageRating = review.averageRating + ''
-                this.updatedParams = [...review.updatedParams]
             })
+            this.syncTimestamp = review.syncTimestamp + ''
+            this.averageRating = review.averageRating + ''
+            this.updatedParams = [...review.updatedParams]
+            
             console.log("review", review.externalId, 'has updates', review.updatedParams)
         }
     }

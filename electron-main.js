@@ -95,6 +95,7 @@ async function crawlReviews(userProfileURL, completeCrawl){
 
   let name 
   let rank 
+  let profilePictureURL
     await page.goto(userProfileURL).catch(async err => {
       mainWindow.webContents.send('scrapeError', 'Connection failed')
       console.info('Connection failed');
@@ -105,7 +106,10 @@ async function crawlReviews(userProfileURL, completeCrawl){
     rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
       .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
       rank = rank || "10.000+"
-    mainWindow.webContents.send('profileNameRank', {name, rank})
+    profilePictureURL = await page.$eval('#avatar-image', img => img.src)
+      .catch(() => console.error('$eval profilePictureURL not successfull'))
+    mainWindow.webContents.send('profileNameRank', {name, rank, profilePictureURL})
+    console.log("profilePictureURL", profilePictureURL)
  
   // If no completeCrawl scraping has to be deactivated here
   if (!completeCrawl){

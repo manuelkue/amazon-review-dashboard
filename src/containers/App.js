@@ -15,10 +15,25 @@ import userData from '../data/user'
 
 const { ipcRenderer } = window.require('electron')
 
-const reviewStorage = new Storage({
-  configName: 'reviews',
+const fetchStorage = new Storage({
+  configName: 'fetchedData',
   defaults: {
+    user: {
+      id:null,
+      rank: null,
+      helpfulVotes: null,
+      reviewsCount:null,
+      name: null,
+      pictureURL: ''
+    },
     reviews: []
+  }
+});
+      
+const configStorage = new Storage({
+  configName: 'user-preferences',
+  defaults: {
+    windowBounds: { width: 800, height: 600 }
   }
 });
 
@@ -32,24 +47,17 @@ class App extends Component {
           helpfulVotes: "null",
           reviewsCount: "null",
           name: "null",
+          pictureURL: ''
         },
         config:{
-          userURL:'https://www.amazon.de/gp/profile/amzn1.account.AHIML2WDUBRNHH47SS5PZEWVBOJA',
+          userURL:'https://www.amazon.de/gp/profile/amzn1.account.AGH44T5EPZVYYKAGNQ3DKUOE7RVQ',
           scrapeStatus: "-",
           scrapeProgress: 0,
           isScrapingComplete: false,
           isScrapingPartially: false
         },
-          reviews: reviewStorage.get('reviews')
+          reviews: []
       }
-      
-      
-      const configStorage = new Storage({
-        configName: 'user-preferences',
-        defaults: {
-          windowBounds: { width: 800, height: 600 }
-        }
-      });
 
       ipcRenderer.on('profileReviewsHelpfulCounts', (event, profile) => {
           this.setState({
@@ -59,16 +67,21 @@ class App extends Component {
               reviewsCount: profile.reviews.reviewsCountData.count
             }
           })
+          fetchStorage.set('user', this.state.user)
+          .catch(err => console.error(err))
       })    
       ipcRenderer.on('profileNameRank', (event, profile) => {
           this.setState({
             user:{
               ...this.state.user,
               rank: profile.rank,
-              name: profile.name
+              name: profile.name,
+              pictureURL: profile.profilePictureURL
             }
           })
           console.log("state", this.state)
+          fetchStorage.set('user', this.state.user)
+          .catch(err => console.error(err))
       })      
       ipcRenderer.on('reviewsScrapedSoFar', (event, reviewsCount) => {
         //@TODO: Save reviews scraped so far, to get newest reviews if Amazon blocks
@@ -89,12 +102,14 @@ class App extends Component {
       })
       ipcRenderer.on('reviewsScraped', (event, reviews) => {
           console.log("reviews", reviews)
-        methods.saveReviews(reviews);
-        this.setState({
-          user: userData,
-          reviews: reviewStorage.get('reviews')
+        methods.saveReviews(reviews).then(() => {
+          fetchStorage.get('reviews').then(reviews => {
+            this.setState({
+              reviews: reviews
+            })
+          }).catch(err => console.error(err))
         })
-//@TODO, async?? first setState, then save complete?
+        .catch(err => console.error(err));
       })
       ipcRenderer.on('scrapeComplete', (event, duration) => {
           this.setState({
@@ -156,6 +171,26 @@ class App extends Component {
   }
 
   componentDidMount(){
+    fetchStorage.get('user')
+    .then(user => {
+      console.log("User fetched from storage", user)
+      this.setState({user})
+    }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+
+    fetchStorage.get('reviews')
+    .then(reviews => {
+      this.setState({reviews: reviews})
+    }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+
+    //@TODO: MOCK weg
+    methods.saveReviews(reviewsData).then(() => {
+      fetchStorage.get('reviews').then(reviews => {
+        this.setState({
+          reviews: reviews
+        })
+      }).catch(err => console.error(err))
+    })
+    .catch(err => console.error(err));
   }
 }
 
