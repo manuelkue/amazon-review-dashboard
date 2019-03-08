@@ -7,6 +7,20 @@ export const methods = {
     return Math.round(value * multiplier) / multiplier;
   },
 
+  fetchURLData(fetchURL){
+      if(fetchURL){
+        let id = fetchURL.split('account.')[1].substring(0,28);
+        let url = 'https://' + new URL(fetchURL).hostname + '/gp/profile/amzn1.account.' + id
+        if (typeof id === 'string' && id.length === 28 && url){
+          return {
+                  url: url,
+                  id: id
+              }
+        }
+      }
+      return false;
+  },
+
   cloneElement(element) {
     switch (typeof element) {
       case "number":
@@ -22,7 +36,7 @@ export const methods = {
     }
   },
 
-  async saveReviews(newReviews) {
+  async saveReviews(newReviews, fetchURL) {
     const fetchStorage = new Storage({
       configName: "fetchedData",
       defaults: {
@@ -62,7 +76,7 @@ export const methods = {
           //@TODO: Get real commentCount ID here
           r = new Review(
             r.externalId,
-            "AGH44T5EPZVYYKAGNQ3DKUOE7RVQ",
+            this.fetchURLData(fetchURL).id,
             +new Date().getTime(),
             r.product.title,
             r.product.asin,

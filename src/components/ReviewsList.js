@@ -1,6 +1,8 @@
 import React from "react"
 import ReviewItem from "./ReviewItem";
 
+import {methods} from "../utilities/methods";
+
 
 // Functional / stateless component, pass props and work directly with it.
 // passed prop can be accessed via destructuring in the building of the comonent
@@ -8,13 +10,13 @@ import ReviewItem from "./ReviewItem";
 
 export const ReviewsList = ({reviews, config})  => {
 
-    //@TODO: Only show if review.userId === config.userId
-    const reviewsComponents = reviews.filter(review => config.userURL.includes(review.userId))
-        .map(review => 
-            <ReviewItem key={review.externalId} review={review} />
-        )
-        
-    return (
+    if(methods.fetchURLData(config.fetchURL)){
+        const reviewsComponents = reviews.filter(review => config.fetchURL.includes(review.userId))
+            .map(review => 
+                <ReviewItem key={review.externalId} review={review} />
+            )
+            
+        return (
             <div className="reviews-list">
                 <div className="review-item reviews-header">
                     <div>External Id</div>
@@ -31,5 +33,13 @@ export const ReviewsList = ({reviews, config})  => {
                     <div className="review-item review-notification"><span>Reviews loaded: {config.scrapeProgress}%</span></div>
                 }
             </div>
-    )
+        )
+    }else{
+        return (
+            <div className="reviews-list">
+                <div className="review-item review-notification"><span>Please specify a URL in the settings that should be used for fetching review data.</span></div>
+            </div>
+        )
+    }
+
 }

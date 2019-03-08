@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, NavLink, BrowserRouter as Router } from 'react-router-dom'
+import { Route, NavLink, Switch, BrowserRouter as Router } from 'react-router-dom'
 import './App.css';
 
 import {Sidebar} from '../components/Sidebar'
@@ -31,9 +31,9 @@ const fetchStorage = new Storage({
 });
       
 const configStorage = new Storage({
-  configName: 'user-preferences',
+  configName: 'appConfig',
   defaults: {
-    windowBounds: { width: 800, height: 600 }
+    fetchURL:'https://www.amazon.de/gp/profile/amzn1.account.AHIML2WDUBRNHH47SS5PZEWVBOJA'
   }
 });
 
@@ -50,7 +50,7 @@ class App extends Component {
           pictureURL: ''
         },
         config:{
-          userURL:'https://www.amazon.de/gp/profile/amzn1.account.AGH44T5EPZVYYKAGNQ3DKUOE7RVQ',
+          fetchURL:'',
           scrapeStatus: "-",
           scrapeProgress: 0,
           isScrapingComplete: false,
@@ -58,6 +58,29 @@ class App extends Component {
         },
           reviews: []
       }
+
+      //ComponentDidMount-Logic. Unfortunately ComponentDidMount doesn't fire at the start of the app
+      configStorage.get('fetchURL')
+      .then(fetchURL => {
+        this.setState({
+          config:{
+            ...this.state.config,
+            fetchURL: methods.fetchURLData(fetchURL).url
+          }
+        })
+      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+  
+      fetchStorage.get('user')
+      .then(user => {
+        console.log("User fetched from storage", user)
+        this.setState({user})
+      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+  
+      fetchStorage.get('reviews')
+      .then(reviews => {
+        this.setState({reviews: reviews})
+      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+
 
       ipcRenderer.on('profileReviewsHelpfulCounts', (event, profile) => {
           this.setState({
@@ -94,15 +117,20 @@ class App extends Component {
           console.log("ScrapeProgress", this.state.config.scrapeProgress)
       })
       ipcRenderer.on('reviewsScrapedInterrupted', (event, reviews) => {
-          // @TODO show the user that only partially fetched and how much
-          this.setState({
-              reviews
-          })
-          console.log("state", this.state)
+        // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
+        console.error("Scraping by Amazon interrupted, saved Reviews loaded until now")
+        methods.saveReviews(reviews, this.state.config.fetchURL).then(() => {
+          fetchStorage.get('reviews').then(reviews => {
+            this.setState({
+              reviews: reviews
+            })
+          }).catch(err => console.error(err))
+        })
+        .catch(err => console.error(err));
       })
       ipcRenderer.on('reviewsScraped', (event, reviews) => {
           console.log("reviews", reviews)
-        methods.saveReviews(reviews).then(() => {
+        methods.saveReviews(reviews, this.state.config.fetchURL).then(() => {
           fetchStorage.get('reviews').then(reviews => {
             this.setState({
               reviews: reviews
@@ -136,7 +164,7 @@ class App extends Component {
   }
 
   startCrawlClickHandler(complete){
-    ipcRenderer.send('startCrawl', {url: this.state.config.userURL, complete:complete})
+    ipcRenderer.send('startCrawl', {url: this.state.config.fetchURL, complete:complete})
     this.setState({
         config:{
           ...this.state.config,
@@ -159,10 +187,12 @@ class App extends Component {
               <NavLink to="/settings" className='link' activeClassName='selected'><i className="material-icons">settings</i></NavLink>
             </div>
             <div className='main'>
-            
+
+            <Switch>
               <Route exact path="/"   render={() => <History config={this.state.config}  />}/>
               <Route path="/reviews"  render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} />}/>
               <Route path="/settings" render={() => <Settings config={this.state.config} />} />
+            </Switch>
 
             </div>
           </div>
@@ -171,26 +201,6 @@ class App extends Component {
   }
 
   componentDidMount(){
-    fetchStorage.get('user')
-    .then(user => {
-      console.log("User fetched from storage", user)
-      this.setState({user})
-    }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
-
-    fetchStorage.get('reviews')
-    .then(reviews => {
-      this.setState({reviews: reviews})
-    }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
-
-    //@TODO: MOCK weg
-    methods.saveReviews(reviewsData).then(() => {
-      fetchStorage.get('reviews').then(reviews => {
-        this.setState({
-          reviews: reviews
-        })
-      }).catch(err => console.error(err))
-    })
-    .catch(err => console.error(err));
   }
 }
 

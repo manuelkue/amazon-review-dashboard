@@ -17,6 +17,8 @@ export class Review {
     reviewHistory
     updatedParams
 
+    //@TODO: Add parameter "deleted", aber ermögliche, diesen bei einem nächsten Sync wieder zu entfernen, falls fehlerhafte Anzeige
+
     selected
 
     constructor(externalId, userId, syncTimestamp, productTitle, productAsin, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, reviewHistory) {
@@ -69,7 +71,7 @@ export class Review {
             this.syncTimestamp = review.syncTimestamp + ''
             this.averageRating = review.averageRating + ''
             this.updatedParams = [...review.updatedParams]
-            
+
             console.log("review", review.externalId, 'has updates', review.updatedParams)
         }
     }
