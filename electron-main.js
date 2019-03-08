@@ -56,12 +56,11 @@ async function crawlReviews(userProfileURL, completeCrawl){
   page.on('response', response => {
     if(completeCrawl && response.url().includes('profilewidget')){
       response.json()
-      .then(async json => {
-        const reviewCluster = json;
-        reviews.push(...reviewCluster['contributions']);
+      .then(async responseObj => {
+        reviews.push(...responseObj['contributions']);
         console.log("reviewsCount", reviews.length);
         mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
-        if(!reviewCluster.nextPageToken){
+        if(!responseObj.nextPageToken){
           console.log("\n#############\nScrapeComplete");
           console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
           console.log("reviewsCount", reviews.length);
@@ -69,13 +68,7 @@ async function crawlReviews(userProfileURL, completeCrawl){
           mainWindow.webContents.send('reviewsScraped', reviews)
           mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
           await closeConnection (page, browser)
-        }else{
-          page.evaluate(() => {
-            window.scrollBy(0, window.innerHeight)
-          });
-        
         }
-
       })
       .catch(err => {
         mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
@@ -91,6 +84,9 @@ async function crawlReviews(userProfileURL, completeCrawl){
         interruptedByAmazon(err, page, browser)
       })
     }
+    page.evaluate(() => {
+      window.scrollBy(0, window.innerHeight)
+    });
   })
 
   let name 
