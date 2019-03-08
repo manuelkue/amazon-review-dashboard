@@ -81,6 +81,7 @@ class App extends Component {
         this.setState({reviews: reviews})
       }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
 
+      
 
       ipcRenderer.on('profileReviewsHelpfulCounts', (event, profile) => {
           this.setState({
@@ -118,7 +119,7 @@ class App extends Component {
       })
       ipcRenderer.on('reviewsScrapedInterrupted', (event, reviews) => {
         // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
-        console.error("Scraping by Amazon interrupted, saved Reviews loaded until now")
+        console.error("Scraping by Amazon interrupted, saved Reviews that were loaded so far")
         methods.saveReviews(reviews, this.state.config.fetchURL).then(() => {
           fetchStorage.get('reviews').then(reviews => {
             this.setState({
