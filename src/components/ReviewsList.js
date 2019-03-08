@@ -11,6 +11,7 @@ import {methods} from "../utilities/methods";
 export const ReviewsList = ({reviews, config})  => {
 
     if(methods.fetchURLData(config.fetchURL)){
+        methods.sortObjectArray(reviews, config.sortReviewsBy, config.sortReviewsAscending)
         const reviewsComponents = reviews.filter(review => config.fetchURL.includes(review.userId))
             .map(review => 
                 <ReviewItem key={review.externalId} review={review} />

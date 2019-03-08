@@ -31,12 +31,6 @@ async function crawlReviews(userProfileURL, completeCrawl){
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
-  // @TODO: If one scrape was completed, close setTimeout, start new at next time
-  setTimeout(async () => {
-    await closeConnection (page, browser)
-    scraping && mainWindow.webContents.send('scrapeError', 'Scraping interrupted, Scraping took too long')
-  }, maxScrapingTime)
-
   await page.setViewport({ width: 500, height: 10000 });
 
   //Filter for relevant files & fetch json-Data

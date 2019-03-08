@@ -7,6 +7,19 @@ export const methods = {
     return Math.round(value * multiplier) / multiplier;
   },
 
+  sortObjectArray(array, sortForProperty, ascending = true) {
+    //sortForProperty: string (defines after which object property should be sorted)
+    if(sortForProperty){
+      array.sort((a, b) => {
+        const direction = ascending ? 1 : -1;
+        return a[sortForProperty] > b[sortForProperty] ? direction : (a[sortForProperty] < b[sortForProperty] ? direction * -1 : 0);
+      });
+    }else{
+      console.log('No sort property string specified')
+      return false
+    }
+  },
+
   fetchURLData(fetchURL){
       if(fetchURL){
         let id = fetchURL.split('account.')[1].substring(0,28);

@@ -51,6 +51,8 @@ class App extends Component {
         },
         config:{
           fetchURL:'',
+          sortReviewsBy:null,
+          sortReviewsAscending:false,
           scrapeStatus: "-",
           scrapeProgress: 0,
           isScrapingComplete: false,
@@ -58,6 +60,7 @@ class App extends Component {
         },
           reviews: []
       }
+      //@TODO: Function to click on reviewHeaders and change this.state.config.sortReviewsBy:'helpfulVotes', ...sortReviewsAscending:false
 
       //ComponentDidMount-Logic. Unfortunately ComponentDidMount doesn't fire at the start of the app
       configStorage.get('fetchURL')

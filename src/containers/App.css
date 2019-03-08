@@ -305,7 +305,6 @@ body{
   padding: var(--spacing-l) var(--spacing-m);
   margin-bottom: 1px;
   color: var(--color-text-dark);
-  cursor: pointer;
 }
 .reviews-header{
   font-weight: 600;
