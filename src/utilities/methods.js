@@ -91,7 +91,6 @@ export const methods = {
       })
       .then(async () => {
         newReviews.forEach(r => {
-          //@TODO: Get User ID here
           //@TODO: Get real commentCount ID here
           r = new Review(
             r.externalId,
@@ -117,7 +116,7 @@ export const methods = {
             console.log("foundNew", r);
           }
         });
-        console.log("savedReviews", savedReviews);
+        console.log("savedReviews", savedReviews.length);
 
         await fetchStorage.set("reviews", savedReviews);
       })

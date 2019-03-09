@@ -29,11 +29,17 @@ const fetchStorage = new Storage({
   }
 });
       
-//@TODO: in settings: save to disk
 const configStorage = new Storage({
   configName: 'appConfig',
   defaults: {
     fetchURL:''
+  }
+});
+      
+const logStorage = new Storage({
+  configName: 'logs',
+  defaults: {
+    crawls:[]
   }
 });
 
@@ -52,7 +58,7 @@ class App extends Component {
           fetchURL:'',
           fetchURLGetsValidated:'',
           fetchURLValid:false,
-          maxReviewNumberOnPartScrape:50,
+          maxReviewNumberOnPartScrape:10,
           sortReviewsBy:null,
           sortReviewsAscending:false,
           scrapeStatus: "-",
@@ -63,6 +69,7 @@ class App extends Component {
         },
           reviews: []
       }
+      //@TODO: Edit maxReviewNumber of partially fetched in Settings
       //@TODO: Function to click on reviewHeaders and change this.state.config.sortReviewsBy:'helpfulVotes', ...sortReviewsAscending:false
 
 
@@ -71,7 +78,8 @@ class App extends Component {
             user:{
               ...this.state.user,
               helpfulVotes: profile.helpfulVotes.helpfulVotesData.count,
-              reviewsCount: profile.reviews.reviewsCountData.count
+              reviewsCount: profile.reviews.reviewsCountData.count,
+              id: methods.fetchURLData(this.state.config.fetchURL).id
             }
           })
           fetchStorage.set('user', this.state.user)
@@ -101,7 +109,7 @@ class App extends Component {
       })
       ipcRenderer.on('reviewsScrapedInterrupted', (event, reviews) => {
         // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
-        console.error("Scraping by Amazon interrupted, saved Reviews that were loaded so far")
+        console.error("Scraping interrupted.")
         methods.saveReviews(reviews, this.state.config.fetchURL).then(() => {
           fetchStorage.get('reviews').then(reviews => {
             this.setState({
@@ -111,13 +119,13 @@ class App extends Component {
         })
         .catch(err => console.error(err));
       })
-      ipcRenderer.on('reviewsScraped', (event, reviews) => {
-          console.log("reviews", reviews)
-        methods.saveReviews(reviews, this.state.config.fetchURL).then(() => {
+      ipcRenderer.on('reviewsScraped', (event, reviewsScraped) => {
+          console.log("reviews", reviewsScraped)
+          methods.saveReviews(reviewsScraped, this.state.config.fetchURL).then(() => {
           fetchStorage.get('reviews').then(reviews => {
             this.setState({
               reviews: reviews
-            })
+            }, (() => {console.log(this.state.reviews.length)}))
           }).catch(err => console.error(err))
         })
         .catch(err => console.error(err));
@@ -177,16 +185,26 @@ class App extends Component {
     });
   }
 
+  //@TODO: Implement autorefresh of profile at App-start / profile-URL change
   startCrawlClickHandler(maxReviewNumber, onlyProfile = false){
     ipcRenderer.send('startCrawl', {url: this.state.config.fetchURL, maxReviewNumber:maxReviewNumber, onlyProfile})
     this.setState({
         config:{
           ...this.state.config,
-          scrapeStatus: 'Scraping... ' +  this.state.config.scrapeProgress + '%',
+          scrapeStatus: 'Scraping... ',
           isScrapingComplete: maxReviewNumber === 99999,
           isScrapingPartially:maxReviewNumber !== 99999
         }
     })
+    
+    logStorage.get('crawls').then(crawls => {
+      logStorage.set("crawls", 
+        [...crawls, {timestamp:new Date().getTime(), onlyProfile, maxReviewNumber}]
+      )
+      .then(() => {
+        logStorage.get('crawls').then(crawls => console.log("crawls", crawls))
+      })
+    }).catch(err => console.error(err))
   }
 
   saveNewFetchURL = (event) => {

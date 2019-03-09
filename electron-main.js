@@ -31,7 +31,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
-  await page.setViewport({ width: 500, height: 10000 });
+  await page.setViewport({ width: 500, height: 1000 });
 
   //Filter for relevant files & fetch json-Data
   await page.setRequestInterception(true);
@@ -48,6 +48,8 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   });
   
   page.on('response', response => {
+
+    //reading xhr-json-responses (reviews)
     if(!onlyProfile && response.url().includes('profilewidget')){
       response.json()
       .then(async responseObj => {
@@ -68,7 +70,12 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
         interruptedByAmazon(err, page, browser)
       })
+      page.evaluate(() => {
+        window.scrollTo(0,document.body.scrollHeight)
+      });
     }
+
+    //reading xhr-json-responses (userStats)
     if(response.url().includes('gamification')){
       response.json()
       .then(json => {
@@ -78,9 +85,6 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         interruptedByAmazon(err, page, browser)
       })
     }
-    page.evaluate(() => {
-      window.scrollBy(0, window.innerHeight)
-    });
   })
 
   let name 
@@ -102,7 +106,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
     console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
     })
     .catch(async err => {
-      mainWindow.webContents.send('scrapeError', 'Connection failed. Check profile-URL')
+      mainWindow.webContents.send('scrapeError', 'Connection failed.')
       console.info('Connection failed');
       await closeConnection(page, browser)
     })
@@ -116,15 +120,14 @@ async function interruptedByAmazon(err, page, browser){
 }
 
 async function closeConnection (page, browser){
-    setTimeout(async () => {
       try{
         await page.close();
         await browser.close();
+        console.log("connection closed")
       }
       catch{
         console.log("connection already closed")
       }
-    }, 20000)
 }
 
 ////////////////////////

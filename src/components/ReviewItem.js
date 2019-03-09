@@ -32,7 +32,7 @@ class ReviewItem extends Component{
             clicked = !clicked
         }
     
-        //@TODO: clicked umsetzen. Fehler beheben (am MacBook kam einer)
+        //@TODO: clicked umsetzen. Links to Amazon Seite / Produkt. Öffnet Review Details. Fehler beheben (am MacBook kam einer)
         return(
             <div className={'review-item' + (clicked? ' clicked':'')} onClick={reviewClicked.bind(this)}>
                 <div onClick={idClicked.bind(this)}>{externalId}</div>

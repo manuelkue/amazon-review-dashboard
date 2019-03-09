@@ -11,7 +11,7 @@ export class Storage {
     // app.getPath('userData') will return a string of the user's app data directory path.
     const userDataPath = (electron.app || electron.remote.app).getPath('userData');
     // We'll use the `configName` property to set the file name and path.join to bring it all together as a string
-    this.path = path.join(userDataPath, opts.configName + '.json');
+    this.path = path.join(userDataPath, 'JSONStorage', opts.configName + '.json');
   }
   
   // This will just return the property on the `data` object
@@ -51,8 +51,6 @@ function parseDataFile(filePath, defaults) {
         try{
             file = fsSync.readFileSync(filePath, 'utf8')
             console.log("Read file", filePath)
-            console.log("file", file)
-
             resolve(JSON.parse(file))
         }catch(err){
             console.log("File not available", filePath)
