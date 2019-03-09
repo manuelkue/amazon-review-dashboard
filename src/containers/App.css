@@ -305,11 +305,13 @@ body{
   padding: var(--spacing-l) var(--spacing-m);
   margin-bottom: 1px;
   color: var(--color-text-dark);
+  cursor: pointer;
 }
 .reviews-header{
   font-weight: 600;
   text-transform: uppercase;
   background: unset;
+  cursor: default;
 }
 
 .clicked{
@@ -336,6 +338,10 @@ body{
 .review-notification > span{
   grid-column: 1/8;
   font-style: italic;
+}
+
+.settings{
+  padding: var(--spacing-m)
 }
 
 @media (min-width: 576px){

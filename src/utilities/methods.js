@@ -22,14 +22,20 @@ export const methods = {
 
   fetchURLData(fetchURL){
       if(fetchURL){
-        let id = fetchURL.split('account.')[1].substring(0,28);
-        let url = 'https://' + new URL(fetchURL).hostname + '/gp/profile/amzn1.account.' + id
-        if (typeof id === 'string' && id.length === 28 && url){
-          return {
-                  url: url,
-                  id: id
+          try{
+            let id = fetchURL.split('account.')[1].substring(0,28);
+            let profileURL = 'https://' + new URL(fetchURL).hostname + '/gp/profile/amzn1.account.' + id
+            let avatarURL = 'https://' + new URL(fetchURL).hostname + '/avatar/default/amzn1.account.' + id + '?square=true&max_width=460'
+            if (typeof id === 'string' && id.length === 28 && profileURL){
+              return {
+                profileURL,
+                avatarURL,
+                id
               }
-        }
+            }
+          }catch(err){
+            return false;
+          }
       }
       return false;
   },

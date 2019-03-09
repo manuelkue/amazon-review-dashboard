@@ -23,17 +23,17 @@ const fetchStorage = new Storage({
       rank: null,
       helpfulVotes: null,
       reviewsCount:null,
-      name: null,
-      pictureURL: ''
+      name: null
     },
     reviews: []
   }
 });
       
+//@TODO: in settings: save to disk
 const configStorage = new Storage({
   configName: 'appConfig',
   defaults: {
-    fetchURL:'https://www.amazon.de/gp/profile/amzn1.account.AHIML2WDUBRNHH47SS5PZEWVBOJA'
+    fetchURL:''
   }
 });
 
@@ -46,45 +46,25 @@ class App extends Component {
           rank: "null",
           helpfulVotes: "null",
           reviewsCount: "null",
-          name: "null",
-          pictureURL: ''
+          name: "null"
         },
         config:{
           fetchURL:'',
+          fetchURLGetsValidated:'',
+          fetchURLValid:false,
+          maxReviewNumberOnPartScrape:50,
           sortReviewsBy:null,
           sortReviewsAscending:false,
           scrapeStatus: "-",
           scrapeProgress: 0,
           isScrapingComplete: false,
-          isScrapingPartially: false
+          isScrapingPartially: false,
+          appInitStarted: false
         },
           reviews: []
       }
       //@TODO: Function to click on reviewHeaders and change this.state.config.sortReviewsBy:'helpfulVotes', ...sortReviewsAscending:false
 
-      //ComponentDidMount-Logic. Unfortunately ComponentDidMount doesn't fire at the start of the app
-      configStorage.get('fetchURL')
-      .then(fetchURL => {
-        this.setState({
-          config:{
-            ...this.state.config,
-            fetchURL: methods.fetchURLData(fetchURL).url
-          }
-        })
-      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
-  
-      fetchStorage.get('user')
-      .then(user => {
-        console.log("User fetched from storage", user)
-        this.setState({user})
-      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
-  
-      fetchStorage.get('reviews')
-      .then(reviews => {
-        this.setState({reviews: reviews})
-      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
-
-      
 
       ipcRenderer.on('profileReviewsHelpfulCounts', (event, profile) => {
           this.setState({
@@ -102,8 +82,7 @@ class App extends Component {
             user:{
               ...this.state.user,
               rank: profile.rank,
-              name: profile.name,
-              pictureURL: profile.profilePictureURL
+              name: profile.name
             }
           })
           console.log("state", this.state)
@@ -147,7 +126,7 @@ class App extends Component {
           this.setState({
               config: {
                 ...this.state.config,
-                scrapeStatus: `Scraping completed after ${duration} ms`,
+                scrapeStatus: `Scraping completed after ${methods.round(duration/1000, 1)} s`,
                 isScrapingComplete: false,
                 isScrapingPartially: false
               }
@@ -167,18 +146,6 @@ class App extends Component {
 
   }
 
-  startCrawlClickHandler(complete){
-    ipcRenderer.send('startCrawl', {url: this.state.config.fetchURL, complete:complete})
-    this.setState({
-        config:{
-          ...this.state.config,
-          scrapeStatus: 'Scraping...',
-          isScrapingComplete:complete,
-          isScrapingPartially:!complete
-        }
-    })
-  }
-
   render() {
 
     return (
@@ -195,7 +162,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/"   render={() => <History config={this.state.config}  />}/>
               <Route path="/reviews"  render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} />}/>
-              <Route path="/settings" render={() => <Settings config={this.state.config} />} />
+              <Route path="/settings" render={() => <Settings config={this.state.config} saveNewFetchURL={this.saveNewFetchURL} />} />
             </Switch>
 
             </div>
@@ -205,6 +172,84 @@ class App extends Component {
   }
 
   componentDidMount(){
+    this.initAppFromStorage().then(() => {
+      this.saveNewFetchURL({target:{value:this.state.config.fetchURL}})
+    });
+  }
+
+  startCrawlClickHandler(maxReviewNumber, onlyProfile = false){
+    ipcRenderer.send('startCrawl', {url: this.state.config.fetchURL, maxReviewNumber:maxReviewNumber, onlyProfile})
+    this.setState({
+        config:{
+          ...this.state.config,
+          scrapeStatus: 'Scraping... ' +  this.state.config.scrapeProgress + '%',
+          isScrapingComplete: maxReviewNumber === 99999,
+          isScrapingPartially:maxReviewNumber !== 99999
+        }
+    })
+  }
+
+  saveNewFetchURL = (event) => {
+    // events get nullified after first processing round and are not available to async functions
+    // have to be saved if they should be processed further (here in callback after setState)
+    const url = event.target.value
+    console.log("URL objects", methods.fetchURLData(url))
+    this.setState({
+      config:{
+        ...this.state.config,
+        fetchURLGetsValidated: url,
+        fetchURLValid: !!methods.fetchURLData(url)
+      }
+    }, () => {
+      console.log("valid?", this.state.config.fetchURLValid)
+      if(this.state.config.fetchURLValid){
+        this.setState({
+          config:{
+            ...this.state.config,
+            fetchURL: url
+          }
+        })
+        configStorage.set('fetchURL', url)
+      }
+    })
+  }
+
+  async initAppFromStorage(){
+    if(!this.state.config.appInitStarted){
+
+      this.setState({
+        config:{
+          ...this.state.config,
+          appInitStarted:true
+        }
+      })
+
+      console.log('AppInit start')
+      await configStorage.get('fetchURL')
+      .then(fetchURL => {
+        this.setState({
+          config:{
+            ...this.state.config,
+            fetchURL: methods.fetchURLData(fetchURL).profileURL
+          }
+        })
+      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+  
+      await fetchStorage.get('user')
+      .then(user => {
+        console.log("User fetched from storage", user)
+        this.setState({user})
+      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+  
+      await fetchStorage.get('reviews')
+      .then(reviews => {
+        this.setState({reviews: reviews})
+      }).catch(err => console.log("Trying to read file: No reviews safed to disk so far"))
+
+      console.log('AppInit end')
+    }else{
+      console.log('AppInit already started')
+    }
   }
 }
 

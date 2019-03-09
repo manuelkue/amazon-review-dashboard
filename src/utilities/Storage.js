@@ -1,6 +1,7 @@
 const electron = window.require('electron');
 const path = window.require('path');
 const fs = window.require('fs').promises;
+const fsSync = window.require('fs');
 
 export class Storage {
   opts
@@ -19,7 +20,10 @@ export class Storage {
         parseDataFile(this.path, this.opts.defaults).then(file => {
             resolve(file[key]);
         })
-        .catch(err => reject(err));
+        .catch(err => {
+            console.error(err)
+            reject(err)
+        });
     })
   }
   
@@ -27,7 +31,7 @@ export class Storage {
   async set(key, val) {
     return new Promise((resolve, reject) => {
         parseDataFile(this.path, this.opts.defaults).then(async file => {
-            file[key] = Object.assign(val, {timestamp: new Date().valueOf()});
+            file[key] = val;
             // Wait, I thought using the node.js' synchronous APIs was bad form?
             // We're not writing a server so there's not nearly the same IO demand on the process
             // Also if we used an async API and our app was quit before the asynchronous write had a chance to complete,
@@ -42,25 +46,22 @@ export class Storage {
 }
 
 function parseDataFile(filePath, defaults) {
-
     return new Promise((resolve, reject) => {
-        fs.readFile(filePath, 'utf-8').then(file => {
+        let file
+        try{
+            file = fsSync.readFileSync(filePath, 'utf8')
+            console.log("Read file", filePath)
+            console.log("file", file)
+
             resolve(JSON.parse(file))
-        })
-        .catch(err => {
-            console.log("Tried to read file",err)
-            // if there was some kind of error, return the passed in defaults instead.
-            resolve(defaults);
-        })
+        }catch(err){
+            console.log("File not available", filePath)
+            resolve(defaults)
+        }
     })
     /*
-  // We'll try/catch it in case the file doesn't exist yet, which will be the case on the first application run.
-  // `fs.readFileSync` will return a JSON string which we then parse into a Javascript object
-  try {
-    return JSON.parse(fs.readFileSync(filePath));
-  } catch(error) {
-    // if there was some kind of error, return the passed in defaults instead.
-    return defaults;
-  }
+    Using the sync variant of readfile because async doesn't work in this case strangely enough
+    Like this:
+    https://github.com/nodejs/node-v0.x-archive/issues/15515
   */
 }

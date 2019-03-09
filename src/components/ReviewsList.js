@@ -8,6 +8,10 @@ import {methods} from "../utilities/methods";
 // passed prop can be accessed via destructuring in the building of the comonent
 // -> ({reviews, config}) = (props)
 
+//@TODO: Include search field to filter reviews
+
+//@TODO: integrate sort by clicking the header, sort for deleted as well
+
 export const ReviewsList = ({reviews, config})  => {
 
     if(methods.fetchURLData(config.fetchURL)){

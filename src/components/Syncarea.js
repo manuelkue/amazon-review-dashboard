@@ -4,11 +4,11 @@ export const Syncarea = ({config, startCrawlClickHandler}) => {
     return(
         <div className="syncarea">
             <div className="syncButtonsWrapper">
-                <div className="syncButton" onClick={() => startCrawlClickHandler(true)}>
+                <div className="syncButton" onClick={() => startCrawlClickHandler(99999)}>
                     <i className={"material-icons" + (config.isScrapingComplete? ' loading' : '') }>refresh</i>
                     <span>Complete</span>
                 </div>
-                <div className="syncButton" onClick={() => startCrawlClickHandler(false)}>
+                <div className="syncButton" onClick={() => startCrawlClickHandler(config.maxReviewNumberOnPartScrape)}>
                     <i className={"material-icons" + (config.isScrapingPartially? ' loading' : '') }>refresh</i>
                     <span>Partially</span>
                 </div>

@@ -9,7 +9,7 @@ let scraping;
 const storage = new Storage({
   configName: 'user-preferences',
   defaults: {
-    windowBounds: { width: 800, height: 600 }
+    windowBounds: { width: 1800, height: 1000 }
   }
 });
 
@@ -19,11 +19,11 @@ const storage = new Storage({
 
 ipcMain.on('startCrawl', (event, startCrawl) => {
   console.log("crawling from", startCrawl.url, "\n")
-  crawlReviews(startCrawl.url, startCrawl.complete)
+  crawlReviews(startCrawl.url, startCrawl.maxReviewNumber, startCrawl.onlyProfile)
 })
 
 
-async function crawlReviews(userProfileURL, completeCrawl){
+async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   const scrapeStartTime = new Date().getTime()
   scraping = true;
   let reviews = [];
@@ -48,13 +48,13 @@ async function crawlReviews(userProfileURL, completeCrawl){
   });
   
   page.on('response', response => {
-    if(completeCrawl && response.url().includes('profilewidget')){
+    if(!onlyProfile && response.url().includes('profilewidget')){
       response.json()
       .then(async responseObj => {
         reviews.push(...responseObj['contributions']);
         console.log("reviewsCount", reviews.length);
         mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
-        if(!responseObj.nextPageToken){
+        if(!responseObj.nextPageToken || reviews.length >= maxReviewNumber){
           console.log("\n#############\nScrapeComplete");
           console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
           console.log("reviewsCount", reviews.length);
@@ -85,28 +85,27 @@ async function crawlReviews(userProfileURL, completeCrawl){
 
   let name 
   let rank 
-  let profilePictureURL
-    await page.goto(userProfileURL).catch(async err => {
-      mainWindow.webContents.send('scrapeError', 'Connection failed')
+    await page.goto(userProfileURL)
+    .then(async () => {
+      name = await page.$eval('.name-container span', el => el.innerText)
+        .catch(() => console.error('$eval name not successfull'))
+      rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
+        .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
+        rank = rank || "10.000+"
+      mainWindow.webContents.send('profileNameRank', {name, rank})
+   
+    // If no completeCrawl scraping has to be deactivated here
+    if (onlyProfile){
+      scraping = false
+      mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
+    }
+    console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
+    })
+    .catch(async err => {
+      mainWindow.webContents.send('scrapeError', 'Connection failed. Check profile-URL')
       console.info('Connection failed');
       await closeConnection(page, browser)
     })
-    name = await page.$eval('.name-container span', el => el.innerText)
-      .catch(() => console.error('$eval name not successfull'))
-    rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-      .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
-      rank = rank || "10.000+"
-    profilePictureURL = await page.$eval('#avatar-image', img => img.src)
-      .catch(() => console.error('$eval profilePictureURL not successfull'))
-    mainWindow.webContents.send('profileNameRank', {name, rank, profilePictureURL})
-    console.log("profilePictureURL", profilePictureURL)
- 
-  // If no completeCrawl scraping has to be deactivated here
-  if (!completeCrawl){
-    scraping = false
-    mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
-  }
-  console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
 }
 
 async function interruptedByAmazon(err, page, browser){

@@ -2,6 +2,8 @@ import React, {Component} from "react"
 
 // @TODO zu functional component umbauen, wenn clicked-state von über-Komponente kommt bzw. im Reviews-Array integriert wurde
 
+// @TODO deleted reviews are shown crossed out
+
 class ReviewItem extends Component{
 
     render(){

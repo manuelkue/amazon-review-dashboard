@@ -5,7 +5,7 @@ import {Syncarea} from "./Syncarea"
 export const Sidebar = ({user, config, startCrawlClickHandler}) => {
     return(
         <div className="sidebar">
-            <Profile user={user} />
+            <Profile user={user} config={config} />
             <Syncarea startCrawlClickHandler={startCrawlClickHandler} config={config} />
         </div>
     )

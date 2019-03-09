@@ -1,15 +1,12 @@
 import React from "react"
-import profilePicture from "../assets/images/profile.jpg"
-import rankPicture from "../assets/images/baseline-equalizer-24px.svg"
-import helpfulVotesPicture from "../assets/images/baseline-thumb_up-24px.svg"
-import reviewPicture from "../assets/images/baseline-insert_drive_file-24px.svg"
+import {methods} from '../utilities/methods'
 
-export const Profile = ({user}) => {
+export const Profile = ({user, config}) => {
     return(
         //@TODO: If the userlink has changed but no refresh was done, show in profile that current User is not the URL-specific user
         <div className="profile">
             <div className="picturewrapper">
-                <img src={user.pictureURL} />
+                <img src={methods.fetchURLData(config.fetchURL).avatarURL} />
             </div>
             <div className="stats">
                 <div><span><i className="material-icons">face</i></span><span>{user.name}</span></div>
