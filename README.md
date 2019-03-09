@@ -1,6 +1,16 @@
 # Amazon Review Dashboard
 
-An Electron Application for using the Amazon Review Dashboard. Based on React.
+An Electron Application to analyze and manage Amazon Reviews. Based on React.<br><br>
+
+## Aim of the application
+
+It should be possible to analyze written reviews and monitor changes (helpful clicks, comments, deletions).<br>
+Unfortunately Amazon doesn't offer this functionality anymore and so we had to create our own solution.<br>
+This application is inspired by the solution "ARAT" (Amazon Review Analysis Tool) which was already available a few years ago. <br>Unfortunately, this solution was discontinued after changes by Amazon, because it still relied on the old interfaces.<br>
+<br>
+ARAT:<br>
+https://www.youtube.com/watch?v=D77rb-_6Gos<br>
+
 
 ## Needed Software & Initialization
 
