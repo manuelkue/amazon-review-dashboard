@@ -2,19 +2,31 @@
 
 An Electron Application for using the Amazon Review Dashboard. Based on React.
 
-## Available Scripts
+## Needed Software & Initialization
 
-In the project directory, you can run:
+To initialize the project with the available repository clone or download the repository.<br>
+Later there will be an easy to use .exe (Windows) or .dmg (Mac)<br><br>
 
-### `npm start`
+To run it at the current stage you need following software:<br>
+* [Node.js / npm](https://nodejs.org/en/)
+* A terminal to use npm
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+With terminal navigate into the downloaded folder and execute
 
-The page will reload if you make edits.<br>
+```
+npm i
+```
+That will install all dependencies that are required.<br>
+Now run
+```
+npm start
+```
+That will start the application locally.  You can start electron now and view the application:
+
+```
+npm run electron
+```
+
+The page will reload if you make edits to the code.<br>
 You will also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
