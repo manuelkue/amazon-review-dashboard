@@ -210,6 +210,7 @@ class App extends Component {
                 render={() => (
                   <Settings
                     config={this.state.config}
+                    users={this.state.users}
                     saveNewFetchURL={this.saveNewFetchURL}
                   />
                 )}
