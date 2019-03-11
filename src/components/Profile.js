@@ -16,7 +16,7 @@ export const Profile = ({user, config}) => {
                     <div><span><i className="material-icons">create</i></span> <span>{user.reviewsCount}</span></div>
                 </div>
                 :
-                <div>loading</div>
+                <div className="notification"><div>No user profile provided.</div></div>
             }
         </div>
     )

@@ -223,7 +223,7 @@ class App extends Component {
 
   componentDidMount() {
     this.initAppFromStorage().then(() => {
-      this.validateFetchURL(this.state.config.fetchURL);
+      this.state.config.fetchURL && this.validateFetchURL(this.state.config.fetchURL);
     });
   }
 

@@ -3,6 +3,8 @@ const path = window.require("path");
 const fs = window.require("fs").promises;
 const fsSync = window.require("fs");
 
+const storageDir = "JSONStorage";
+
 export class Storage {
   opts;
   constructor(opts) {
@@ -12,10 +14,15 @@ export class Storage {
     const userDataPath = (electron.app || electron.remote.app).getPath(
       "userData"
     );
+    // Create storage dir if not exists
+    if(!fsSync.existsSync(path.join(userDataPath, storageDir))){
+        fsSync.mkdirSync(path.join(userDataPath, storageDir))
+        console.log("StorageDir created")
+    }
     // We'll use the `configName` property to set the file name and path.join to bring it all together as a string
     this.path = path.join(
       userDataPath,
-      "JSONStorage",
+      storageDir,
       opts.configName + ".json"
     );
   }
@@ -45,9 +52,16 @@ export class Storage {
           // Also if we used an async API and our app was quit before the asynchronous write had a chance to complete,
           // we might lose that data. Note that in a real app, we would try/catch this.
 
-          await fs.writeFile(this.path, JSON.stringify(file));
-          console.log("saved", file, "to", this.path);
-          resolve(true);
+          console.log("try to save", file, "to", this.path);
+          fs.writeFile(this.path, JSON.stringify(file))
+          .then(() => {
+            console.log("saved", file, "to", this.path);
+            resolve(true);
+          })
+          .catch(err => {
+              console.error(err)
+              reject(err)
+            });
         })
         .catch(err => reject(err));
     });
