@@ -52,6 +52,8 @@ export class Storage {
           // Also if we used an async API and our app was quit before the asynchronous write had a chance to complete,
           // we might lose that data. Note that in a real app, we would try/catch this.
 
+          //@TODO: Eventuell einbauen, dass er die alte Datei sichert und bei einem Schreibfehler diese alte Datei wieder darüber schreibt, um keine Daten zu verlieren
+
           console.log("try to save", file, "to", this.path);
           fs.writeFile(this.path, JSON.stringify(file), {options:{encoding:'utf8'}}, (err) => {
             console.log("writeFileError", err)

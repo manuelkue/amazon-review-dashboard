@@ -105,6 +105,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   if (onlyProfile){
     scraping = false
     mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
+    await closeConnection (page, browser)
   }
   console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
   })
