@@ -136,6 +136,7 @@ export const methods = {
               savedUsers.push(
               new User(
                   u.id,
+                  u.profileURL,
                   u.name,
                   u.rank,
                   u.helpfulVotes,
@@ -152,6 +153,7 @@ export const methods = {
         .then(async () => {
           const u = new User(
               this.fetchURLData(fetchURL).id,
+              this.fetchURLData(fetchURL).profileURL,
               newUser.name,
               newUser.rank,
               newUser.helpfulVotes,

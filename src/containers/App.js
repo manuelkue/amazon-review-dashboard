@@ -211,6 +211,7 @@ class App extends Component {
                   <Settings
                     config={this.state.config}
                     users={this.state.users}
+                    selectUser={this.selectUser}
                     saveNewFetchURL={this.saveNewFetchURL}
                   />
                 )}
@@ -274,6 +275,11 @@ class App extends Component {
       "valid?",
       this.state.config.fetchURLValid
     );
+  }
+
+  selectUser = (user) => {
+    console.log("Clicked on", user.name)
+    this.saveNewFetchURL({target:{value: user.profileURL}})
   }
 
   saveNewFetchURL = async event => {

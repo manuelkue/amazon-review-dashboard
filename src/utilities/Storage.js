@@ -53,7 +53,10 @@ export class Storage {
           // we might lose that data. Note that in a real app, we would try/catch this.
 
           console.log("try to save", file, "to", this.path);
-          fs.writeFile(this.path, JSON.stringify(file))
+          fs.writeFile(this.path, JSON.stringify(file), {options:{encoding:'utf8'}}, (err) => {
+            console.log("writeFileError", err)
+            reject(err)
+          })
           .then(() => {
             console.log("saved", file, "to", this.path);
             resolve(true);

@@ -46,11 +46,14 @@
   --lg: 992px;
   --xl: 1200px;
 
-
   --spacing-s: 5px;
   --spacing-m: 10px;
   --spacing-l: 15px;
   --spacing-xl: 25px;
+
+  --border-radius-s: 2px;
+  --border-radius-m: 5px;
+  --border-radius-l: 10px;
 
   --color-white: #fff;
   --color-lighter: rgb(249, 249, 249);
@@ -67,10 +70,6 @@
 }
 
 
-.loading {
-  animation: rotation 1s infinite linear;
-}
-
 @keyframes rotation {
   from {
       transform: rotate(0deg);
@@ -82,6 +81,19 @@
 
 body{
   background: var(--color-light);
+}
+
+input{
+  box-sizing: border-box;
+  border-radius: var(--border-radius-m);
+  border: 1px solid #fff;
+  width: 100%;
+  padding: var(--spacing-l);
+  margin-top: var(--spacing-m);
+}
+
+.loading {
+  animation: rotation 1s infinite linear;
 }
 
 .App {
@@ -237,7 +249,7 @@ body{
   padding-top: var(--spacing-s);
   background: var(--color-dark);
   min-height: 100vh;
-  border-top-left-radius: 8px;
+  border-top-left-radius: var(--border-radius-m);
 }
 
 .nav a{
@@ -261,8 +273,8 @@ body{
 .nav .link.selected{
   color:var(--color-primary);
   background: var(--color-light);
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
+  border-top-left-radius:  var(--border-radius-m);
+  border-bottom-left-radius:  var(--border-radius-m);
   position: relative;
   width: calc(100% - 5px);
   cursor: default;
@@ -271,12 +283,12 @@ body{
 .nav .selected::before{
   content: '';
   display: block;
-  width:8px;
-  height:8px;
+  width:var(--border-radius-m);
+  height:var(--border-radius-m);
   position: absolute;
   right:0;
-  top:-8px;
-  background-image: radial-gradient(circle at 0 0, rgba(204,0,0,0) 8px, var(--color-light) 9px);
+  top:calc(var(--border-radius-m) * -1);
+  background-image: radial-gradient(circle at 0 0, rgba(204,0,0,0) var(--border-radius-m), var(--color-light) calc(var(--border-radius-m) + 1px));
 }
 
 .nav .selected:first-of-type:before{
@@ -286,12 +298,12 @@ body{
 .nav .selected::after{
   content: '';
   display: block;
-  width:8px;
-  height:8px;
+  width:var(--border-radius-m);
+  height:var(--border-radius-m);
   position: absolute;
   right:0;
-  bottom:-8px;
-  background-image: radial-gradient(circle at 0 100%, rgba(204,0,0,0) 8px, var(--color-light) 9px);
+  bottom:calc(var(--border-radius-m) * -1);
+  background-image: radial-gradient(circle at 0 100%, rgba(204,0,0,0) var(--border-radius-m), var(--color-light) calc(var(--border-radius-m) + 1px));
 }
 
 .main{
@@ -350,6 +362,44 @@ body{
 .settings{
   padding: var(--spacing-m)
 }
+
+.userCards{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-m);
+  margin-top: var(--spacing-m);
+  cursor: pointer;
+}
+
+@media (min-width: 1000px){
+  .userCards{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1400px){
+  .userCards{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.card{
+  background: var(--color-white);
+  border-radius: var(--border-radius-m);
+  padding: var(--spacing-m);
+}
+
+.card:hover:not(.selected){
+  box-shadow:0px 0px 0px var(--border-width) var(--color-secondary) inset;
+}
+
+.card.selected{
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  /*border: var(--border-width) solid var(--color-dark);*/
+}
+
+
+
 
 @media (min-width: 576px){
 }

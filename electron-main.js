@@ -56,8 +56,8 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
     if(response.url().includes('gamification')){
       response.json()
       .then(json => {
-        helpfulVotes = json.helpfulVotes.helpfulVotesData.count,
-        reviewsCount = json.reviews.reviewsCountData.count
+        helpfulVotes = +json.helpfulVotes.helpfulVotesData.count.split(".").join('')
+        reviewsCount = +json.reviews.reviewsCountData.count.split(".").join('')
         if(name && rank) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
       })
       .catch(err => {

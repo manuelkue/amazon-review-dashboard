@@ -1,10 +1,11 @@
 import React from "react"
+import {UserCard} from '../components/UserCard'
 
-export const Settings = ({config, users, saveNewFetchURL})  => {
+export const Settings = ({config, users, selectUser, saveNewFetchURL})  => {
 
     //@TODO: Create component for user Details, be clickable to input profile-URL directly into Input
     const usersComponents = users.map(user => 
-        <div key={user.id}>{user.name}</div>
+        <UserCard key={user.id} user={user} config={config} selectUser={selectUser}></UserCard>
     )
 
     return (
@@ -13,10 +14,12 @@ export const Settings = ({config, users, saveNewFetchURL})  => {
             <form>
                 <label>
                     Profile URL - {config.fetchURLValid? 'true':'false'}<br />
-                    <input placeholder='Link to user profile (something like "https://www.amazon.de/gp/profile/amzn1.account.XXXXXXXXXXXXXXXXXXXXXXXXXXXX")' style={{boxSizing: "border-box", borderRadius: '5px', border: '1px solid #fff', width: '100%', padding: '14px', marginTop: '10px'}} type="text" defaultValue={config.fetchURL} onChange={saveNewFetchURL} ></input>
+                    <input className='' placeholder='Link to user profile (something like "https://www.amazon.de/gp/profile/amzn1.account.XXXXXXXXXXXXXXXXXXXXXXXXXXXX")' type="text" defaultValue={config.fetchURL} onChange={saveNewFetchURL} ></input>
                 </label>
             </form>
-            {usersComponents}
+            <div className='userCards'>
+                {usersComponents}
+            </div>
         </div>
     )
 }

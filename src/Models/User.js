@@ -3,6 +3,7 @@ import {methods} from '../utilities/methods'
 export class User {
 
     id
+    profileURL
     name
     rank
     helpfulVotes
@@ -11,12 +12,9 @@ export class User {
     userHistory
     updatedParams
 
-    //@TODO: Add parameter "deleted", aber ermögliche, diesen bei einem nächsten Sync wieder zu entfernen, falls fehlerhafte Anzeige
-
-    selected
-
-    constructor(id, name = null, rank = null, helpfulVotes = null, reviewsCount = null, syncTimestamp = null, updatedParams = [], userHistory = []) {
+    constructor(id, profileURL, name = null, rank = null, helpfulVotes = null, reviewsCount = null, syncTimestamp = null, updatedParams = [], userHistory = []) {
         this.id = id
+        this.profileURL = profileURL
         this.name = name
         this.rank = rank
         this.helpfulVotes = helpfulVotes
