@@ -1,5 +1,6 @@
-import { Storage } from "./Storage";
+import { Storage, reviewStorage, userStorage } from "./Storage";
 import { Review } from "../Models/Review";
+import { User } from "../Models/User";
 
 export const methods = {
   round(value, precision) {
@@ -48,25 +49,18 @@ export const methods = {
         return element + "";
       case "boolean":
         return !!element;
-      case "number":
-        return element + 0;
+      case "object":
+        return Array.isArray(element)? [...element]: Object.assign({}, element);
       default:
         return null;
     }
   },
 
   async saveReviews(newReviews, fetchURL) {
-    const fetchStorage = new Storage({
-      configName: "fetchedData",
-      defaults: {
-        user: {},
-        reviews: []
-      }
-    });
 
     let savedReviews = [];
 
-    fetchStorage
+    reviewStorage
       .get("reviews")
       .then(reviews => {
         reviews.forEach(r => {
@@ -84,6 +78,7 @@ export const methods = {
               r.helpfulVotes,
               r.comments,
               r.date,
+              r.updatedParams,
               r.reviewHistory
             )
           );
@@ -105,6 +100,7 @@ export const methods = {
             r.helpfulVotes,
             0,
             r.sortTimestamp,
+            [],
             []
           );
           if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {
@@ -118,8 +114,58 @@ export const methods = {
         });
         console.log("savedReviews", savedReviews.length);
 
-        await fetchStorage.set("reviews", savedReviews);
+        await reviewStorage.set("reviews", savedReviews);
       })
       .catch(err => console.log("Tried to read saved reviews. No available"));
+  },
+
+  async saveUser(newUser, fetchURL) {
+
+    let savedUsers = [];
+
+    userStorage
+      .get("users")
+      .then(users => {
+        users.forEach(u => {
+            savedUsers.push(
+            new User(
+                u.id,
+                u.name,
+                u.rank,
+                u.helpfulVotes,
+                u.reviewsCount,
+                u.syncTimestamp,
+                u.updatedParams,
+                u.userHistory
+            )
+          );
+        });
+        console.log("bisherige User im storage", users)
+        console.log("bisherige User als User-Objects", savedUsers)
+      })
+      .then(async () => {
+        const u = new User(
+            this.fetchURLData(fetchURL).id,
+            newUser.name,
+            newUser.rank,
+            newUser.helpfulVotes,
+            newUser.reviewsCount,
+            +new Date().getTime(),
+            [],
+            []
+        );
+        if (savedUsers.map(user => user.id).includes(this.fetchURLData(fetchURL).id)) {
+            savedUsers
+            .find(user => user.id === this.fetchURLData(fetchURL).id)
+            .saveToHistoryIfUpdated(u);
+        } else {
+            savedUsers.push(u);
+            console.log("foundNew", u);
+        }
+        console.log("savedUsers", savedUsers.length);
+
+        await userStorage.set("users", savedUsers);
+      })
+      .catch(err => console.log("Tried to read saved users. No available"));
   }
 };

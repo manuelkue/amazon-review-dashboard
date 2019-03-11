@@ -46,8 +46,24 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
           req.continue();
       }
   });
+
+  
+  let helpfulVotes, reviewsCount, name, rank 
   
   page.on('response', response => {
+
+    //reading xhr-json-responses (userStats)
+    if(response.url().includes('gamification')){
+      response.json()
+      .then(json => {
+        helpfulVotes = json.helpfulVotes.helpfulVotesData.count,
+        reviewsCount = json.reviews.reviewsCountData.count
+        if(name && rank) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
+      })
+      .catch(err => {
+        interruptedByAmazon(err, page, browser)
+      })
+    }
 
     //reading xhr-json-responses (reviews)
     if(!onlyProfile && response.url().includes('profilewidget')){
@@ -74,42 +90,29 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         window.scrollTo(0,document.body.scrollHeight)
       });
     }
-
-    //reading xhr-json-responses (userStats)
-    if(response.url().includes('gamification')){
-      response.json()
-      .then(json => {
-          mainWindow.webContents.send('profileReviewsHelpfulCounts', json)
-      })
-      .catch(err => {
-        interruptedByAmazon(err, page, browser)
-      })
-    }
   })
 
-  let name 
-  let rank 
-    await page.goto(userProfileURL)
-    .then(async () => {
-      name = await page.$eval('.name-container span', el => el.innerText)
-        .catch(() => console.error('$eval name not successfull'))
-      rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-        .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
-        rank = rank || "10.000+"
-      mainWindow.webContents.send('profileNameRank', {name, rank})
-   
-    // If no completeCrawl scraping has to be deactivated here
-    if (onlyProfile){
-      scraping = false
-      mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
-    }
-    console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
-    })
-    .catch(async err => {
-      mainWindow.webContents.send('scrapeError', 'Connection failed.')
-      console.info('Connection failed');
-      await closeConnection(page, browser)
-    })
+  await page.goto(userProfileURL)
+  .then(async () => {
+    name = await page.$eval('.name-container span', el => el.innerText)
+      .catch(() => console.error('$eval name not successfull'))
+    rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
+      .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
+    rank = rank || "10.000+"
+    if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
+  
+  // If no completeCrawl scraping has to be deactivated here
+  if (onlyProfile){
+    scraping = false
+    mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
+  }
+  console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
+  })
+  .catch(async err => {
+    mainWindow.webContents.send('scrapeError', 'Connection failed.')
+    console.info('Connection failed');
+    await closeConnection(page, browser)
+  })
 }
 
 async function interruptedByAmazon(err, page, browser){

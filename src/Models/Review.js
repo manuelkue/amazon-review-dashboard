@@ -14,14 +14,14 @@ export class Review {
     helpfulVotes
     comments
     date
-    reviewHistory
     updatedParams
+    reviewHistory
 
     //@TODO: Add parameter "deleted", aber ermögliche, diesen bei einem nächsten Sync wieder zu entfernen, falls fehlerhafte Anzeige
 
     selected
 
-    constructor(externalId, userId, syncTimestamp, productTitle, productAsin, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, reviewHistory) {
+    constructor(externalId, userId, syncTimestamp, productTitle, productAsin, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, updatedParams, reviewHistory) {
         this.externalId = externalId
         this.userId = userId
         this.syncTimestamp = syncTimestamp
@@ -34,6 +34,7 @@ export class Review {
         this.helpfulVotes = helpfulVotes
         this.comments = comments || 0
         this.date = date
+        this.updatedParams = updatedParams
         this.reviewHistory = reviewHistory || []
     }
     
@@ -61,8 +62,9 @@ export class Review {
             review.updatedParams = this.showUpdatedParams(review)
             let historyItem = {syncTimestamp : methods.cloneElement(this.syncTimestamp)}
             review.updatedParams.forEach(param => {
-                historyItem[param] = methods.cloneElement(this[param]);
+                historyItem[param] = methods.cloneElement(this[param])
             })
+            historyItem.updatedParams = [...this.updatedParams]
             this.reviewHistory.push(historyItem);
             
             review.updatedParams.forEach(param => {
