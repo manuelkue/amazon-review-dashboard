@@ -83,6 +83,13 @@ body{
   background: var(--color-light);
 }
 
+h1{
+  font-weight: 600;
+  font-size: 1.4em;
+  text-transform: uppercase;
+  margin:0 0 0.5em 0;
+}
+
 input{
   box-sizing: border-box;
   border-radius: var(--border-radius-m);
@@ -90,6 +97,11 @@ input{
   width: 100%;
   padding: var(--spacing-l);
   margin-top: var(--spacing-m);
+}
+
+.invalid{
+  color: var(--color-tertiary);
+  border: 1px solid var(--color-tertiary);
 }
 
 .loading {
@@ -140,8 +152,8 @@ input{
   background-position: center;
   display: block;
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
 }
 
 .profile .notification{

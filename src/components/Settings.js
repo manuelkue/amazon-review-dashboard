@@ -10,11 +10,11 @@ export const Settings = ({config, users, selectUser, saveNewFetchURL})  => {
 
     return (
         <div className="settings">
-            <p>Settings</p>
+            <h1>Settings</h1>
             <form>
                 <label>
-                    Profile URL - {config.fetchURLValid.toString()}<br />
-                    <input className='' placeholder='Link to user profile (something like "https://www.amazon.de/gp/profile/amzn1.account.XXXXXXXXXXXXXXXXXXXXXXXXXXXX")' type="text" defaultValue={config.fetchURL} onChange={saveNewFetchURL} ></input>
+                    Profile URL {config.fetchURLValid?'':'- invalid'}<br />
+                    <input className={config.fetchURLValid?'':'invalid'} placeholder='Link to user profile (something like "https://www.amazon.de/gp/profile/amzn1.account.XXXXXXXXXXXXXXXXXXXXXXXXXXXX")' type="text" defaultValue={config.fetchURL} onChange={saveNewFetchURL} ></input>
                 </label>
             </form>
             <div className='userCards'>
