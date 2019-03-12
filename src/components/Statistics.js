@@ -1,10 +1,10 @@
 import React from "react"
 
-export const History = (props)  => {
+export const Statistics = (props)  => {
 
     return (
             <div className="history">
-                <h1>History</h1>
+                <h1>Statistics</h1>
             </div>
     )
 }

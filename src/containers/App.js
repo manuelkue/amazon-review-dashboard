@@ -11,6 +11,7 @@ import { Sidebar } from "../components/Sidebar";
 import { ReviewsList } from "../components/ReviewsList";
 import { History } from "../components/History";
 import { Settings } from "../components/Settings";
+import { Statistics } from "../components/Statistics";
 import { connect } from "react-redux";
 import { methods } from "../utilities/methods";
 import {
@@ -213,6 +214,16 @@ class App extends Component {
                     users={this.state.users}
                     selectUser={this.selectUser}
                     saveNewFetchURL={this.saveNewFetchURL}
+                  />
+                )}
+              />
+              <Route
+                path="/statistics"
+                render={() => (
+                  <Statistics
+                    config={this.state.config}
+                    reviews={this.state.reviews}
+                    users={this.state.users}
                   />
                 )}
               />

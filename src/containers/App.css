@@ -371,7 +371,7 @@ input{
   font-style: italic;
 }
 
-.settings{
+.history, .settings, .statistics{
   padding: var(--spacing-m)
 }
 

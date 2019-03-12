@@ -13,7 +13,7 @@ export const Settings = ({config, users, selectUser, saveNewFetchURL})  => {
             <h1>Settings</h1>
             <form>
                 <label>
-                    Profile URL {config.fetchURLValid?'':'- invalid'}<br />
+                    Choose your profile {config.fetchURLValid?'':'- invalid URL'}<br />
                     <input className={config.fetchURLValid?'':'invalid'} placeholder='Link to user profile (something like "https://www.amazon.de/gp/profile/amzn1.account.XXXXXXXXXXXXXXXXXXXXXXXXXXXX")' type="text" defaultValue={config.fetchURL} onChange={saveNewFetchURL} ></input>
                 </label>
             </form>
