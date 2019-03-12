@@ -56,8 +56,11 @@ export class Storage {
 
           console.log("try to save", file, "to", this.path);
           fs.writeFile(this.path, JSON.stringify(file), {options:{encoding:'utf8'}}, (err) => {
-            console.log("writeFileError", err)
-            reject(err)
+            if(err) {
+                console.error(err);
+                reject(err)
+            }
+            console.log("File saved successfully!");
           })
           .then(() => {
             console.log("saved", file, "to", this.path);
