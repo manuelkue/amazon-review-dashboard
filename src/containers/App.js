@@ -99,17 +99,6 @@ class App extends Component {
     });
     ipcRenderer.on("reviewsScraped", (event, reviewsScraped) => {
       console.log("reviews", reviewsScraped);
-      //@TODO: Saving error:
-      /*
-        {
-          "user":
-            {
-              "helpfulVotes":"86.408","reviewsCount":"5.155","id":"AH3MZRQZZDZYZCRBNRD57TOZQG3Q","rank":3,"name":"Apicula"
-            },
-          "reviews":[]}externalId":"R38MSW5OQN8TDC","userId":"AHIML2WDUBRNHH47SS5PZEWVBOJA","syncTimestamp":1552106140666,"productTitle":"dodocool USB C Hub
-
-        doesn't put into reviews[], should change ]} that to [{"
-        */
       methods
         .saveReviews(reviewsScraped, this.state.reviews, this.state.config.fetchURL)
         .then(() => {
