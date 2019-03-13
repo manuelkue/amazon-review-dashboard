@@ -8,10 +8,10 @@ import {
 import "./App.css";
 
 import { Sidebar } from "../components/Sidebar";
-import { ReviewsList } from "../components/ReviewsList";
-import { History } from "../components/History";
-import { Settings } from "../components/Settings";
-import { Statistics } from "../components/Statistics";
+import { ReviewsList } from "../components/pages/ReviewsList";
+import { History } from "../components/pages/History";
+import { Settings } from "../components/pages/Settings";
+import { Statistics } from "../components/pages/Statistics";
 import { connect } from "react-redux";
 import { methods } from "../utilities/methods";
 import {
@@ -175,11 +175,7 @@ class App extends Component {
             <NavLink to="/reviews" className="link" activeClassName="selected">
               <i className="material-icons">list</i>
             </NavLink>
-            <NavLink
-              to="/statistics"
-              className="link"
-              activeClassName="selected"
-            >
+            <NavLink to="/statistics" className="link" activeClassName="selected">
               <i className="material-icons">equalizer</i>
             </NavLink>
             <NavLink to="/settings" className="link" activeClassName="selected">
@@ -188,41 +184,10 @@ class App extends Component {
           </div>
           <div className="main">
             <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <History config={this.state.config} />}
-              />
-              <Route
-                path="/reviews"
-                render={() => (
-                  <ReviewsList
-                    reviews={this.state.reviews}
-                    config={this.state.config}
-                  />
-                )}
-              />
-              <Route
-                path="/settings"
-                render={() => (
-                  <Settings
-                    config={this.state.config}
-                    users={this.state.users}
-                    selectUser={this.selectUser}
-                    saveNewFetchURL={this.saveNewFetchURL}
-                  />
-                )}
-              />
-              <Route
-                path="/statistics"
-                render={() => (
-                  <Statistics
-                    config={this.state.config}
-                    reviews={this.state.reviews}
-                    users={this.state.users}
-                  />
-                )}
-              />
+              <Route exact path="/" render={() => <History config={this.state.config} reviews={this.state.reviews} />} />
+              <Route path="/reviews" render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} /> } />
+              <Route path="/settings" render={() => <Settings config={this.state.config} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
+              <Route path="/statistics" render={() => <Statistics config={this.state.config} reviews={this.state.reviews} users={this.state.users} /> } />
             </Switch>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React from "react"
-import ReviewItem from "./ReviewItem";
+import ReviewItem from "../ReviewItem";
 
-import {methods} from "../utilities/methods";
+import {methods} from "../../utilities/methods";
 
 
 // Functional / stateless component, pass props and work directly with it.
@@ -23,6 +23,7 @@ export const ReviewsList = ({reviews, config})  => {
             
         return (
             <div className="reviews-list">
+                <h1>Reviews</h1>
                 <div className="review-item reviews-header">
                     <div>External Id</div>
                     <div>Product Title</div>
@@ -42,6 +43,7 @@ export const ReviewsList = ({reviews, config})  => {
     }else{
         return (
             <div className="reviews-list">
+                <h1>Reviews</h1>
                 <div className="review-item review-notification"><span>Please specify a URL in the settings that should be used for fetching review data.</span></div>
             </div>
         )

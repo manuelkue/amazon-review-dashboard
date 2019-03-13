@@ -319,9 +319,20 @@ input{
 }
 
 .main{
+  padding: var(--spacing-m);
   background: var(--color-light);
   width: 100%;
   border-top: var(--spacing-s) solid var(--color-dark);
+}
+
+.history{
+}
+
+.historyItemWrapper{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(1fr));
+  gap: var(--spacing-m);
+  cursor: pointer;
 }
 
 .reviews-list{
@@ -369,10 +380,6 @@ input{
 .review-notification > span{
   grid-column: 1/8;
   font-style: italic;
-}
-
-.history, .settings, .statistics{
-  padding: var(--spacing-m)
 }
 
 .userCards{
