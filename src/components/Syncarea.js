@@ -1,22 +1,22 @@
 import React from "react"
 
-export const Syncarea = ({config, startCrawlClickHandler}) => {
+export const Syncarea = ({config, status, startCrawlClickHandler}) => {
     return(
         <div className="syncarea">
             <div className="syncButtonsWrapper">
                 <div className="syncButton" onClick={() => startCrawlClickHandler(99999)}>
-                    <i className={"material-icons" + (config.isScrapingComplete? ' loading' : '') }>refresh</i>
+                    <i className={"material-icons" + (status.isScrapingComplete? ' loading' : '') }>refresh</i>
                     <span>Complete</span>
                 </div>
                 <div className="syncButton" onClick={() => startCrawlClickHandler(config.maxReviewNumberOnPartScrape)}>
-                    <i className={"material-icons" + (config.isScrapingPartially? ' loading' : '') }>refresh</i>
+                    <i className={"material-icons" + (status.isScrapingPartially? ' loading' : '') }>refresh</i>
                     <span>Partially</span>
                 </div>
             </div>
             <div className='syncStatus'>
                 <span>Status: </span>
-                <span>{config.scrapeStatus} </span>
-                {config.scrapeProgress? <span>{config.scrapeProgress}%</span> : '' }
+                <span>{status.scrapeStatus} </span>
+                {status.scrapeProgress? <span>{status.scrapeProgress}%</span> : '' }
             </div>
             <div className="syncStats">
                 <i className="material-icons">history</i>

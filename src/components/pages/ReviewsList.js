@@ -2,6 +2,7 @@ import React from "react"
 import ReviewItem from "../ReviewItem";
 
 import {methods} from "../../utilities/methods";
+import { ProgressBar } from "../progressBar";
 
 
 // Functional / stateless component, pass props and work directly with it.
@@ -12,7 +13,7 @@ import {methods} from "../../utilities/methods";
 
 //@TODO: integrate sort by clicking the header, sort for deleted as well
 
-export const ReviewsList = ({reviews, config})  => {
+export const ReviewsList = ({reviews, config, status})  => {
 
     if(methods.fetchURLData(config.fetchURL)){
         methods.sortObjectArray(reviews, config.sortReviewsBy, config.sortReviewsAscending)
@@ -33,10 +34,10 @@ export const ReviewsList = ({reviews, config})  => {
                     <div>Helpful Votes</div>
                     <div>Datum</div>
                 </div>
-                <div style={{display: 'block', height:5+'px', background: 'var(--color-secondary)', width: config.scrapeProgress + '%'}}></div>
+                <ProgressBar progress={status.scrapeProgress}></ProgressBar>
                 {reviewsComponents}
                 {!reviewsComponents.length && 
-                    <div className="review-item review-notification"><span>Reviews loaded: {config.scrapeProgress}%</span></div>
+                    <div className="review-item review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
                 }
             </div>
         )

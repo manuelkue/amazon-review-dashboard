@@ -66,6 +66,7 @@ export const methods = {
     return new Promise(async (resolve, reject) => {
 
       let savedReviews = [...currentReviews];
+      console.log("currentReviews", [...currentReviews]);
 
       newReviews.forEach(r => {
         //@TODO: Get real commentCount ID here
@@ -94,7 +95,7 @@ export const methods = {
           console.log("foundNew", r);
         }
       });
-      console.log("savedReviews", savedReviews.length);
+      console.log("currentReviews-including-new-reviews", savedReviews);
 
       await reviewStorage.set("reviews", savedReviews);
       resolve(true)
