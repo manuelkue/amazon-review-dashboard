@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {
-  Route,
-  NavLink,
-  Switch,
-  BrowserRouter as Router
-} from "react-router-dom";
+import { Route, NavLink, Switch, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 
 import { Sidebar } from "../components/Sidebar";
@@ -12,22 +7,12 @@ import { ReviewsList } from "../components/pages/ReviewsList";
 import { History } from "../components/pages/History";
 import { Settings } from "../components/pages/Settings";
 import { Statistics } from "../components/pages/Statistics";
-import { connect } from "react-redux";
 import { methods } from "../utilities/methods";
-import {
-  reviewStorage,
-  userStorage,
-  configStorage,
-  logStorage
-} from "../utilities/Storage";
-import { Review } from "../Models/Review";
-import reviewsData from "../data/reviews";
-import userData from "../data/user";
-import { User } from "../Models/User";
+import { reviewStorage, userStorage, configStorage, logStorage } from "../utilities/Storage";
 
 const { ipcRenderer } = window.require("electron");
 
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -328,27 +313,3 @@ class App extends Component {
     }
   }
 }
-
-const mapStateToProps = state => {
-  return {
-    config: state.config,
-    users: state.users,
-    reviews: state.reviews
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setUserName: name => {
-      dispatch({
-        type: "SET_USER_NAME",
-        payload: name
-      });
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
