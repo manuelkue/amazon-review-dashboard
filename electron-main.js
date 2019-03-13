@@ -18,7 +18,7 @@ const storage = new Storage({
 ////////////////////////
 
 ipcMain.on('startCrawl', (event, startCrawl) => {
-  console.log("crawling from", startCrawl.url, "\n")
+  console.log("\n\ncrawling from", startCrawl.url, "\n")
   crawlReviews(startCrawl.url, startCrawl.maxReviewNumber, startCrawl.onlyProfile)
 })
 
@@ -28,7 +28,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   scraping = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ ignoreDefaultArgs: ['--enable-automation'], headless: false })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -61,6 +61,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         if(name && rank) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
       })
       .catch(err => {
+        console.log('gamificationError')
         interruptedByAmazon(err, page, browser)
       })
     }
@@ -84,6 +85,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
       })
       .catch(err => {
         mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
+        console.log('profilewidgetError')
         interruptedByAmazon(err, page, browser)
       })
       page.evaluate(() => {
@@ -98,7 +100,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
       .catch(() => console.error('$eval name not successfull'))
     rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
       .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
-    rank = rank || "10.000+"
+    rank = rank || 0;
     if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
   
   // If no completeCrawl scraping has to be deactivated here

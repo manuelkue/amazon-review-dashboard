@@ -24,6 +24,7 @@ import {
 import { Review } from "../Models/Review";
 import reviewsData from "../data/reviews";
 import userData from "../data/user";
+import { User } from "../Models/User";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -52,19 +53,14 @@ class App extends Component {
 
     ipcRenderer.on("profileScraped", (event, profile) => {
       methods
-        .saveUser(profile, this.state.config.fetchURL)
+        .saveUser(profile, this.state.users, this.state.config.fetchURL)
         .then(() => {
           userStorage
             .get("users")
             .then(users => {
-              this.setState(
-                {
-                  users: users
-                },
-                () => {
-                  console.log("users", this.state.users);
-                }
-              );
+              this.setState({ users: methods.arr2UserClassArr(users) },
+                () => console.log("usersAfterProfileCrawl", this.state.users)
+              )
             })
             .catch(err => console.error(err));
         })
@@ -88,13 +84,13 @@ class App extends Component {
       // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
       console.error("Scraping interrupted.");
       methods
-        .saveReviews(reviews, this.state.config.fetchURL)
+        .saveReviews(reviews, this.state.reviews, this.state.config.fetchURL)
         .then(() => {
           reviewStorage
             .get("reviews")
             .then(reviews => {
               this.setState({
-                reviews: reviews
+                reviews: methods.arr2ReviewClassArr(reviews)
               });
             })
             .catch(err => console.error(err));
@@ -115,17 +111,17 @@ class App extends Component {
         doesn't put into reviews[], should change ]} that to [{"
         */
       methods
-        .saveReviews(reviewsScraped, this.state.config.fetchURL)
+        .saveReviews(reviewsScraped, this.state.reviews, this.state.config.fetchURL)
         .then(() => {
           reviewStorage
             .get("reviews")
             .then(reviews => {
               this.setState(
                 {
-                  reviews: reviews
+                  reviews: methods.arr2ReviewClassArr(reviews)
                 },
                 () => {
-                  console.log(this.state.reviews.length);
+                  console.log("Reviews",this.state.reviews);
                 }
               );
             })
@@ -343,7 +339,7 @@ class App extends Component {
       await reviewStorage
         .get("reviews")
         .then(reviews => {
-          this.setState({ reviews: reviews });
+          this.setState({ reviews: methods.arr2ReviewClassArr(reviews) });
         })
         .catch(err =>
           console.log("Trying to read file: No reviews safed to disk so far")
@@ -352,7 +348,7 @@ class App extends Component {
       await userStorage
         .get("users")
         .then(users => {
-          this.setState({ users: users });
+          this.setState({ users: methods.arr2UserClassArr(users) });
         })
         .catch(err =>
           console.log("Trying to read file: No users safed to disk so far")

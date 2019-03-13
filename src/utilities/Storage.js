@@ -54,8 +54,10 @@ export class Storage {
 
           //@TODO: Eventuell einbauen, dass er die alte Datei sichert und bei einem Schreibfehler diese alte Datei wieder darüber schreibt, um keine Daten zu verlieren
 
+          //@TODO: If new write action should start before the current one is not finished add to line that is processed after the current write action is finished -> File won't be destroyed if current writing process gets interrupted
+
           console.log("try to save", file, "to", this.path);
-          fs.writeFile(this.path, JSON.stringify(file), {options:{encoding:'utf8'}}, (err) => {
+          fs.writeFile(this.path, JSON.stringify(file), 'utf8', (err) => {
             if(err) {
                 console.error(err);
                 reject(err)

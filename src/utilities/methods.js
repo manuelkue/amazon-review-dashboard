@@ -56,130 +56,85 @@ export const methods = {
     }
   },
 
-  saveReviews(newReviews, fetchURL) {
+  arr2ReviewClassArr(reviewObjArray){
+    let reviewObjects = []
+    reviewObjArray.forEach(review => reviewObjects.push(Object.assign(new Review, review)))
+    return reviewObjects;
+  },
+
+  saveReviews(newReviews, currentReviews, fetchURL) {
     return new Promise(async (resolve, reject) => {
-      let savedReviews = [];
 
-      reviewStorage
-        .get("reviews")
-        .then(reviews => {
-          reviews.forEach(r => {
-            savedReviews.push(
-              new Review(
-                r.externalId,
-                r.userId,
-                r.syncTimestamp,
-                r.productTitle,
-                r.productAsin,
-                r.reviewTitle,
-                r.reviewText,
-                r.averageRating,
-                r.userRating,
-                r.helpfulVotes,
-                r.comments,
-                r.date,
-                r.updatedParams,
-                r.reviewHistory
-              )
-            );
-          });
-        })
-        .then(async () => {
-          newReviews.forEach(r => {
-            //@TODO: Get real commentCount ID here
-            r = new Review(
-              r.externalId,
-              this.fetchURLData(fetchURL).id,
-              +new Date().getTime(),
-              r.product.title,
-              r.product.asin,
-              r.title,
-              r.text,
-              r.product.averageRating,
-              r.rating,
-              r.helpfulVotes,
-              0,
-              r.sortTimestamp,
-              [],
-              []
-            );
-            if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {
-              savedReviews
-                .find(rev => rev.externalId === r.externalId)
-                .saveToHistoryIfUpdated(r);
-            } else {
-              savedReviews.push(r);
-              console.log("foundNew", r);
-            }
-          });
-          console.log("savedReviews", savedReviews.length);
+      let savedReviews = [...currentReviews];
 
-          await reviewStorage.set("reviews", savedReviews);
-          resolve(true)
-        })
-        .catch(err => {
-          console.log("Tried to read saved reviews. No available")
-          reject(err)
-        });
+      newReviews.forEach(r => {
+        //@TODO: Get real commentCount ID here
+        r = new Review(
+          r.externalId,
+          this.fetchURLData(fetchURL).id,
+          +new Date().getTime(),
+          r.product.title,
+          r.product.asin,
+          r.title,
+          r.text,
+          r.product.averageRating,
+          r.rating,
+          r.helpfulVotes,
+          0,
+          r.sortTimestamp,
+          [],
+          []
+        );
+        if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {
+          savedReviews
+            .find(rev => rev.externalId === r.externalId)
+            .saveToHistoryIfUpdated(r);
+        } else {
+          savedReviews.push(r);
+          console.log("foundNew", r);
+        }
+      });
+      console.log("savedReviews", savedReviews.length);
+
+      await reviewStorage.set("reviews", savedReviews);
+      resolve(true)
     })
   },
 
-  saveUser(newUser, fetchURL) {
+  arr2UserClassArr(userObjArray){
+    let userObjects = []
+    userObjArray.forEach(user => userObjects.push(Object.assign(new User, user)))
+    return userObjects;
+  },
+
+  saveUser(newUser, currentUsers, fetchURL) {
     return new Promise(async (resolve, reject) => {
 
-      let savedUsers = [];
+      let savedUsers = [...currentUsers];
+      console.log("currentUsers",savedUsers)
+        const u = new User(
+            this.fetchURLData(fetchURL).id,
+            this.fetchURLData(fetchURL).profileURL,
+            newUser.name,
+            newUser.rank,
+            newUser.helpfulVotes,
+            newUser.reviewsCount,
+            +new Date().getTime(),
+            [],
+            []
+        );
+        if (savedUsers.map(user => user.id).includes(this.fetchURLData(fetchURL).id)) {
+            savedUsers
+            .find(user => user.id === this.fetchURLData(fetchURL).id)
+            .saveToHistoryIfUpdated(u);
+        } else {
+            savedUsers.push(u);
+            console.log("foundNew", u);
+        }
+        console.log("new savedUsers", savedUsers);
 
-      userStorage
-        .get("users")
-        .then(users => {
-          users.forEach(u => {
-              savedUsers.push(
-              new User(
-                  u.id,
-                  u.profileURL,
-                  u.name,
-                  u.rank,
-                  u.helpfulVotes,
-                  u.reviewsCount,
-                  u.syncTimestamp,
-                  u.updatedParams,
-                  u.userHistory
-              )
-            );
-          });
-          console.log("bisherige User im storage", users)
-          console.log("bisherige User als User-Objects", savedUsers)
-        })
-        .then(async () => {
-          const u = new User(
-              this.fetchURLData(fetchURL).id,
-              this.fetchURLData(fetchURL).profileURL,
-              newUser.name,
-              newUser.rank,
-              newUser.helpfulVotes,
-              newUser.reviewsCount,
-              +new Date().getTime(),
-              [],
-              []
-          );
-          if (savedUsers.map(user => user.id).includes(this.fetchURLData(fetchURL).id)) {
-              savedUsers
-              .find(user => user.id === this.fetchURLData(fetchURL).id)
-              .saveToHistoryIfUpdated(u);
-          } else {
-              savedUsers.push(u);
-              console.log("foundNew", u);
-          }
-          console.log("savedUsers", savedUsers.length);
-  
-          await userStorage.set("users", savedUsers);
-          resolve(true)
-        })
-        .catch(err => {
-          console.log("Tried to read saved users. No available")
-          reject(err)
-        });
+        await userStorage.set("users", savedUsers);
+        resolve(true)
     })
-
   }
 };

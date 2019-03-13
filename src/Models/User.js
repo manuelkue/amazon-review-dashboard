@@ -12,14 +12,14 @@ export class User {
     userHistory
     updatedParams
 
-    constructor(id, profileURL, name = null, rank = null, helpfulVotes = null, reviewsCount = null, syncTimestamp = null, updatedParams = [], userHistory = []) {
+    constructor(id, profileURL, name, rank, helpfulVotes, reviewsCount, syncTimestamp, updatedParams = [], userHistory = []) {
         this.id = id
         this.profileURL = profileURL
         this.name = name
-        this.rank = rank
-        this.helpfulVotes = helpfulVotes
-        this.reviewsCount = reviewsCount
-        this.syncTimestamp = syncTimestamp
+        this.rank = +rank
+        this.helpfulVotes = +helpfulVotes
+        this.reviewsCount = +reviewsCount
+        this.syncTimestamp = +syncTimestamp
         this.updatedParams = updatedParams
         this.userHistory = userHistory
     }

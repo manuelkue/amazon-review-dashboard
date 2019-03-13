@@ -41,7 +41,7 @@ export class Review {
     //Check whether a review with the same externalId has been updated, return all updated Params
     showUpdatedParams(review){
         let updatedParams = []
-        if(this.externalId === review.externalId && this.syncTimestamp < review.syncTimestamp){
+        if(this.externalId === review.externalId && +this.syncTimestamp < +review.syncTimestamp){
             this.productTitle !== review.productTitle && updatedParams.push('productTitle')
             this.reviewTitle  !== review.reviewTitle && updatedParams.push('reviewTitle')
             this.reviewText !== review.reviewText && updatedParams.push('reviewText')
@@ -60,7 +60,7 @@ export class Review {
     saveToHistoryIfUpdated(review){
         if(this.showUpdatedParams(review)){
             review.updatedParams = this.showUpdatedParams(review)
-            let historyItem = {syncTimestamp : methods.cloneElement(this.syncTimestamp)}
+            let historyItem = {syncTimestamp : methods.cloneElement(+this.syncTimestamp)}
             review.updatedParams.forEach(param => {
                 historyItem[param] = methods.cloneElement(this[param])
             })
@@ -70,7 +70,7 @@ export class Review {
             review.updatedParams.forEach(param => {
                 this[param] = methods.cloneElement(review[param])
             })
-            this.syncTimestamp = review.syncTimestamp + ''
+            this.syncTimestamp = +review.syncTimestamp
             this.averageRating = review.averageRating + ''
             this.updatedParams = [...review.updatedParams]
 
