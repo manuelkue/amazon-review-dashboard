@@ -269,6 +269,7 @@ input{
 }
 
 .nav .link{
+  box-sizing: border-box;
   width: 50px;
   height: 50px;
   display: flex;
@@ -283,6 +284,7 @@ input{
 }
 
 .nav .link.selected{
+  padding-right: var(--spacing-s);
   color:var(--color-primary);
   background: var(--color-light);
   border-top-left-radius:  var(--border-radius-m);
