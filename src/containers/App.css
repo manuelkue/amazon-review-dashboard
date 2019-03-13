@@ -335,6 +335,10 @@ input{
   cursor: pointer;
 }
 
+.historySubItem{
+  margin-top: var(--spacing-m)
+}
+
 .reviews-list{
 }
 

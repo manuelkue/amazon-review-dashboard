@@ -10,9 +10,9 @@ export const HistoryItem = ({review}) => {
         for (const prop in historySubItem){
             if(prop != "syncTimestamp"){
                 return(
-                    <div key={historySubItem.syncTimestamp}>
-                        Updated on {new Date(historySubItem.syncTimestamp).toLocaleDateString()}<br/>
-                        {prop + ': ' + historySubItem[prop]}
+                    <div key={historySubItem.syncTimestamp} className="historySubItem">
+                        <b>Updated on {new Date(historySubItem.syncTimestamp).toLocaleDateString()}: {prop}</b><br/>
+                        old: {historySubItem[prop]}, new: {review[prop]}
                     </div>
                 )
             }
