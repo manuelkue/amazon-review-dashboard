@@ -2,6 +2,7 @@ import React from "react"
 import ReviewItem from "../ReviewItem";
 
 import {methods} from "../../utilities/methods";
+import { ProgressBar } from "../progressBar";
 
 
 // Functional / stateless component, pass props and work directly with it.
@@ -12,13 +13,14 @@ import {methods} from "../../utilities/methods";
 
 //@TODO: integrate sort by clicking the header, sort for deleted as well
 
-export const ReviewsList = ({reviews, config})  => {
+export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
 
     if(methods.fetchURLData(config.fetchURL)){
-        methods.sortObjectArray(reviews, config.sortReviewsBy, config.sortReviewsAscending)
-        const reviewsComponents = reviews.filter(review => config.fetchURL.includes(review.userId))
+        let filteredReviews = [...reviews.filter(review => config.fetchURL.includes(review.userId))]
+        methods.sortObjectArray(filteredReviews, config.sortReviewsBy, config.sortReviewsAscending)
+        const reviewsComponents = [...filteredReviews]
             .map(review => 
-                <ReviewItem key={review.externalId} review={review} />
+                <ReviewItem key={review.externalId} review={review} reviewFunctions={reviewFunctions} />
             )
             
         return (
@@ -33,10 +35,10 @@ export const ReviewsList = ({reviews, config})  => {
                     <div>Helpful Votes</div>
                     <div>Datum</div>
                 </div>
-                <div style={{display: 'block', height:5+'px', background: 'var(--color-secondary)', width: config.scrapeProgress + '%'}}></div>
+                <ProgressBar progress={status.scrapeProgress}></ProgressBar>
                 {reviewsComponents}
                 {!reviewsComponents.length && 
-                    <div className="review-item review-notification"><span>Reviews loaded: {config.scrapeProgress}%</span></div>
+                    <div className="review-item review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
                 }
             </div>
         )

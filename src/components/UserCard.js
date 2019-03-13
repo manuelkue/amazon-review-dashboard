@@ -4,7 +4,7 @@ import {methods} from '../utilities/methods'
 export const UserCard = ({user, selectUser, config}) => {
     return(
         //@TODO: If the userlink has changed but no refresh was done, show in profile that current User is not the URL-specific user
-        <div className={"profile card" + (config.fetchURL.includes(user.id)? ' selected':'')} onClick={() => selectUser(user)}>
+        <div className={"profile card" + (config.fetchURL.includes(user.id)? ' selected':' selectable')} onClick={() => selectUser(user)}>
             <div className="picturewrapper">
                 <img src={methods.fetchURLData(user.profileURL).avatarURL} />
             </div>

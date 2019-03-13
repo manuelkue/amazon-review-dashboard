@@ -17,8 +17,8 @@ export const methods = {
       });
     }else{
       console.log('No sort property string specified')
-      return false
     }
+    return array;
   },
 
   fetchURLData(fetchURL){
@@ -66,6 +66,7 @@ export const methods = {
     return new Promise(async (resolve, reject) => {
 
       let savedReviews = [...currentReviews];
+      console.log("currentReviews", [...currentReviews]);
 
       newReviews.forEach(r => {
         //@TODO: Get real commentCount ID here
@@ -75,6 +76,8 @@ export const methods = {
           +new Date().getTime(),
           r.product.title,
           r.product.asin,
+          r.verifiedPurchase,
+          r.vine,
           r.title,
           r.text,
           r.product.averageRating,
@@ -94,7 +97,7 @@ export const methods = {
           console.log("foundNew", r);
         }
       });
-      console.log("savedReviews", savedReviews.length);
+      console.log("currentReviews-including-new-reviews", savedReviews);
 
       await reviewStorage.set("reviews", savedReviews);
       resolve(true)

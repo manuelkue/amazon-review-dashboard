@@ -15,7 +15,6 @@ import { Statistics } from "../components/pages/Statistics";
 import { connect } from "react-redux";
 import { methods } from "../utilities/methods";
 import {
-  Storage,
   reviewStorage,
   userStorage,
   configStorage,
@@ -34,11 +33,13 @@ class App extends Component {
     this.state = {
       config: {
         fetchURL: "",
+        maxReviewNumberOnPartScrape: 9,
+        sortReviewsBy: 'date',
+        sortReviewsAscending: false
+      },
+      status:{
         fetchURLGetsValidated: "",
         fetchURLValid: false,
-        maxReviewNumberOnPartScrape: 15,
-        sortReviewsBy: 'syncTimestamp',
-        sortReviewsAscending: true,
         scrapeStatus: "-",
         scrapeProgress: 0,
         isScrapingComplete: false,
@@ -69,8 +70,8 @@ class App extends Component {
     ipcRenderer.on("reviewsScrapedSoFar", (event, reviewsCount) => {
       //@TODO: Save reviews scraped so far, to get newest reviews if Amazon blocks
       this.setState({
-        config: {
-          ...this.state.config,
+        status: {
+          ...this.state.status,
           scrapeProgress:
             this.state.users.find(user => this.state.config.fetchURL.includes(user.id)).reviewsCount ?
               methods.round((reviewsCount * 100) / this.state.users.find(user => this.state.config.fetchURL.includes(user.id)).reviewsCount,0)
@@ -78,7 +79,7 @@ class App extends Component {
               0
         }
       });
-      console.log("ScrapeProgress", this.state.config.scrapeProgress);
+      console.log("ScrapeProgress", this.state.status.scrapeProgress);
     });
     ipcRenderer.on("reviewsScrapedInterrupted", (event, reviews) => {
       // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
@@ -120,8 +121,8 @@ class App extends Component {
     });
     ipcRenderer.on("scrapeComplete", (event, duration) => {
       this.setState({
-        config: {
-          ...this.state.config,
+        status: {
+          ...this.state.status,
           scrapeStatus: `Scraping completed after ${methods.round(
             duration / 1000,
             1
@@ -134,8 +135,8 @@ class App extends Component {
     ipcRenderer.on("scrapeError", (event, message) => {
       console.error(message);
       this.setState({
-        config: {
-          ...this.state.config,
+        status: {
+          ...this.state.status,
           scrapeStatus: message,
           isScrapingComplete: false,
           isScrapingPartially: false
@@ -146,7 +147,6 @@ class App extends Component {
 
   render() {
     //@TODO: add statistics view (Time scale when you publish most often, time scale over the last year, ARAT stats?) Take icon from reviewers place, change that to Siegertreppchen
-
     return (
       <Router>
         <div className="App">
@@ -155,6 +155,7 @@ class App extends Component {
               this.state.config.fetchURL.includes(user.id)
             )}
             config={this.state.config}
+            status={this.state.status}
             startCrawlClickHandler={this.startCrawlClickHandler.bind(this)}
           />
           <div className="nav">
@@ -173,10 +174,10 @@ class App extends Component {
           </div>
           <div className="main">
             <Switch>
-              <Route exact path="/" render={() => <History config={this.state.config} reviews={this.state.reviews} />} />
-              <Route path="/reviews" render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} /> } />
-              <Route path="/settings" render={() => <Settings config={this.state.config} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
-              <Route path="/statistics" render={() => <Statistics config={this.state.config} reviews={this.state.reviews} users={this.state.users} /> } />
+              <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={this.state.reviews} />} />
+              <Route path="/reviews" render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
+              <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
+              <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={this.state.reviews} users={this.state.users} /> } />
             </Switch>
           </div>
         </div>
@@ -198,8 +199,8 @@ class App extends Component {
       onlyProfile
     });
     this.setState({
-      config: {
-        ...this.state.config,
+      status: {
+        ...this.state.status,
         scrapeStatus: "Scraping... ",
         isScrapingComplete: maxReviewNumber === 99999,
         isScrapingPartially: maxReviewNumber !== 99999
@@ -225,8 +226,8 @@ class App extends Component {
 
   async validateFetchURL(url) {
     await this.setState({
-      config: {
-        ...this.state.config,
+      status: {
+        ...this.state.status,
         fetchURLGetsValidated: url,
         fetchURLValid: !!methods.fetchURLData(url)
       }
@@ -234,12 +235,25 @@ class App extends Component {
     console.log(
       "..." + url.substring(url.length - 28),
       "valid?",
-      this.state.config.fetchURLValid
+      this.state.status.fetchURLValid
     );
   }
 
+  
+  reviewFunctions = {
+    idSelected : (reviewId) => {
+      console.log(reviewId)
+    },
+    selected : (review) => {
+      this.setState({
+        reviews: [...this.state.reviews].map(r => r.externalId === review.externalId? {...r, selected: !r.selected} : {...r, selected: false})
+      })
+      console.log(review, "selected:", review.selected)
+    }
+  }
+
   selectUser = (user) => {
-    console.log("Clicked on", user.name)
+    console.log("selected", user.name)
     this.saveNewFetchURL({target:{value: user.profileURL}})
   }
 
@@ -248,7 +262,7 @@ class App extends Component {
     // have to be saved if they should be processed further (here in callback after setState)
     const url = event.target.value;
     await this.validateFetchURL(url);
-    if (this.state.config.fetchURLValid) {
+    if (this.state.status.fetchURLValid) {
       //@TODO: Fetch profile when new URL is specified. Maybe configurable in settings if that should happen. Can lead to faster blocking by Amazon
       //@TODO: Save profiles to fetchedData, too, with history
       this.setState(
@@ -267,10 +281,10 @@ class App extends Component {
   };
 
   async initAppFromStorage() {
-    if (!this.state.config.appInitStarted) {
+    if (!this.state.status.appInitStarted) {
       this.setState({
-        config: {
-          ...this.state.config,
+        status: {
+          ...this.state.status,
           appInitStarted: true
         }
       });

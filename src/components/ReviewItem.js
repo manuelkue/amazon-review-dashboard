@@ -1,12 +1,11 @@
 import React, {Component} from "react"
 
-// @TODO zu functional component umbauen, wenn clicked-state von über-Komponente kommt bzw. im Reviews-Array integriert wurde
+// @TODO zu functional component umbauen, wenn selected-state von über-Komponente kommt bzw. im Reviews-Array integriert wurde
 
 // @TODO deleted reviews are shown crossed out
 
-class ReviewItem extends Component{
+export const ReviewItem = ({review, reviewFunctions}) => {
 
-    render(){
         const{
             externalId,
             userId,
@@ -21,21 +20,13 @@ class ReviewItem extends Component{
             date,
             reviewHistory,
             updatedParams,
-            clicked
-        } = this.props.review
-
-        function idClicked(){
-            console.log(externalId)
-        }
-        function reviewClicked(){
-            console.log(this.props.review)
-            clicked = !clicked
-        }
+            selected
+        } = review
     
-        //@TODO: clicked umsetzen. Links to Amazon Seite / Produkt. Öffnet Review Details. Fehler beheben (am MacBook kam einer)
+        //@TODO: selected umsetzen. Links to Amazon Seite / Produkt. Öffnet Review Details. Fehler beheben (am MacBook kam einer)
         return(
-            <div className={'review-item' + (clicked? ' clicked':'')} onClick={reviewClicked.bind(this)}>
-                <div onClick={idClicked.bind(this)}>{externalId}</div>
+            <div className={'review-item' + (selected? ' selected':' selectable')} onClick={() => reviewFunctions.selected(review)}>
+                <div onClick={() => reviewFunctions.selected(externalId)}>{externalId}</div>
                 <div>{productTitle || <i>not available anymore</i>}</div>
                 <div>{reviewTitle}</div>
                 <div>{averageRating}</div>
@@ -44,7 +35,6 @@ class ReviewItem extends Component{
                 <div>{new Date(date).toLocaleDateString()}</div>
             </div>
         )
-    }
 }
 
 export default ReviewItem

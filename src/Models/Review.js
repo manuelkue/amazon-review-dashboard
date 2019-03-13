@@ -7,6 +7,8 @@ export class Review {
     syncTimestamp
     productTitle
     productAsin
+    verifiedPurchase
+    vine
     reviewTitle
     reviewText
     averageRating
@@ -21,12 +23,14 @@ export class Review {
 
     selected
 
-    constructor(externalId, userId, syncTimestamp, productTitle, productAsin, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, updatedParams, reviewHistory) {
+    constructor(externalId, userId, syncTimestamp, productTitle, productAsin, verifiedPurchase, vine, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, updatedParams, reviewHistory) {
         this.externalId = externalId
         this.userId = userId
         this.syncTimestamp = syncTimestamp
         this.productTitle = productTitle
         this.productAsin = productAsin
+        this.verifiedPurchase = verifiedPurchase
+        this.vine = vine
         this.reviewTitle = reviewTitle
         this.reviewText = reviewText
         this.averageRating = averageRating
