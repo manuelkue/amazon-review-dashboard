@@ -84,7 +84,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
 
           let responseTimout = setTimeout(() => {
             mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
-            console.log("\n\nError at responseObj:\n\n", responseObj);
+            console.log("\n\Timeout at responseObj:\n\n", responseObj);
             interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage, browser)
           }, timeoutForResponse)
 
@@ -99,7 +99,9 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
             scraping = false;
             mainWindow.webContents.send('reviewsScraped', reviews)
             mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
-            //await closeConnection (jsonPage, browser)
+            
+            clearTimeout(responseTimout);
+            await closeConnection (jsonPage, browser)
           }else{
             //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
             const jsonURL = makeJsonURL(responseObj, response);
