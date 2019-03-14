@@ -18,7 +18,7 @@ export default class App extends Component {
     this.state = {
       config: {
         fetchURL: "",
-        maxReviewNumberOnPartScrape: 9,
+        maxReviewNumberOnPartScrape: 15,
         sortReviewsBy: 'date',
         sortReviewsAscending: false
       },

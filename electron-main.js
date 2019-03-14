@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const Storage = require('./src/node-logic/storage');
 const puppeteer = require('puppeteer');
+const fetch = require('node-fetch')
 let mainWindow
 
 const maxScrapingTime = 300000;
@@ -28,7 +29,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   scraping = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -80,7 +81,37 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
           scraping = false;
           mainWindow.webContents.send('reviewsScraped', reviews)
           mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
-          await closeConnection (page, browser)
+          // await closeConnection (page, browser)
+        }else{
+          console.log("\n\n\ncurrentURL", response.url())
+          console.log("\nnextToken", responseObj.nextPageToken)
+
+          const url = 
+          "https://www.amazon.de/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
+          JSON.parse(responseObj.nextPageToken)["st"]["n"] + 
+          "%22%7D%2C%22ctrId.ctrTy.mpId.ctrbnTy%22%3A%7B%22s%22%3A%22" + 
+          JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId.ctrbnTy"]["s"] + 
+          "%22%7D%2C%22ctrbnId%22%3A%7B%22s%22%3A%22" + 
+          JSON.parse(responseObj.nextPageToken)["ctrbnId"]["s"] + 
+          "%22%7D%2C%22ctrId.ctrTy.mpId%22%3A%7B%22s%22%3A%22" + 
+          JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId"]["s"] + 
+          "%22%7D%7D" + 
+          response.url().split('nextPageToken=')[1]
+
+
+          console.log("\nnextURL should be\n\n", url, "\n\n\n")
+
+          await page.goto(url);
+
+          const content = await page.content(); 
+
+          innerText = await page.evaluate(() =>  {
+              return JSON.parse(document.querySelector("body").innerText); 
+          }); 
+
+          console.log("innerText now contains the JSON");
+          console.log(innerText);
+
         }
       })
       .catch(err => {
@@ -88,11 +119,12 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         console.log('profilewidgetError')
         interruptedByAmazon(err, page, browser)
       })
-      page.evaluate(() => {
-        window.scrollTo(0,document.body.scrollHeight)
-      });
+      // page.evaluate(() => {
+      //   window.scrollTo(0,document.body.scrollHeight)
+      // });
     }
   })
+
 
   await page.goto(userProfileURL)
   .then(async () => {
@@ -114,14 +146,14 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   .catch(async err => {
     mainWindow.webContents.send('scrapeError', 'Connection failed.')
     console.info('Connection failed');
-    await closeConnection(page, browser)
+    //await closeConnection(page, browser)
   })
 }
 
 async function interruptedByAmazon(err, page, browser){
   mainWindow.webContents.send('scrapeError', 'Interrupted by Amazon, too many attempts')
   scraping = false;
-  await closeConnection (page, browser)
+  //await closeConnection (page, browser)
   console.error(err)
 }
 
