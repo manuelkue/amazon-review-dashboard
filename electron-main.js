@@ -28,7 +28,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   scraping = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ ignoreDefaultArgs: ['--enable-automation'], headless: false })
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });

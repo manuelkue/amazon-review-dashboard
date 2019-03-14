@@ -36,10 +36,12 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
                     <div>Datum</div>
                 </div>
                 <ProgressBar progress={status.scrapeProgress}></ProgressBar>
-                {reviewsComponents}
-                {!reviewsComponents.length && 
-                    <div className="review-item review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
-                }
+                <div className="reviewItemsWrapper">
+                    {reviewsComponents}
+                    {!reviewsComponents.length && 
+                        <div className="review-item review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
+                    }
+                </div>
             </div>
         )
     }else{

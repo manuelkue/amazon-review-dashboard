@@ -346,6 +346,9 @@ input{
 .reviews-list{
 }
 
+.reviewItemsWrapper{
+}
+
 .selectable{
   background: var(--color-white);
   color: var(--color-text-dark);
