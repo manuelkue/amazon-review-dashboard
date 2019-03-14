@@ -68,7 +68,7 @@ export default class App extends Component {
     });
     ipcRenderer.on("reviewsScrapedInterrupted", (event, reviews) => {
       // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
-      console.error("Scraping interrupted.");
+      console.error("Scraping interrupted. Crawled reviews:", reviews.length);
       methods
         .saveReviews(reviews, this.state.reviews, this.state.config.fetchURL)
         .then(() => {

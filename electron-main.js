@@ -29,7 +29,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   scraping = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ headless: false })
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -60,6 +60,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         helpfulVotes = +json.helpfulVotes.helpfulVotesData.count.split(".").join('')
         reviewsCount = +json.reviews.reviewsCountData.count.split(".").join('')
         if(name && rank) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
+        //@TODO: Convert to promises -> Promise.all -> webContents.send
       })
       .catch(err => {
         console.log('gamificationError')
@@ -71,54 +72,56 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
     if(!onlyProfile && response.url().includes('profilewidget')){
       response.json()
       .then(async responseObj => {
-        reviews.push(...responseObj['contributions']);
-        console.log("reviewsCount", reviews.length);
-        mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
-        if(!responseObj.nextPageToken || reviews.length >= maxReviewNumber){
-          console.log("\n#############\nScrapeComplete");
-          console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
+
+        const jsonPage = await browser.newPage();
+        //Timeout if Amazon blocks, then cancel Crawl
+        const timeoutForResponse = 10000;
+
+        recursiveJsonCrawl(responseObj);
+
+        async function recursiveJsonCrawl(responseObj){
+          //@TODO: If no reviews available, fail gracefully
+
+          let responseTimout = setTimeout(() => {
+            mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
+            console.log("\n\nError at responseObj:\n\n", responseObj);
+            interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage, browser)
+          }, timeoutForResponse)
+
+          reviews.push(...responseObj['contributions']);
           console.log("reviewsCount", reviews.length);
-          scraping = false;
-          mainWindow.webContents.send('reviewsScraped', reviews)
-          mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
-          // await closeConnection (page, browser)
-        }else{
-          console.log("\n\n\ncurrentURL", response.url())
-          console.log("\nnextToken", responseObj.nextPageToken)
+          mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
+          
+          if(!responseObj.nextPageToken || reviews.length >= maxReviewNumber){
+            console.log("\n#############\nScrapeComplete");
+            console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
+            console.log("reviewsCount", reviews.length, "\n\n");
+            scraping = false;
+            mainWindow.webContents.send('reviewsScraped', reviews)
+            mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
+            //await closeConnection (jsonPage, browser)
+          }else{
+            //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
+            const jsonURL = makeJsonURL(responseObj, response);
+            console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
 
-          const url = 
-          "https://www.amazon.de/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
-          JSON.parse(responseObj.nextPageToken)["st"]["n"] + 
-          "%22%7D%2C%22ctrId.ctrTy.mpId.ctrbnTy%22%3A%7B%22s%22%3A%22" + 
-          JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId.ctrbnTy"]["s"] + 
-          "%22%7D%2C%22ctrbnId%22%3A%7B%22s%22%3A%22" + 
-          JSON.parse(responseObj.nextPageToken)["ctrbnId"]["s"] + 
-          "%22%7D%2C%22ctrId.ctrTy.mpId%22%3A%7B%22s%22%3A%22" + 
-          JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId"]["s"] + 
-          "%22%7D%7D" + 
-          response.url().split('nextPageToken=')[1]
+            await jsonPage.goto(jsonURL);
+            const content = await jsonPage.content(); 
+            jsonObj = await jsonPage.evaluate(() =>  {
+                return JSON.parse(document.querySelector("body").innerText); 
+            }); 
 
-
-          console.log("\nnextURL should be\n\n", url, "\n\n\n")
-
-          await page.goto(url);
-
-          const content = await page.content(); 
-
-          innerText = await page.evaluate(() =>  {
-              return JSON.parse(document.querySelector("body").innerText); 
-          }); 
-
-          console.log("innerText now contains the JSON");
-          console.log(innerText);
-
+            clearTimeout(responseTimout);
+            recursiveJsonCrawl(jsonObj)
+          }
         }
       })
       .catch(err => {
         mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
-        console.log('profilewidgetError')
+        console.log('reviewCrawlError')
         interruptedByAmazon(err, page, browser)
       })
+      // Don't need scrolling anymore to load more.
       // page.evaluate(() => {
       //   window.scrollTo(0,document.body.scrollHeight)
       // });
@@ -150,10 +153,26 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   })
 }
 
+function makeJsonURL(responseObj, firstResponse){
+  const jsonURL = 
+    "https://www.amazon.de/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
+    JSON.parse(responseObj.nextPageToken)["st"]["n"] + 
+    "%22%7D%2C%22ctrId.ctrTy.mpId.ctrbnTy%22%3A%7B%22s%22%3A%22" + 
+    JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId.ctrbnTy"]["s"] + 
+    "%22%7D%2C%22ctrbnId%22%3A%7B%22s%22%3A%22" + 
+    JSON.parse(responseObj.nextPageToken)["ctrbnId"]["s"] + 
+    "%22%7D%2C%22ctrId.ctrTy.mpId%22%3A%7B%22s%22%3A%22" + 
+    JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId"]["s"] + 
+    "%22%7D%7D" + 
+    firstResponse.url().split('nextPageToken=')[1]
+
+  return jsonURL;
+}
+
 async function interruptedByAmazon(err, page, browser){
-  mainWindow.webContents.send('scrapeError', 'Interrupted by Amazon, too many attempts')
+  mainWindow.webContents.send('scrapeError', 'Interrupted by Amazon')
   scraping = false;
-  //await closeConnection (page, browser)
+  await closeConnection (page, browser)
   console.error(err)
 }
 
