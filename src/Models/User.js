@@ -9,19 +9,19 @@ export class User {
     helpfulVotes
     reviewsCount
     syncTimestamp
-    userHistory
     updatedParams
+    userHistory
 
     constructor(id, profileURL, name, rank, helpfulVotes, reviewsCount, syncTimestamp, updatedParams = [], userHistory = []) {
-        this.id = id
-        this.profileURL = profileURL
-        this.name = name
-        this.rank = +rank
-        this.helpfulVotes = +helpfulVotes
-        this.reviewsCount = +reviewsCount
-        this.syncTimestamp = +syncTimestamp
-        this.updatedParams = updatedParams
-        this.userHistory = userHistory
+        this.id = typeof externalId === 'string'? id : ''
+        this.profileURL = typeof profileURL === 'string'? profileURL : ''
+        this.name = typeof name === 'string'? name : ''
+        this.rank = !isNaN(rank) === 'string'? rank : ''
+        this.helpfulVotes = !isNaN(+helpfulVotes)? +helpfulVotes : 0
+        this.reviewsCount = !isNaN(+reviewsCount)? +reviewsCount : 0
+        this.syncTimestamp = !isNaN(+syncTimestamp)? +syncTimestamp : 0
+        this.updatedParams = Array.isArray(updatedParams)? updatedParams : []
+        this.userHistory = Array.isArray(userHistory)? userHistory : []
     }
     
     //Check whether a user with the same id has been updated, return all updated Params

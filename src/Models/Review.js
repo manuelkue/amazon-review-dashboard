@@ -24,20 +24,20 @@ export class Review {
     selected
 
     constructor(externalId, userId, syncTimestamp, productTitle, productAsin, verifiedPurchase, vine, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, updatedParams, reviewHistory) {
-        this.externalId = externalId
-        this.userId = userId
-        this.syncTimestamp = syncTimestamp
-        this.productTitle = productTitle
-        this.productAsin = productAsin
-        this.verifiedPurchase = verifiedPurchase
-        this.vine = vine
-        this.reviewTitle = reviewTitle
-        this.reviewText = reviewText
-        this.averageRating = averageRating
-        this.userRating = userRating
-        this.helpfulVotes = helpfulVotes
-        this.comments = comments || 0
-        this.date = date
+        this.externalId = typeof externalId === 'string'? externalId : ''
+        this.userId = typeof userId === 'string'? userId : ''
+        this.syncTimestamp = !isNaN(syncTimestamp)? syncTimestamp : 0
+        this.productTitle = typeof productTitle === 'string'? productTitle : ''
+        this.productAsin =  typeof productAsin === 'string'? productAsin : ''
+        this.verifiedPurchase = typeof verifiedPurchase === 'boolean'? verifiedPurchase : false
+        this.vine = typeof vine === 'boolean'? vine : false
+        this.reviewTitle = typeof reviewTitle === 'string'? reviewTitle : ''
+        this.reviewText = typeof reviewText === 'string'? reviewText : ''
+        this.averageRating = !isNaN(averageRating)? averageRating : 0
+        this.userRating = !isNaN(userRating)? userRating : 0
+        this.helpfulVotes = !isNaN(helpfulVotes)? helpfulVotes : 0
+        this.comments = !isNaN(comments)? comments : 0
+        this.date = !isNaN(date)? date : 0
         this.updatedParams = updatedParams
         this.reviewHistory = reviewHistory || []
     }
