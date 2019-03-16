@@ -20,6 +20,7 @@ export default class App extends Component {
         fetchURL: "",
         maxReviewNumberOnPartScrape: 100,
         defaultToastDuration: 15000,
+        saveMessageAfterDuration: 2500,
         sortReviewsBy: 'date',
         sortReviewsAscending: false
       },
@@ -273,7 +274,7 @@ export default class App extends Component {
         );
         this.newToast('notification', `Fetch URL saved`)
         this.saveFetchUrlTimer = null
-      }, 3000)
+      }, this.state.config.saveMessageAfterDuration)
     }
   };
 
@@ -302,7 +303,7 @@ export default class App extends Component {
       this.saveCrawlNumberTimer = setTimeout(() => {
         this.newToast('notification', `Partial crawl number saved: ${crawlNumber}`)
         this.saveCrawlNumberTimer = null
-      }, 3000)
+      }, this.state.config.saveMessageAfterDuration)
       this.setState(
         {
           config: {
