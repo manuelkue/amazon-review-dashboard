@@ -259,21 +259,21 @@ export default class App extends Component {
         clearTimeout(this.saveFetchUrlTimer)
       }
       this.saveFetchUrlTimer = setTimeout(() => {
+        this.setState(
+          {
+            config: {
+              ...this.state.config,
+              fetchURL: url
+            }
+          },
+          () => {
+            configStorage.set("fetchURL", url);
+            this.startCrawlClickHandler(10, true);
+          }
+        );
         this.newToast('notification', `Fetch URL saved`)
         this.saveFetchUrlTimer = null
       }, 3000)
-      this.setState(
-        {
-          config: {
-            ...this.state.config,
-            fetchURL: url
-          }
-        },
-        () => {
-          configStorage.set("fetchURL", url);
-          this.startCrawlClickHandler(10, true);
-        }
-      );
     }
   };
 
