@@ -1,7 +1,7 @@
 import React from "react"
 import {UserCard} from '../UserCard'
 
-export const Settings = ({config, status, users, selectUser, saveNewFetchURL})  => {
+export const Settings = ({config, status, users, selectUser, saveNewFetchURL, saveNewPartialCrawlNumber})  => {
 
     //@TODO: Create component for user Details, be clickable to input profile-URL directly into Input
     const usersComponents = users.map(user => 
@@ -18,6 +18,10 @@ export const Settings = ({config, status, users, selectUser, saveNewFetchURL})  
             <div className='userCards'>
                 {usersComponents}
             </div>
+            <label>
+                Partial Crawling  {status.crawlNumberValid?'':'- Please enter a number'}<br />
+                <input className={status.fetchURLValid?'':'invalid'} placeholder='Number of reviews that are fetched with a partial Crawl' type="number" value={config.maxReviewNumberOnPartScrape} onChange={saveNewPartialCrawlNumber} ></input>
+            </label>
         </div>
     )
 }

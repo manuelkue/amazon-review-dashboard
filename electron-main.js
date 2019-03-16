@@ -73,49 +73,56 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
       response.json()
       .then(async responseObj => {
 
-        const jsonPage = await browser.newPage();
-        //Timeout if Amazon blocks, then cancel Crawl
-        const timeoutForResponse = 10000;
-
-        recursiveJsonCrawl(responseObj);
-
-        async function recursiveJsonCrawl(responseObj){
-          //@TODO: If no reviews available, fail gracefully
-
-          let responseTimout = setTimeout(() => {
-            mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
-            console.log("\n\Timeout at responseObj:\n\n", responseObj);
-            interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage, browser)
-          }, timeoutForResponse)
-
-          reviews.push(...responseObj['contributions']);
-          console.log("reviewsCount", reviews.length);
-          mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
-          
-          if(!responseObj.nextPageToken || reviews.length >= maxReviewNumber){
-            console.log("\n#############\nScrapeComplete");
-            console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
-            console.log("reviewsCount", reviews.length, "\n\n");
-            scraping = false;
-            mainWindow.webContents.send('reviewsScraped', reviews)
-            mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
+        if(responseObj['contributions'].length){
+          const jsonPage = await browser.newPage();
+          //Timeout if Amazon blocks, then cancel Crawl
+          const timeoutForResponse = 10000;
+  
+          recursiveJsonCrawl(responseObj);
+  
+          async function recursiveJsonCrawl(responseObj){
+            //@TODO: If no reviews available, fail gracefully
+  
+            let responseTimout = setTimeout(() => {
+              mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
+              console.log("\n\Timeout at responseObj:\n\n", responseObj);
+              interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage, browser)
+            }, timeoutForResponse)
+  
+            reviews.push(...responseObj['contributions']);
+            console.log("reviewsCount", reviews.length);
+            mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
             
-            clearTimeout(responseTimout);
-            await closeConnection (jsonPage, browser)
-          }else{
-            //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
-            const jsonURL = makeJsonURL(responseObj, response);
-            console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
-
-            await jsonPage.goto(jsonURL);
-            const content = await jsonPage.content(); 
-            jsonObj = await jsonPage.evaluate(() =>  {
-                return JSON.parse(document.querySelector("body").innerText); 
-            }); 
-
-            clearTimeout(responseTimout);
-            recursiveJsonCrawl(jsonObj)
+            if(!responseObj.nextPageToken || reviews.length >= maxReviewNumber){
+              console.log("\n#############\nScrapeComplete");
+              console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
+              console.log("reviewsCount", reviews.length, "\n\n");
+              scraping = false;
+              mainWindow.webContents.send('reviewsScraped', reviews)
+              mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
+              
+              clearTimeout(responseTimout);
+              await closeConnection (jsonPage, browser)
+            }else{
+              //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
+              const jsonURL = makeJsonURL(responseObj, response);
+              console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
+  
+              await jsonPage.goto(jsonURL);
+              const content = await jsonPage.content(); 
+              jsonObj = await jsonPage.evaluate(() =>  {
+                  return JSON.parse(document.querySelector("body").innerText); 
+              }); 
+  
+              clearTimeout(responseTimout);
+              recursiveJsonCrawl(jsonObj)
+            }
           }
+        }else{
+          //@TODO: Send Message, that user has no reviews visible
+          console.log("No reviews available/visible");
+          mainWindow.webContents.send('scrapeWarning', 'No reviews available/visible')
+          await closeConnection (page, browser)
         }
       })
       .catch(err => {
@@ -149,9 +156,9 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
   })
   .catch(async err => {
-    mainWindow.webContents.send('scrapeError', 'Connection failed.')
+    mainWindow.webContents.send('scrapeError', 'Connection failed.\n' + err)
     console.info('Connection failed');
-    //await closeConnection(page, browser)
+    await closeConnection(page, browser)
   })
 }
 
@@ -180,8 +187,10 @@ async function interruptedByAmazon(err, page, browser){
 
 async function closeConnection (page, browser){
       try{
-        await page.close();
-        await browser.close();
+        await setTimeout(async () => {
+          await page.close();
+          await browser.close();
+        },500)
         console.log("connection closed")
       }
       catch{

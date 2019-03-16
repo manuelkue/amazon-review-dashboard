@@ -29,9 +29,33 @@ export class Storage {
   // This will just return the property on the `data` object
   get(key) {
     return new Promise((resolve, reject) => {
+      if(typeof key === "string"){
+        parseDataFile(this.path, this.opts.defaults)
+          .then(file => {
+            resolve(file[key]);
+          })
+          .catch(err => {
+            console.error(err);
+            reject(err);
+          })
+      }else{
+        reject('No single key string provided')
+      }
+    });
+  }
+
+  // This will return multiple properties on the `data` object in an object array
+  getMulti(keys) {
+    return new Promise((resolve, reject) => {
       parseDataFile(this.path, this.opts.defaults)
         .then(file => {
-          resolve(file[key]);
+          if(Array.isArray(keys)){
+            let resultsArr = []
+            keys.forEach(key => resultsArr.push(file[key]))
+            resolve(resultsArr);
+          }else{
+            reject('No key array provided')
+          }
         })
         .catch(err => {
           console.error(err);
