@@ -123,11 +123,13 @@ export default class App extends Component {
       this.setState({
         status: {
           ...this.state.status,
+          scrapeStatus: "Scrape completed",
           isScrapingComplete: false,
           isScrapingPartially: false
         }
+      },() => {
+        this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1)} s`)
       });
-      this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1)} s`)
     });
     ipcRenderer.on("scrapeWarning", (event, message) => {
       this.newToast('warning', message)
