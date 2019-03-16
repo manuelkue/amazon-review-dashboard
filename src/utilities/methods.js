@@ -113,31 +113,37 @@ export const methods = {
   saveUser(newUser, currentUsers, fetchURL) {
     return new Promise(async (resolve, reject) => {
 
-      let savedUsers = [...currentUsers];
-      console.log("currentUsers",savedUsers)
-        const u = new User(
-            this.fetchURLData(fetchURL).id,
-            this.fetchURLData(fetchURL).profileURL,
-            newUser.name,
-            newUser.rank,
-            newUser.helpfulVotes,
-            newUser.reviewsCount,
-            +new Date().getTime(),
-            [],
-            []
-        );
-        if (savedUsers.map(user => user.id).includes(this.fetchURLData(fetchURL).id)) {
-            savedUsers
-            .find(user => user.id === this.fetchURLData(fetchURL).id)
-            .saveToHistoryIfUpdated(u);
-        } else {
-            savedUsers.push(u);
-            console.log("foundNew", u);
-        }
-        console.log("new savedUsers", savedUsers);
+      if(this.fetchURLData(fetchURL)){
+        let savedUsers = [...currentUsers];
+        console.log("currentUsers",savedUsers)
+          const u = new User(
+              this.fetchURLData(fetchURL).id,
+              this.fetchURLData(fetchURL).profileURL,
+              newUser.name,
+              newUser.rank,
+              newUser.helpfulVotes,
+              newUser.reviewsCount,
+              +new Date().getTime(),
+              [],
+              []
+          );
+          if (savedUsers.map(user => user.id).includes(this.fetchURLData(fetchURL).id)) {
+              savedUsers
+              .find(user => user.id === this.fetchURLData(fetchURL).id)
+              .saveToHistoryIfUpdated(u);
+          } else {
+              savedUsers.push(u);
+              console.log("foundNew", u);
+          }
+          console.log("new savedUsers", savedUsers);
+  
+          await userStorage.set("users", savedUsers);
+          resolve(true)
+      }else{
+        console.error("Error saving user", this.fetchURLData(fetchURL));
+        reject('Error while saving user')
+      }
 
-        await userStorage.set("users", savedUsers);
-        resolve(true)
     })
   }
 };

@@ -61,7 +61,10 @@ export default class App extends Component {
             })
             .catch(err => console.error(err));
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error(err)
+          this.newToast('error', `${err}`)
+        });
     });
     ipcRenderer.on("reviewsScrapedSoFar", (event, reviewsCount) => {
       //@TODO: Save reviews scraped so far, to get newest reviews if Amazon blocks
@@ -256,22 +259,22 @@ export default class App extends Component {
     await this.validateFetchURL(url);
     if (this.state.status.fetchURLValid) {
       //@TODO: Fetch profile when new URL is specified. Maybe configurable in settings if that should happen. Can lead to faster blocking by Amazon
+      this.setState(
+        {
+          config: {
+            ...this.state.config,
+            fetchURL: url
+          }
+        },
+        () => {
+          configStorage.set("fetchURL", url);
+          this.startCrawlClickHandler(10, true);
+        }
+      );
       if(this.saveFetchUrlTimer){
         clearTimeout(this.saveFetchUrlTimer)
       }
       this.saveFetchUrlTimer = setTimeout(() => {
-        this.setState(
-          {
-            config: {
-              ...this.state.config,
-              fetchURL: url
-            }
-          },
-          () => {
-            configStorage.set("fetchURL", url);
-            this.startCrawlClickHandler(10, true);
-          }
-        );
         this.newToast('notification', `Fetch URL saved`)
         this.saveFetchUrlTimer = null
       }, this.state.config.saveMessageAfterDuration)
@@ -387,19 +390,18 @@ export default class App extends Component {
 
   async newToast(type, message, duration = this.state.config.defaultToastDuration){
     const maxId = Math.max(...(this.state.status.toasts.map(toast => toast.id)), -1)
-    console.log(this.state.status);
 
     await this.setState({
       status:{
         ...this.state.status,
         toasts:[
-            ...this.state.status.toasts,
-            {
-              id: maxId + 1,
-              type: type,
-              message: message,
-              dismissed: false
-            }
+          {
+            id: maxId + 1,
+            type: type,
+            message: message,
+            dismissed: false
+          },
+            ...this.state.status.toasts
           ]
         }
       },() => {

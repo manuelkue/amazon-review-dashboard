@@ -13,10 +13,10 @@ export class User {
     userHistory
 
     constructor(id, profileURL, name, rank, helpfulVotes, reviewsCount, syncTimestamp, updatedParams = [], userHistory = []) {
-        this.id = typeof externalId === 'string'? id : ''
+        this.id = typeof id === 'string'? id : ''
         this.profileURL = typeof profileURL === 'string'? profileURL : ''
         this.name = typeof name === 'string'? name : ''
-        this.rank = !isNaN(rank) === 'string'? rank : ''
+        this.rank = !isNaN(+rank)? +rank : 0
         this.helpfulVotes = !isNaN(+helpfulVotes)? +helpfulVotes : 0
         this.reviewsCount = !isNaN(+reviewsCount)? +reviewsCount : 0
         this.syncTimestamp = !isNaN(+syncTimestamp)? +syncTimestamp : 0
