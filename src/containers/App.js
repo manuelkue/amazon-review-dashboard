@@ -76,10 +76,10 @@ export default class App extends Component {
       });
       console.log("ScrapeProgress", this.state.status.scrapeProgress);
     });
-    ipcRenderer.on("reviewsScrapedInterrupted", (event, reviews) => {
+    ipcRenderer.on("reviewsScrapedInterrupted", (event, newReviews) => {
       // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
       methods
-        .saveReviews(reviews, this.state.reviews, this.state.config.fetchURL)
+        .saveReviews(newReviews, this.state.reviews, this.state.config.fetchURL)
         .then(() => {
           reviewStorage
             .get("reviews")
@@ -87,7 +87,7 @@ export default class App extends Component {
               this.setState({
                 reviews: methods.arr2ReviewClassArr(reviews)
               }, () => {
-                this.newToast('error', `Scraping interrupted. Crawled reviews: ${reviews.length}`)
+                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length}`)
               });
             })
             .catch(err => console.error(err));
@@ -119,7 +119,6 @@ export default class App extends Component {
       this.setState({
         status: {
           ...this.state.status,
-          scrapeStatus: `Scraping completed after ${methods.round(duration / 1000, 1)} s`,
           isScrapingComplete: false,
           isScrapingPartially: false
         }
