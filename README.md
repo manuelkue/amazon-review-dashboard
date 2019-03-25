@@ -1,6 +1,6 @@
 # Amazon Review Dashboard
 
-An Electron Application to analyze and manage Amazon Reviews. Based on React.<br><br>
+An Electron Application to analyze and manage Amazon Reviews. Based on React. Utilizes Puppeteer to fetch publicly available website data from Amazon.<br><br>
 
 ## Aim of the application
 
