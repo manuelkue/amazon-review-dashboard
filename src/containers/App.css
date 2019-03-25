@@ -355,8 +355,8 @@ input{
   cursor: pointer;
 }
 .selectable:hover{
-  background: var(--color-secondary);
-  color: var(--color-text-light);
+  background: var(--color-lighter);
+  box-shadow: 0 0 0 1px inset var(--color-medium);
 }
 .review-item{
   display: grid;
