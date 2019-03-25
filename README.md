@@ -40,3 +40,7 @@ npm run electron
 The page will reload if you make edits to the code.<br>
 You will also see any lint errors in the console.
 
+
+## First steps
+
+Currently you can add user profiles, fetch all review data and view changes
