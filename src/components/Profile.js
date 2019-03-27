@@ -6,7 +6,7 @@ export const Profile = ({user, config}) => {
         //@TODO: If the userlink has changed but no refresh was done, show in profile that current User is not the URL-specific user
         <div className="profile">
             <div className="picturewrapper">
-                <img src={config ? methods.fetchURLData(config.fetchURL).avatarURL : ''} />
+                <img src={config ? (methods.fetchURLData(config.fetchURL).avatarURL) : ''} />
             </div>
             {user?
                 <div className="stats">

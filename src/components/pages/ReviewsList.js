@@ -48,7 +48,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
         return (
             <div className="reviews-list">
                 <h1>Reviews</h1>
-                <div className="review-item review-notification"><span>Please specify a URL in the settings that should be used for fetching review data.</span></div>
+                <div className="review-item review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
             </div>
         )
     }

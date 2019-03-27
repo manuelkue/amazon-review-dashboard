@@ -50,7 +50,7 @@
 .error{
   background: var(--color-tertiary);
 }
-.notification{
+.toastContainer .notification{
   background: var(--color-white);
   color: var(--color-text-dark)
 }
