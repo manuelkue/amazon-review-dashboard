@@ -12,9 +12,6 @@ export const History = ({config, status, reviews})  => {
             .map(review => 
                 <HistoryItem key={review.externalId} review={review} />
             )
-
-            console
-            .log("status",status)
             
         return (
             <div className="history">

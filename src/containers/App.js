@@ -5,6 +5,7 @@ import "./App.css";
 import { Sidebar } from "../components/Sidebar";
 import { ReviewsList } from "../components/pages/ReviewsList";
 import { History } from "../components/pages/History";
+import { Users } from "../components/pages/Users";
 import { Settings } from "../components/pages/Settings";
 import { Statistics } from "../components/pages/Statistics";
 import { methods } from "../utilities/methods";
@@ -19,7 +20,7 @@ export default class App extends Component {
       config: {
         fetchURL: "",
         maxReviewNumberOnPartScrape: 100,
-        defaultToastDuration: 15000,
+        defaultToastDuration: 95000,
         saveMessageAfterDuration: 2500,
         sortReviewsBy: 'date',
         sortReviewsAscending: false
@@ -180,6 +181,9 @@ export default class App extends Component {
             <NavLink to="/statistics" className="link" activeClassName="selected">
               <i className="material-icons">equalizer</i>
             </NavLink>
+            <NavLink to="/users" className="link" activeClassName="selected">
+              <i className="material-icons">face</i>
+            </NavLink>
             <NavLink to="/settings" className="link" activeClassName="selected">
               <i className="material-icons">settings</i>
             </NavLink>
@@ -188,7 +192,8 @@ export default class App extends Component {
             <Switch>
               <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={this.state.reviews} />} />
               <Route path="/reviews" render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
-              <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} saveNewPartialCrawlNumber={this.saveNewPartialCrawlNumber} /> } />
+              <Route path="/users" render={() => <Users config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
+              <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} saveNewPartialCrawlNumber={this.saveNewPartialCrawlNumber} /> } />
               <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={this.state.reviews} users={this.state.users} /> } />
             </Switch>
           </div>

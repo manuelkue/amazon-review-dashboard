@@ -1,6 +1,6 @@
 # Amazon Review Dashboard
 
-An Electron Application to analyze and manage Amazon Reviews. Based on React.<br><br>
+An Electron Application to analyze and manage Amazon Reviews. Based on React. Utilizes Puppeteer to fetch publicly available web data from Amazon.<br><br>
 
 ## Aim of the application
 
@@ -43,3 +43,7 @@ You will also see any lint errors in the console.
 ## Storage
 
 All fetched review data, user data and settings are stored local as JSON files in the user app data folder in the folder JSONStorage
+
+## First steps
+
+Currently you can add user profiles, fetch all review data and view changes
