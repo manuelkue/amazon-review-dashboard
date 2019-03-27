@@ -40,3 +40,6 @@ npm run electron
 The page will reload if you make edits to the code.<br>
 You will also see any lint errors in the console.
 
+## Storage
+
+All fetched review data, user data and settings are stored local as JSON files in the user app data folder in the folder JSONStorage
