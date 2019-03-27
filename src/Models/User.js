@@ -44,7 +44,7 @@ export class User {
     saveToHistoryIfUpdated(user){
         if(this.showUpdatedParams(user).length){
             user.updatedParams = this.showUpdatedParams(user)
-            let historyItem = {syncTimestamp : methods.cloneElement(this.syncTimestamp)}
+            let historyItem = {syncTimestamp : +methods.cloneElement(this.syncTimestamp)}
             user.updatedParams.forEach(param => {
                 historyItem[param] = methods.cloneElement(this[param])
                 console.log("param",param, "->", methods.cloneElement(this[param]))
@@ -55,7 +55,7 @@ export class User {
             user.updatedParams.forEach(param => {
                 this[param] = methods.cloneElement(user[param])
             })
-            this.syncTimestamp = user.syncTimestamp + ''
+            this.syncTimestamp = user.syncTimestamp
             this.updatedParams = [...user.updatedParams]
 
             console.log("user", user.id, 'has updates', user.updatedParams)

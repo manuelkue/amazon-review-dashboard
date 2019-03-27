@@ -98,6 +98,13 @@ input{
   padding: var(--spacing-l);
   margin-top: var(--spacing-m);
 }
+input:hover, input:focus{
+  background-color: var(--color-lighter);
+  background-image: url('../assets/images/create.png');
+  background-repeat: no-repeat;
+  background-size: 30px;
+  background-position: right var(--spacing-m) center;
+}
 
 .invalid{
   color: var(--color-tertiary);
@@ -324,6 +331,8 @@ input{
   padding: var(--spacing-m);
   background: var(--color-light);
   width: 100%;
+  max-height:calc(100vh - var(--spacing-m) * 2 - var(--spacing-s));
+  overflow-y: auto;
   border-top: var(--spacing-s) solid var(--color-dark);
 }
 

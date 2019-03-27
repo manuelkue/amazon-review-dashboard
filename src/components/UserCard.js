@@ -12,7 +12,7 @@ export const UserCard = ({user, selectUser, config}) => {
                     <div><span><i className="material-icons">face</i></span><span>{user.name}</span></div>
                     <div><span><i className="material-icons">equalizer</i></span> <span>{user.rank}</span></div>
                     <div><span><i className="material-icons">thumb_up</i></span> <span>{user.helpfulVotes}</span></div>
-                    <div><span><i className="material-icons">create</i></span> <span>{user.reviewsCount}</span></div>
+                    <div><span><i className="material-icons">assignment</i></span> <span>{user.reviewsCount}</span></div>
                 </div>
         </div>
     )
