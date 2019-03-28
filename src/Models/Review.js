@@ -69,7 +69,7 @@ export class Review {
                 historyItem[param] = methods.cloneElement(this[param])
             })
             historyItem.updatedParams = [...this.updatedParams]
-            this.reviewHistory.push(historyItem);
+            this.reviewHistory = [historyItem, ...this.reviewHistory];
             
             review.updatedParams.forEach(param => {
                 this[param] = methods.cloneElement(review[param])

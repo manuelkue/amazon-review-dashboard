@@ -9,7 +9,7 @@ export const methods = {
   },
 
   sortObjectArray(array, sortForProperty, ascending = true) {
-    //sortForProperty: string (defines after which object property should be sorted)
+    //sortForProperty: string (defines by which object property should be sorted)
     if(sortForProperty){
       array.sort((a, b) => {
         const direction = ascending ? 1 : -1;

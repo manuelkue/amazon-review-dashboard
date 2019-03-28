@@ -49,7 +49,7 @@ export class User {
                 historyItem[param] = methods.cloneElement(this[param])
                 console.log("param",param, "->", methods.cloneElement(this[param]))
             })
-            this.userHistory.push(historyItem);
+            this.userHistory = [historyItem, ...this.userHistory];
             console.log("this.reviewHistory",this.userHistory)
             
             user.updatedParams.forEach(param => {
