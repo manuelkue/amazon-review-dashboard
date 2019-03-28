@@ -7,7 +7,7 @@ export const Sidebar = ({user, config, status, startCrawlClickHandler, dismissTo
     return(
         <div className="sidebar">
             <Profile user={user} config={config} />
-            <Syncarea startCrawlClickHandler={startCrawlClickHandler} config={config} status={status}  />
+            <Syncarea user={user} startCrawlClickHandler={startCrawlClickHandler} config={config} status={status}  />
             <ToastContainer toasts = {status.toasts} dismissToast={dismissToast} />
         </div>
     )

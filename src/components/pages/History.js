@@ -29,7 +29,7 @@ export const History = ({config, status, reviews})  => {
         return (
             <div className="history">
                 <h1>History</h1>
-                <div className="review-item review-notification"><span>Please specify a URL in the settings that should be used for fetching review data.</span></div>
+                <div className="review-item review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
             </div>
         )
     }

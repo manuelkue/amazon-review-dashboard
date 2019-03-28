@@ -93,7 +93,7 @@ h1{
 input{
   box-sizing: border-box;
   border-radius: var(--border-radius-m);
-  border: 1px solid #fff;
+  border: 0;
   width: 100%;
   padding: var(--spacing-l);
   margin-top: var(--spacing-m);

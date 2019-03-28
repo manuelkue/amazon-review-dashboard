@@ -1,6 +1,33 @@
 import React from "react"
 
-export const Syncarea = ({config, status, startCrawlClickHandler}) => {
+export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
+
+    let updatedParams = [];
+    let lastSyncUpdateDate = 'never'
+
+    if (user){
+        console.log('user :', user);
+        if(user.updatedParams.length){
+            const lastSyncUpdateTimestamp = new Date(user.userHistory[user.userHistory.length - 1].syncTimestamp)
+            lastSyncUpdateDate = lastSyncUpdateTimestamp.toDateString() === new Date().toDateString() ? lastSyncUpdateTimestamp.toLocaleTimeString() : lastSyncUpdateTimestamp.toLocaleDateString()
+            user.updatedParams.forEach(param => {
+                const updateDifference = user[param] - user.userHistory[user.userHistory.length - 1][param]
+                updatedParams.push(
+                    <div className="syncStatsEntry" key={param}>
+                        <i className="material-icons">
+                            {param === 'rank'? 'equalizer' : ''}
+                            {param === 'helpfulVotes'? 'thumb_up' : ''}
+                            {param === 'reviewsCount'? 'create' : ''}
+                            {param === 'commentsCount'? 'comment' : ''}
+                        </i>
+                        {(updateDifference > 0 ? '+':'') + updateDifference}
+                    </div>
+                )
+            });
+            console.log('updatedParams :', updatedParams);
+        }
+    }
+
     return(
         <div className="syncarea">
             <div className="syncButtonsWrapper">
@@ -21,24 +48,9 @@ export const Syncarea = ({config, status, startCrawlClickHandler}) => {
             <div className="syncStats">
                 <i className="material-icons">history</i>
                 <div className="syncStatsBody">
-                    <div>Updates since last sync (-)</div>
+                    <div>Updates since {lastSyncUpdateDate}</div>
                     <div className="syncStatsBodyContent">
-                        <div className="syncStatsEntry">
-                            <i className="material-icons">equalizer</i>
-                            -3
-                        </div>
-                        <div className="syncStatsEntry">
-                            <i className="material-icons">thumb_up</i>
-                            -3
-                        </div>
-                        <div className="syncStatsEntry">
-                            <i className="material-icons">create</i>
-                            -3
-                        </div>
-                        <div className="syncStatsEntry">
-                            <i className="material-icons">comment</i>
-                            -3
-                        </div>
+                        {updatedParams}
                     </div>
                 </div>
             </div>
