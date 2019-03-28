@@ -1,4 +1,5 @@
 import React from "react"
+import CountUp from 'react-countup';
 
 export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
 
@@ -20,7 +21,8 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
                             {param === 'reviewsCount'? 'create' : ''}
                             {param === 'commentsCount'? 'comment' : ''}
                         </i>
-                        {(updateDifference > 0 ? '+':'') + updateDifference}
+                        {(updateDifference > 0 ? '+':'')}
+                        <CountUp end={updateDifference} />
                     </div>
                 )
             });

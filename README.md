@@ -47,3 +47,11 @@ All fetched review data, user data and settings are stored local as JSON files i
 ## First steps
 
 Currently you can add user profiles, fetch all review data and view changes
+
+### Software Extensions & Packages in use
+
+* [Node.js](https://nodejs.org/en/)
+* [Electron](https://electronjs.org/)
+* [Puppeteer](https://github.com/GoogleChrome/puppeteer)
+* [React](https://reactjs.org/)
+* [React CountUp](https://www.npmjs.com/package/react-countup)
