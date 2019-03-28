@@ -23,11 +23,11 @@
   overflow: hidden;
   transition: all 0.3s color 0ms ease-in-out;
   animation: fadein 0.3s;
-  box-shadow: var(--shadow1);
+  box-shadow: var(--shadow2);
 }
 
 .toast:hover{
-  box-shadow: var(--shadow1), rgba(255,255,255,0.1) 0px 0px 0px 100px inset;
+  box-shadow: var(--shadow2), rgba(255,255,255,0.1) 0px 0px 0px 100px inset;
 }
 
 .dismissed{

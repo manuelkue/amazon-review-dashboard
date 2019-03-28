@@ -21,7 +21,7 @@ export const History = ({config, status, reviews})  => {
                     {historyComponents}
                 </div>
                 {!historyComponents.length && 
-                    <div className="review-item review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
+                    <div className="reviewItem review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
                 }
             </div>
         )
@@ -29,7 +29,7 @@ export const History = ({config, status, reviews})  => {
         return (
             <div className="history">
                 <h1>History</h1>
-                <div className="review-item review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
+                <div className="reviewItem review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
             </div>
         )
     }

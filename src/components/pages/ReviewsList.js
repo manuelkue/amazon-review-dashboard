@@ -26,7 +26,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
         return (
             <div className="reviews-list">
                 <h1>Reviews</h1>
-                <div className="review-item reviews-header">
+                <div className="reviewItem reviewsHeader">
                     <div>External Id</div>
                     <div>Product Title</div>
                     <div>Review Title</div>
@@ -39,7 +39,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
                 <div className="reviewItemsWrapper">
                     {reviewsComponents}
                     {!reviewsComponents.length && 
-                        <div className="review-item review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
+                        <div className="reviewItem review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
                     }
                 </div>
             </div>
@@ -48,7 +48,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
         return (
             <div className="reviews-list">
                 <h1>Reviews</h1>
-                <div className="review-item review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
+                <div className="reviewItem review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
             </div>
         )
     }
