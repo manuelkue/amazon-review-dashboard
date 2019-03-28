@@ -9,8 +9,10 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
     if (user){
         console.log('user :', user);
         if(user.updatedParams.length){
-            const lastSyncUpdateTimestamp = new Date(user.userHistory[user.userHistory.length - 1].syncTimestamp)
+            const lastSyncUpdateTimestamp = new Date(+user.userHistory[user.userHistory.length - 1].syncTimestamp)
             lastSyncUpdateDate = lastSyncUpdateTimestamp.toDateString() === new Date().toDateString() ? lastSyncUpdateTimestamp.toLocaleTimeString() : lastSyncUpdateTimestamp.toLocaleDateString()
+            console.log('lastSyncUpdateTimestamp :', lastSyncUpdateTimestamp)
+            console.log('lastSyncUpdateDate :', lastSyncUpdateDate)
             user.updatedParams.forEach(param => {
                 const updateDifference = user[param] - user.userHistory[user.userHistory.length - 1][param]
                 updatedParams.push(

@@ -1,9 +1,11 @@
 @import url("../containers/App.css");
 
 .toastContainer{
+  position: absolute;
+  bottom: var(--spacing-l);
+  width: calc(100% - 2 * var(--spacing-l));
   display: flex;
   flex-direction: column;
-  margin-top: auto;
 }
 
 .toast{
@@ -21,10 +23,11 @@
   overflow: hidden;
   transition: all 0.3s color 0ms ease-in-out;
   animation: fadein 0.3s;
+  box-shadow: var(--shadow1);
 }
 
 .toast:hover{
-  box-shadow: rgba(255,255,255,0.1) 0px 0px 0px 100px inset;
+  box-shadow: var(--shadow1), rgba(255,255,255,0.1) 0px 0px 0px 100px inset;
 }
 
 .dismissed{

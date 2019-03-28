@@ -56,7 +56,7 @@ export default class App extends Component {
               this.setState({ users: methods.arr2UserClassArr(users) },
                 () => {
                   console.log("usersAfterProfileCrawl", this.state.users)
-                  this.newToast('success', `Profile loaded: ${profile.name}`)
+                  this.newToast('success', `Profile fetched: ${profile.name}`)
                 }
               )
             })

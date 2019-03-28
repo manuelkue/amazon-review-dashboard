@@ -67,6 +67,8 @@
   --color-primary: rgb(0,160,163);
   --color-secondary: rgb(250,158,0);
   --color-tertiary: rgb(181,22,77);
+
+  --shadow1: rgba(0,0,0,0.1) 0px 0px 20px 0px;
 }
 
 
@@ -136,6 +138,7 @@ input:hover, input:focus{
 }
 
 .sidebar{
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: var(--spacing-l);
