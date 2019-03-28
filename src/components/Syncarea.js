@@ -47,15 +47,19 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
                 <span>{status.scrapeStatus} </span>
                 {status.scrapeProgress? <span>{status.scrapeProgress}%</span> : '' }
             </div>
-            <div className="syncStats">
-                <i className="material-icons">history</i>
-                <div className="syncStatsBody">
-                    <div>Updates since {lastSyncUpdateDate}</div>
-                    <div className="syncStatsBodyContent">
-                        {updatedParams}
-                    </div>
-                </div>
-            </div>
+            {
+               updatedParams.length? 
+               <div className="syncStats">
+                   <i className="material-icons">history</i>
+                   <div className="syncStatsBody">
+                       <div>Updates since {lastSyncUpdateDate}</div>
+                       <div className="syncStatsBodyContent">
+                           {updatedParams}
+                       </div>
+                   </div>
+               </div>
+               : ''
+            }
         </div>
     )
 }
