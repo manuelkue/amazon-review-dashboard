@@ -27,12 +27,12 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
             <div className="reviews-list">
                 <h1>Reviews</h1>
                 <div className="reviewItem reviewsHeader">
-                    <div>External Id</div>
-                    <div>Product Title</div>
+                    <div><i className="material-icons">open_in_new</i></div>
+                    <div>Product</div>
                     <div>Review Title</div>
-                    <div>Average Rating</div>
-                    <div>Your Rating</div>
-                    <div>Helpful Votes</div>
+                    <div><i className="material-icons" style={{fontSize : '16px'}}>star_half</i></div>
+                    <div><i className="material-icons" style={{fontSize : '16px'}}>star</i></div>
+                    <div><i className="material-icons" style={{fontSize : '16px'}}>thumb_up</i></div>
                     <div>Datum</div>
                 </div>
                 <ProgressBar progress={status.scrapeProgress}></ProgressBar>

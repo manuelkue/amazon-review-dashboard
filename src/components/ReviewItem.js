@@ -26,7 +26,7 @@ export const ReviewItem = ({review, reviewFunctions}) => {
         //@TODO: selected umsetzen. Links to Amazon Seite / Produkt. Öffnet Review Details. Fehler beheben (am MacBook kam einer)
         return(
             <div className={'reviewItem' + (selected? ' selected':' selectable')} onClick={() => reviewFunctions.reviewSelected(review)}>
-                <div onClick={() => reviewFunctions.idSelected(externalId)}>{externalId}</div>
+                <div className="externalLink" onClick={() => reviewFunctions.idSelected(externalId)}><i className="material-icons">open_in_new</i></div>
                 <div>{productTitle || <i>not available anymore</i>}</div>
                 <div>{reviewTitle}</div>
                 <div>{averageRating}</div>
