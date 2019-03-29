@@ -25,7 +25,7 @@ export const HistoryItem = ({review}) => {
 
     return(
         <div className='historyItem card'>
-        <div>Updated: {new Date(review.syncTimestamp).toLocaleDateString()}</div>
+        <div>Updated: {new Date(review.syncTimestamp).toLocaleDateString() + ', ' + new Date(review.syncTimestamp).toLocaleTimeString()}</div>
             <div>{review.productTitle || <i>not available anymore</i>}</div>
             <div>{review.userRating}</div>
             <div>Date: {new Date(review.date).toLocaleDateString()}</div>

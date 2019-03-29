@@ -4,8 +4,8 @@ const puppeteer = require('puppeteer');
 const fetch = require('node-fetch')
 let mainWindow
 
-const maxScrapingTime = 300000;
-let scraping;
+const maxCrawlingTime = 300000;
+let crawling;
 
 const storage = new Storage({
   configName: 'user-preferences',
@@ -26,7 +26,7 @@ ipcMain.on('startCrawl', (event, startCrawl) => {
 
 async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   const scrapeStartTime = new Date().getTime()
-  scraping = true;
+  crawling = true;
   let reviews = [];
 
   const browser = await puppeteer.launch({ headless: true })
@@ -95,9 +95,9 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
             
             if(!responseObj.nextPageToken || reviews.length >= maxReviewNumber){
               console.log("\n#############\nScrapeComplete");
-              console.log("Total time of scraping", new Date().getTime() - scrapeStartTime, "ms")
+              console.log("Total time of crawling", new Date().getTime() - scrapeStartTime, "ms")
               console.log("reviewsCount", reviews.length, "\n\n");
-              scraping = false;
+              crawling = false;
               mainWindow.webContents.send('reviewsScraped', reviews)
               mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
               
@@ -149,9 +149,9 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
     rank = rank || 0;
     if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
   
-  // If no completeCrawl scraping has to be deactivated here
+  // If no completeCrawl crawling has to be deactivated here
   if (onlyProfile){
-    scraping = false
+    crawling = false
     mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
     await closeConnection (page, browser)
   }
@@ -182,7 +182,7 @@ function makeJsonURL(userProfileURL, responseObj, firstResponse){
 
 async function interruptedByAmazon(err, page, browser){
   mainWindow.webContents.send('scrapeError', 'Interrupted by Amazon')
-  scraping = false;
+  crawling = false;
   await closeConnection (page, browser)
   console.error(err)
 }
