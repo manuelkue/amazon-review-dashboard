@@ -11,7 +11,8 @@ import { Statistics } from "../components/pages/Statistics";
 import { methods } from "../utilities/methods";
 import { reviewStorage, userStorage, configStorage, logStorage } from "../utilities/Storage";
 
-const { ipcRenderer } = window.require("electron");
+//Electron connected functions
+const { ipcRenderer, shell } = window.require("electron");
 
 export default class App extends Component {
   constructor(props) {
@@ -92,7 +93,7 @@ export default class App extends Component {
               this.setState({
                 reviews: methods.arr2ReviewClassArr(reviews)
               }, () => {
-                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length}`)
+                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString()}`)
               });
             })
             .catch(err => console.error(err));
@@ -112,7 +113,7 @@ export default class App extends Component {
                   reviews: methods.arr2ReviewClassArr(reviews)
                 },
                 () => {
-                  this.newToast('success', `Reviews loaded: ${reviewsScraped.length}`)
+                  this.newToast('success', `Reviews loaded: ${reviewsScraped.length.toLocaleString()}`)
                 }
               );
             })
@@ -129,7 +130,7 @@ export default class App extends Component {
           isScrapingPartially: false
         }
       },() => {
-        this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1)} s`)
+        this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1).toLocaleString()} s`)
       });
     });
     ipcRenderer.on("scrapeWarning", (event, message) => {
@@ -246,11 +247,19 @@ export default class App extends Component {
     idSelected : (reviewId) => {
       console.log(reviewId)
     },
-    selected : (review) => {
+    reviewSelected : (review) => {
+      if(!review.selected){
+        console.log("opened modal of review");
+        console.log("selected review:", review)
+      }
       this.setState({
         reviews: [...this.state.reviews].map(r => r.externalId === review.externalId? {...r, selected: !r.selected} : {...r, selected: false})
       })
-      console.log(review, "selected:", review.selected)
+
+    },
+    idSelected: reviewID => {
+      console.log('reviewID selected:', reviewID);
+      shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewID);
     }
   }
 
@@ -311,7 +320,7 @@ export default class App extends Component {
         clearTimeout(this.saveCrawlNumberTimer)
       }
       this.saveCrawlNumberTimer = setTimeout(() => {
-        this.newToast('notification', `Partial crawl number saved: ${crawlNumber}`)
+        this.newToast('notification', `Partial crawl number saved: ${crawlNumber.toLocaleString()}`)
         this.saveCrawlNumberTimer = null
       }, this.state.config.saveMessageAfterDuration)
       this.setState(
