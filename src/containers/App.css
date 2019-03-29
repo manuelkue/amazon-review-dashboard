@@ -169,7 +169,8 @@ input:hover, input:focus{
   background-size: cover;
   background-position: center;
   display: flex;
-  border-radius: 0px;
+  border-radius: 500px;
+  box-shadow: var(--color-light2) 0 0 0 5px inset, var(--color-light) 0 0 0 8px inset;
   min-width: 102%;
   height: 102%;
 }
