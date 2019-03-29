@@ -105,7 +105,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
               await closeConnection (jsonPage, browser)
             }else{
               //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
-              const jsonURL = makeJsonURL(responseObj, response);
+              const jsonURL = makeJsonURL(userProfileURL, responseObj, response);
               console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
   
               await jsonPage.goto(jsonURL);
@@ -130,10 +130,6 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         console.log('reviewCrawlError')
         interruptedByAmazon(err, page, browser)
       })
-      // Don't need scrolling anymore to load more.
-      // page.evaluate(() => {
-      //   window.scrollTo(0,document.body.scrollHeight)
-      // });
     }
   })
 
@@ -144,8 +140,12 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
       .catch(() => console.error('$eval name not successfull'))
     
     rank = await page.$eval('div.deck-container .desktop .a-row .a-section .a-section .a-row .a-column .a-row span.a-size-base', el => el.innerText.replace(/\D/g,''))
-      .catch(() => console.error('$eval name not successfull'))
-      
+      .catch(async () => 
+        page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
+          .catch(() => console.error('$eval rank not successfull'))
+      )
+
+
     rank = rank || 0;
     if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
   
@@ -164,9 +164,9 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   })
 }
 
-function makeJsonURL(responseObj, firstResponse){
+function makeJsonURL(userProfileURL, responseObj, firstResponse){
   const jsonURL = 
-    "https://www.amazon.de/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
+    "https://" + new URL(userProfileURL).hostname + "/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
     JSON.parse(responseObj.nextPageToken)["st"]["n"] + 
     "%22%7D%2C%22ctrId.ctrTy.mpId.ctrbnTy%22%3A%7B%22s%22%3A%22" + 
     JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId.ctrbnTy"]["s"] + 
@@ -186,6 +186,15 @@ async function interruptedByAmazon(err, page, browser){
   await closeConnection (page, browser)
   console.error(err)
 }
+
+//@TODO: After reviews are crawled, fetch commmentsCount for each review
+async function crawlComments(url){
+  console.log('fetching comments for url :', url);
+  //Go to new page, fetch count, send to application with review ID
+  //OR
+  //go to each page, collect all counts and send afterwards
+}
+
 
 async function closeConnection (page, browser){
       try{
