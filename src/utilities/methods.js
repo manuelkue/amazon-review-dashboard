@@ -9,7 +9,7 @@ export const methods = {
   },
 
   sortObjectArray(array, sortForProperty, ascending = true) {
-    //sortForProperty: string (defines after which object property should be sorted)
+    //sortForProperty: string (defines by which object property should be sorted)
     if(sortForProperty){
       array.sort((a, b) => {
         const direction = ascending ? 1 : -1;
@@ -27,10 +27,12 @@ export const methods = {
             let id = fetchURL.split('account.')[1].substring(0,28);
             let profileURL = 'https://' + new URL(fetchURL).hostname + '/gp/profile/amzn1.account.' + id
             let avatarURL = 'https://' + new URL(fetchURL).hostname + '/avatar/default/amzn1.account.' + id + '?square=true&max_width=460'
+            let reviewBaseURL = 'https://' + new URL(fetchURL).hostname + '/gp/customer-reviews/'
             if (typeof id === 'string' && id.length === 28 && profileURL){
               return {
                 profileURL,
                 avatarURL,
+                reviewBaseURL,
                 id
               }
             }

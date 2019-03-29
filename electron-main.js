@@ -29,7 +29,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   scraping = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -57,8 +57,8 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
     if(response.url().includes('gamification')){
       response.json()
       .then(json => {
-        helpfulVotes = +json.helpfulVotes.helpfulVotesData.count.split(".").join('')
-        reviewsCount = +json.reviews.reviewsCountData.count.split(".").join('')
+        helpfulVotes = +json.helpfulVotes.helpfulVotesData.count.replace(/\D/g,'')
+        reviewsCount = +json.reviews.reviewsCountData.count.replace(/\D/g,'')
         if(name && rank) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
         //@TODO: Convert to promises -> Promise.all -> webContents.send
       })
@@ -105,7 +105,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
               await closeConnection (jsonPage, browser)
             }else{
               //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
-              const jsonURL = makeJsonURL(responseObj, response);
+              const jsonURL = makeJsonURL(userProfileURL, responseObj, response);
               console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
   
               await jsonPage.goto(jsonURL);
@@ -130,10 +130,6 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
         console.log('reviewCrawlError')
         interruptedByAmazon(err, page, browser)
       })
-      // Don't need scrolling anymore to load more.
-      // page.evaluate(() => {
-      //   window.scrollTo(0,document.body.scrollHeight)
-      // });
     }
   })
 
@@ -142,8 +138,14 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   .then(async () => {
     name = await page.$eval('.name-container span', el => el.innerText)
       .catch(() => console.error('$eval name not successfull'))
-    rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-      .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
+    
+    rank = await page.$eval('div.deck-container .desktop .a-row .a-section .a-section .a-row .a-column .a-row span.a-size-base', el => el.innerText.replace(/\D/g,''))
+      .catch(async () => 
+        page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
+          .catch(() => console.error('$eval rank not successfull'))
+      )
+
+
     rank = rank || 0;
     if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
   
@@ -162,9 +164,9 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   })
 }
 
-function makeJsonURL(responseObj, firstResponse){
+function makeJsonURL(userProfileURL, responseObj, firstResponse){
   const jsonURL = 
-    "https://www.amazon.de/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
+    "https://" + new URL(userProfileURL).hostname + "/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
     JSON.parse(responseObj.nextPageToken)["st"]["n"] + 
     "%22%7D%2C%22ctrId.ctrTy.mpId.ctrbnTy%22%3A%7B%22s%22%3A%22" + 
     JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId.ctrbnTy"]["s"] + 
@@ -184,6 +186,15 @@ async function interruptedByAmazon(err, page, browser){
   await closeConnection (page, browser)
   console.error(err)
 }
+
+//@TODO: After reviews are crawled, fetch commmentsCount for each review
+async function crawlComments(url){
+  console.log('fetching comments for url :', url);
+  //Go to new page, fetch count, send to application with review ID
+  //OR
+  //go to each page, collect all counts and send afterwards
+}
+
 
 async function closeConnection (page, browser){
       try{

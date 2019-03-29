@@ -11,9 +11,9 @@ export const Profile = ({user, config}) => {
             {user?
                 <div className="stats">
                     <div><span><i className="material-icons">face</i></span><span>{user.name}</span></div>
-                    <div><span><i className="material-icons">equalizer</i></span> <span>{user.rank}</span></div>
-                    <div><span><i className="material-icons">thumb_up</i></span> <span>{user.helpfulVotes}</span></div>
-                    <div><span><i className="material-icons">assignment</i></span> <span>{user.reviewsCount}</span></div>
+                    <div><span><i className="material-icons">equalizer</i></span> <span>{user.rank.toLocaleString()}</span></div>
+                    <div><span><i className="material-icons">thumb_up</i></span> <span>{user.helpfulVotes.toLocaleString()}</span></div>
+                    <div><span><i className="material-icons">assignment</i></span> <span>{user.reviewsCount.toLocaleString()}</span></div>
                 </div>
                 :
                 <div className="notification"><div>No user profile provided.</div></div>

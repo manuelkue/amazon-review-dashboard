@@ -7,8 +7,11 @@ import {methods} from "../../utilities/methods";
 export const History = ({config, status, reviews})  => {
 
     if(methods.fetchURLData(config.fetchURL)){
-        methods.sortObjectArray(reviews, config.sortReviewsBy, config.sortReviewsAscending)
-        const historyComponents = reviews.filter(review => config.fetchURL.includes(review.userId) && review.reviewHistory.length)
+        let loadedReviews = reviews;
+        //Sort by last syncTimestamp
+        methods.sortObjectArray(loadedReviews, 'syncTimestamp', false)
+
+        const historyComponents = loadedReviews.filter(review => config.fetchURL.includes(review.userId) && review.reviewHistory.length)
             .map(review => 
                 <HistoryItem key={review.externalId} review={review} />
             )

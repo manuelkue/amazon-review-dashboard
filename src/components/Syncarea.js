@@ -1,20 +1,22 @@
 import React from "react"
 import CountUp from 'react-countup';
+import { methods } from "../utilities/methods";
 
 export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
 
     let updatedParams = [];
     let lastSyncUpdateDate = 'never'
 
+
     if (user){
-        console.log('user :', user);
+        let userHistory = user.userHistory;
+        methods.sortObjectArray(userHistory, 'syncTimestamp', false)
+
         if(user.updatedParams.length){
-            const lastSyncUpdateTimestamp = new Date(+user.userHistory[user.userHistory.length - 1].syncTimestamp)
+            const lastSyncUpdateTimestamp = new Date(+userHistory[0].syncTimestamp)
             lastSyncUpdateDate = lastSyncUpdateTimestamp.toDateString() === new Date().toDateString() ? lastSyncUpdateTimestamp.toLocaleTimeString() : lastSyncUpdateTimestamp.toLocaleDateString()
-            console.log('lastSyncUpdateTimestamp :', lastSyncUpdateTimestamp)
-            console.log('lastSyncUpdateDate :', lastSyncUpdateDate)
             user.updatedParams.forEach(param => {
-                const updateDifference = user[param] - user.userHistory[user.userHistory.length - 1][param]
+                const updateDifference = user[param] - userHistory[0][param]
                 updatedParams.push(
                     <div className="syncStatsEntry" key={param}>
                         <i className="material-icons">
@@ -28,7 +30,6 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
                     </div>
                 )
             });
-            console.log('updatedParams :', updatedParams);
         }
     }
 
