@@ -29,7 +29,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   scraping = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -142,8 +142,10 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   .then(async () => {
     name = await page.$eval('.name-container span', el => el.innerText)
       .catch(() => console.error('$eval name not successfull'))
-    rank = await page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-      .catch(() => console.error('$eval rank not successfull, userrank too high -> no link available'))
+    
+    rank = await page.$eval('div.deck-container .desktop .a-row .a-section .a-section .a-row .a-column .a-row span.a-size-base', el => el.innerText.replace(/\D/g,''))
+      .catch(() => console.error('$eval name not successfull'))
+      
     rank = rank || 0;
     if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
   
