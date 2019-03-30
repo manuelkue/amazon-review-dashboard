@@ -158,7 +158,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
   })
   .catch(async err => {
-    mainWindow.webContents.send('scrapeError', 'Connection failed.\n' + err)
+    mainWindow.webContents.send('scrapeError', 'Connection failed.\n')
     console.info('Connection failed');
     await closeConnection(page, browser)
   })

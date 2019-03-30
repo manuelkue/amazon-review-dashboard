@@ -442,6 +442,7 @@ input:hover, input:focus{
 
 .card{
   border-radius: var(--border-radius-m);
+  overflow: hidden;
   padding: var(--spacing-m);
   box-shadow: var(--shadow1);
 }

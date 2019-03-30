@@ -33,7 +33,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions})  => {
                     <div><i className="material-icons" style={{fontSize : '16px'}}>star_half</i></div>
                     <div><i className="material-icons" style={{fontSize : '16px'}}>star</i></div>
                     <div><i className="material-icons" style={{fontSize : '16px'}}>thumb_up</i></div>
-                    <div>Datum</div>
+                    <div>Date</div>
                 </div>
                 <ProgressBar progress={status.scrapeProgress}></ProgressBar>
                 <div className="reviewItemsWrapper">
