@@ -75,7 +75,7 @@ export class Review {
                 this[param] = methods.cloneElement(review[param])
             })
             this.syncTimestamp = +review.syncTimestamp
-            this.averageRating = review.averageRating + ''
+            this.averageRating = review.averageRating + 0
             this.updatedParams = [...review.updatedParams]
 
             console.log("review", review.externalId, 'has updates', review.updatedParams)

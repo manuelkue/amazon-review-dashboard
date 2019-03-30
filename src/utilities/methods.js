@@ -82,11 +82,11 @@ export const methods = {
           r.vine,
           r.title,
           r.text,
-          r.product.averageRating,
-          r.rating,
-          r.helpfulVotes,
+          +r.product.averageRating,
+          +r.rating,
+          +r.helpfulVotes,
           0,
-          r.sortTimestamp,
+          +r.sortTimestamp,
           [],
           []
         );
