@@ -70,6 +70,7 @@ export default class App extends Component {
     });
     ipcRenderer.on("reviewsScrapedSoFar", (event, reviewsCount) => {
       //@TODO: Save reviews scraped so far, to get newest reviews if Amazon blocks
+      // Also to directly show user new loaded reviews. Has not to wait until all are loaded
       this.setState({
         status: {
           ...this.state.status,
