@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
+import React, {Component} from "react"
 import ReviewItem from "../ReviewItem";
 
-import { methods } from "../../utilities/methods";
+import {methods} from "../../utilities/methods";
 import { ProgressBar } from "../progressBar";
 import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
 
@@ -14,63 +14,77 @@ import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
 
 //@TODO: integrate sort by clicking the header, sort for deleted as well
 
-export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
+export class ReviewsList extends Component {
 
-    const [loadedReviewsCount, setLoadedReviewsCount] = useState(30)
+    constructor(props){
+        super()
 
-    useEffect(() => {
-        // Increase the number of displayed reviews to higher amount.
-        console.log("More Reviews will load once the component is mounted, now", loadedReviewsCount);
-        setLoadedReviewsCount(200)
-        console.log("More Reviews loaded, now", loadedReviewsCount);
-    }, [])
-
-    const showMoreReviews = () => {
-        console.log("Even more Reviews will load, now", loadedReviewsCount);
-        setLoadedReviewsCount(loadedReviewsCount + 50)
-        console.log("Even more Reviews loaded, now", loadedReviewsCount);
+        // limit shown number at the start of the component
+        this.state = {
+            loadedReviewsCount : 30
+        }
     }
-    
-    if(methods.fetchURLData(config.fetchURL)){
-        let filteredReviews = [...reviews.filter(review => config.fetchURL.includes(review.userId))]
-        methods.sortObjectArray(filteredReviews, config.sortReviewsBy, config.sortReviewsAscending)
-        const reviewsComponents = [...filteredReviews].slice(0, loadedReviewsCount)
-            .map(review => 
-                <ReviewItem key={review.externalId} review={review} reviewFunctions={reviewFunctions} />
+
+    render(){
+        const {reviews, config, status, reviewFunctions} = this.props
+        
+        if(methods.fetchURLData(config.fetchURL)){
+            let filteredReviews = [...reviews.filter(review => config.fetchURL.includes(review.userId))]
+            methods.sortObjectArray(filteredReviews, config.sortReviewsBy, config.sortReviewsAscending)
+            const reviewsComponents = [...filteredReviews].slice(0, this.state.loadedReviewsCount)
+                .map(review => 
+                    <ReviewItem key={review.externalId} review={review} reviewFunctions={reviewFunctions} />
+                )
+                
+            return (
+                <div className="reviews-list">
+                    <h1>Reviews</h1>
+                    <div className="reviewItem reviewsHeader">
+                        <div className="material-icons" >open_in_new</div>
+                        <div>Product</div>
+                        <div>Review Title</div>
+                        <div className="material-icons" style={{fontSize : '16px'}}>star_half</div>
+                        <div className="material-icons" style={{fontSize : '16px'}}>star</div>
+                        <div className="material-icons" style={{fontSize : '16px'}}>thumb_up</div>
+                        <div>Date</div>
+                    </div>
+                    <ProgressBar progress={status.scrapeProgress}/>
+                    <div className="reviewItemsWrapper">
+                        {!reviewsComponents.length && 
+                            <div className="reviewItem review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
+                        }
+                        {reviewsComponents}
+                        {!!reviewsComponents.length && 
+                            <InfinitLoadingSentinel actionOnIntersecting={this.showMoreReviews.bind(this)} distanceToBottom={200} />
+                        }
+                    </div>
+                </div>
             )
-            
-        return (
-            <div className="reviews-list">
-                <button onClick={() => showMoreReviews()}>mooore</button>
-                <h1>Reviews</h1>
-                <div className="reviewItem reviewsHeader">
-                    <div className="material-icons" >open_in_new</div>
-                    <div>Product</div>
-                    <div>Review Title</div>
-                    <div className="material-icons" style={{fontSize : '16px'}}>star_half</div>
-                    <div className="material-icons" style={{fontSize : '16px'}}>star</div>
-                    <div className="material-icons" style={{fontSize : '16px'}}>thumb_up</div>
-                    <div>Date</div>
+        }else{
+            return (
+                <div className="reviews-list">
+                    <h1>Reviews</h1>
+                    <div className="reviewItem review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
                 </div>
-                <ProgressBar progress={status.scrapeProgress}/>
-                <div className="reviewItemsWrapper">
-                    {!reviewsComponents.length && 
-                        <div className="reviewItem review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
-                    }
-                    {reviewsComponents}
-                    {!!reviewsComponents.length && 
-                        <InfinitLoadingSentinel actionOnIntersecting={() => showMoreReviews()} distanceToBottom={200} />
-                    }
-                </div>
-            </div>
-        )
-    }else{
-        return (
-            <div className="reviews-list">
-                <h1>Reviews</h1>
-                <div className="reviewItem review-notification"><span>Please specify a URL in the user area that should be used for fetching review data.</span></div>
-            </div>
-        )
+            )
+        }
+    }
+
+    showMoreReviews(){
+        this.setState({
+            loadedReviewsCount: this.state.loadedReviewsCount + 1000
+        })
+        console.log("More Reviews loaded");
+    }
+
+    componentDidMount(){
+        // Increase the number of displayed reviews to higher amount.
+        //@TODO: Find out why this has to happen in a Timeout. Without, the render() at start waits for the setState...
+        setTimeout(() => {
+            this.setState({
+                loadedReviewsCount: 1000
+            })
+        }, 0);
     }
 
 }
