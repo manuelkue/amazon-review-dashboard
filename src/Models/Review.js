@@ -7,6 +7,7 @@ export class Review {
     syncTimestamp
     productTitle
     productAsin
+    productMissing
     verifiedPurchase
     vine
     reviewTitle
@@ -19,16 +20,33 @@ export class Review {
     updatedParams
     reviewHistory
 
-    //@TODO: Add parameter "deleted", aber ermögliche, diesen bei einem nächsten Sync wieder zu entfernen, falls fehlerhafte Anzeige
-
     selected
 
-    constructor(externalId, userId, syncTimestamp, productTitle, productAsin, verifiedPurchase, vine, reviewTitle, reviewText, averageRating, userRating, helpfulVotes, comments, date, updatedParams, reviewHistory) {
+    constructor({
+        externalId = undefined,
+        userId,
+        syncTimestamp,
+        productTitle,
+        productAsin,
+        productMissing,
+        verifiedPurchase,
+        vine,
+        reviewTitle,
+        reviewText,
+        averageRating,
+        userRating,
+        helpfulVotes,
+        comments,
+        date,
+        updatedParams,
+        reviewHistory
+    }) {
         this.externalId = typeof externalId === 'string'? externalId : ''
         this.userId = typeof userId === 'string'? userId : ''
         this.syncTimestamp = !isNaN(syncTimestamp)? syncTimestamp : 0
         this.productTitle = typeof productTitle === 'string'? productTitle : ''
         this.productAsin =  typeof productAsin === 'string'? productAsin : ''
+        this.productMissing = typeof productMissing === 'boolean'? productMissing : false
         this.verifiedPurchase = typeof verifiedPurchase === 'boolean'? verifiedPurchase : false
         this.vine = typeof vine === 'boolean'? vine : false
         this.reviewTitle = typeof reviewTitle === 'string'? reviewTitle : ''
@@ -47,6 +65,7 @@ export class Review {
         let updatedParams = []
         if(this.externalId === review.externalId && +this.syncTimestamp < +review.syncTimestamp){
             this.productTitle !== review.productTitle && updatedParams.push('productTitle')
+            this.productMissing !== review.productMissing && updatedParams.push('productMissing')
             this.reviewTitle  !== review.reviewTitle && updatedParams.push('reviewTitle')
             this.reviewText !== review.reviewText && updatedParams.push('reviewText')
             this.userRating !== review.userRating && updatedParams.push('userRating')

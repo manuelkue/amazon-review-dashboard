@@ -60,7 +60,7 @@ export const methods = {
 
   arr2ReviewClassArr(reviewObjArray){
     let reviewObjects = []
-    reviewObjArray.forEach(review => reviewObjects.push(Object.assign(new Review, review)))
+    reviewObjArray.forEach(review => reviewObjects.push(Object.assign(new Review({}), review)))
     return reviewObjects;
   },
 
@@ -72,24 +72,25 @@ export const methods = {
 
       newReviews.forEach(r => {
         //@TODO: Get real commentCount ID here
-        r = new Review(
-          r.externalId,
-          this.fetchURLData(fetchURL).id,
-          +new Date().getTime(),
-          r.product.title,
-          r.product.asin,
-          r.verifiedPurchase,
-          r.vine,
-          r.title,
-          r.text,
-          +r.product.averageRating,
-          +r.rating,
-          +r.helpfulVotes,
-          0,
-          +r.sortTimestamp,
-          [],
-          []
-        );
+        r = new Review({
+          externalId: r.externalId,
+          userId: this.fetchURLData(fetchURL).id,
+          syncTimestamp: +new Date().getTime(),
+          productTitle: r.product.title,
+          productAsin: r.product.asin,
+          productMissing: r.product.missing,
+          verifiedPurchase: r.verifiedPurchase,
+          vine: r.vine,
+          reviewTitle: r.title,
+          reviewText: r.text,
+          averageRating: +r.product.averageRating,
+          userRating: +r.rating,
+          helpfulVotes: +r.helpfulVotes,
+          comments: 0,
+          date: +r.sortTimestamp,
+          updatedParams: [],
+          reviewHistory: []
+        });
         if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {
           savedReviews
             .find(rev => rev.externalId === r.externalId)

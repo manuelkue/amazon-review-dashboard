@@ -92,7 +92,11 @@ h1{
   text-transform: uppercase;
   margin:0 0 0.5em 0;
 }
-
+.truncateString{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 input{
   box-sizing: border-box;
   border-radius: var(--border-radius-m);
@@ -189,22 +193,18 @@ input:hover, input:focus{
 }
 
 .profile .stats .material-icons{
-  font-size:  var(--spacing-xl);
-  margin: var(--spacing-s) var(--spacing-m) 0 0;
+  margin-right: var(--spacing-m);
 }
 
 .profile .stats > div{
   display: flex;
   align-items: center;
-  padding: 0 var(--spacing-l);
+  padding: var(--spacing-s) var(--spacing-l);
 }
 
 .profile .stats > div span{
   width:fit-content;
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .syncarea{
@@ -388,6 +388,7 @@ input:hover, input:focus{
   grid-gap: var(--spacing-xl);
   padding: var(--spacing-l) var(--spacing-m);
   margin-bottom: 1px;
+  align-items: center;
 }
 .reviewItem:last-of-type{
   margin: 0;
@@ -417,14 +418,6 @@ input:hover, input:focus{
 }
 .reviewItem > div:nth-of-type(3) {
   grid-column: 1/3
-}
-
-.reviewItem > div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  height:23px;
-  line-height: 23px;
 }
 
 .productDeleted{

@@ -22,7 +22,7 @@ export default class App extends Component {
         fetchURL: "",
         maxReviewNumberOnPartScrape: 100,
         defaultToastDuration: 95000,
-        saveMessageAfterDuration: 2500,
+        saveMessageAfterDuration: 2000,
         sortReviewsBy: 'date',
         sortReviewsAscending: false
       },

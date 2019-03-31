@@ -40,12 +40,12 @@ export class ReviewsList extends Component {
                 <div className="reviews-list">
                     <h1>Reviews</h1>
                     <div className="reviewItem reviewsHeader">
-                        <div><i className="material-icons">open_in_new</i></div>
+                        <div className="material-icons" >open_in_new</div>
                         <div>Product</div>
                         <div>Review Title</div>
-                        <div><i className="material-icons" style={{fontSize : '16px'}}>star_half</i></div>
-                        <div><i className="material-icons" style={{fontSize : '16px'}}>star</i></div>
-                        <div><i className="material-icons" style={{fontSize : '16px'}}>thumb_up</i></div>
+                        <div className="material-icons" style={{fontSize : '16px'}}>star_half</div>
+                        <div className="material-icons" style={{fontSize : '16px'}}>star</div>
+                        <div className="material-icons" style={{fontSize : '16px'}}>thumb_up</div>
                         <div>Date</div>
                     </div>
                     <ProgressBar progress={status.scrapeProgress}/>

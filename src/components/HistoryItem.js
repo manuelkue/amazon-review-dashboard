@@ -16,7 +16,7 @@ export const HistoryItem = ({review}) => {
                 return(
                     <div key={historySubItem.syncTimestamp} className="historySubItem card selectable">
                         <b>{prop}</b> (Fetched: {new Date(historySubItem.syncTimestamp).toLocaleDateString()})<br/>
-                        old: {historySubItem[prop]}, new: {review[prop]}
+                        old: {''+historySubItem[prop]}, new: {''+review[prop]}
                     </div>
                 )
             }
@@ -32,9 +32,9 @@ export const HistoryItem = ({review}) => {
     return(
         <div className='historyItem card'>
         <div>Updated: {new Date(review.syncTimestamp).toLocaleDateString() + ', ' + new Date(review.syncTimestamp).toLocaleTimeString()}</div>
-            <div>{review.productTitle || formerProductTitle}</div>
-            <div>{review.userRating} <i className="material-icons" style={{fontSize : '12px'}}>star</i></div>
-            <div>Date: {new Date(review.date).toLocaleDateString()}</div>
+        <div className="truncateString">{review.productTitle || formerProductTitle}</div>
+        <div>{review.userRating} <i className="material-icons" style={{fontSize : '12px'}}>star</i></div>
+        <div>Review from: {new Date(review.date).toLocaleDateString()}</div>
             {itemHistory}
         </div>
     )
