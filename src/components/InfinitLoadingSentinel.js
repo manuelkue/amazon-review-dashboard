@@ -25,13 +25,12 @@ export class InfinitLoadingSentinel extends Component {
     }
 
     componentDidMount(){
-        const {actionOnIntersecting} = this.props
         this.observer = new IntersectionObserver(
             entries => {
                 //Check if viewport enters or leaves intersection 
                 if(entries[0].isIntersecting){
                     console.log(entries[0]);
-                    actionOnIntersecting()
+                    this.props.actionOnIntersecting()
                 }
               },
               {threshold: 0}
