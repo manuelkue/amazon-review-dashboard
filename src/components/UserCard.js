@@ -1,5 +1,6 @@
 import React from "react"
 import {methods} from '../utilities/methods'
+import { UserStats } from "./UserStats";
 
 export const UserCard = ({user, selectUser, config}) => {
     return(
@@ -8,12 +9,7 @@ export const UserCard = ({user, selectUser, config}) => {
             <div className="picturewrapper">
                 <img src={methods.fetchURLData(user.profileURL).avatarURL} />
             </div>
-                <div className="stats">
-                    <div><span className="material-icons">face</span><span>{user.name}</span></div>
-                    <div><span className="material-icons">equalizer</span> <span>{user.rank.toLocaleString()}</span></div>
-                    <div><span className="material-icons">thumb_up</span> <span>{user.helpfulVotes.toLocaleString()}</span></div>
-                    <div><span className="material-icons">assignment</span> <span>{user.reviewsCount.toLocaleString()}</span></div>
-                </div>
+            <UserStats user={user} />
         </div>
     )
 }

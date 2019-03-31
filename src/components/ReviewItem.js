@@ -9,26 +9,20 @@ export const ReviewItem = ({review, reviewFunctions}) => {
 
         const{
             externalId,
-            userId,
-            syncTimestamp,
-            productTitle,
+            // userId,
+            // syncTimestamp,
+            // productTitle,
             reviewTitle,
-            reviewText,
+            // reviewText,
             averageRating,
             userRating,
             helpfulVotes,
-            comments,
+            // comments,
             date,
-            reviewHistory,
-            updatedParams,
+            // reviewHistory,
+            // updatedParams,
             selected
         } = review
-
-        let formerProductTitle = <span className="productDeleted">not available anymore</span>
-
-        if(!productTitle && reviewHistory.find(historyItem => historyItem.productTitle)){
-            formerProductTitle = <span className="productDeleted">{reviewHistory.find(historyItem => historyItem.productTitle).productTitle}</span>
-        }
     
         //@TODO: selected umsetzen. Links to Amazon Seite / Produkt. Öffnet Review Details. Fehler beheben (am MacBook kam einer)
         return(

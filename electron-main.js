@@ -59,7 +59,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
       .then(json => {
         helpfulVotes = +json.helpfulVotes.helpfulVotesData.count.replace(/\D/g,'')
         reviewsCount = +json.reviews.reviewsCountData.count.replace(/\D/g,'')
-        if(name && rank) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
+        if(name && rank) mainWindow.webContents.send('profileScraped', {userProfileURL, name, rank, helpfulVotes, reviewsCount})
         //@TODO: Convert to promises -> Promise.all -> webContents.send
       })
       .catch(err => {
@@ -147,7 +147,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
 
 
     rank = rank || 0;
-    if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {name, rank, helpfulVotes, reviewsCount})
+    if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {userProfileURL, name, rank, helpfulVotes, reviewsCount})
   
   // If no completeCrawl crawling has to be deactivated here
   if (onlyProfile){

@@ -1,5 +1,6 @@
 import React from "react"
 import {methods} from '../utilities/methods'
+import { UserStats } from "./UserStats";
 
 export const Profile = ({user, config}) => {
     return(
@@ -9,12 +10,7 @@ export const Profile = ({user, config}) => {
                 <img src={config ? (methods.fetchURLData(config.fetchURL).avatarURL) : ''} />
             </div>
             {user?
-                <div className="stats">
-                    <div><span className="material-icons">face</span><span className="truncateString">{user.name}</span></div>
-                    <div><span className="material-icons">equalizer</span> <span className="truncateString">{user.rank.toLocaleString()}</span></div>
-                    <div><span className="material-icons">thumb_up</span> <span className="truncateString">{user.helpfulVotes.toLocaleString()}</span></div>
-                    <div><span className="material-icons">assignment</span> <span className="truncateString">{user.reviewsCount.toLocaleString()}</span></div>
-                </div>
+                <UserStats user={user} />
                 :
                 <div className="notification"><div>No user profile provided.</div></div>
             }

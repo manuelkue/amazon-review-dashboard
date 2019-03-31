@@ -153,6 +153,7 @@ input:hover, input:focus{
 .profile{
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .profile .picturewrapper{
@@ -186,23 +187,23 @@ input:hover, input:focus{
   width: 100%;
 }
 
-.profile .stats{
+.userStats{
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: var(--spacing-m) 0;
 }
 
-.profile .stats .material-icons{
+.userStats .material-icons{
   margin-right: var(--spacing-m);
 }
 
-.profile .stats > div{
+.userStats > div{
   display: flex;
   align-items: center;
   padding: var(--spacing-s) var(--spacing-l);
 }
 
-.profile .stats > div span{
+.userStats > div span{
   width:fit-content;
   max-width: 120px;
 }

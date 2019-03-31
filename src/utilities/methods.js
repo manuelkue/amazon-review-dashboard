@@ -114,15 +114,16 @@ export const methods = {
     return userObjects;
   },
 
-  saveUser(newUser, currentUsers, fetchURL) {
+  saveUser(newUser, currentUsers) {
     return new Promise(async (resolve, reject) => {
+      console.log('newUser :', newUser);
 
-      if(this.fetchURLData(fetchURL)){
+      if(this.fetchURLData(newUser.userProfileURL)){
         let savedUsers = [...currentUsers];
         console.log("currentUsers",savedUsers)
           const u = new User(
-              this.fetchURLData(fetchURL).id,
-              this.fetchURLData(fetchURL).profileURL,
+              this.fetchURLData(newUser.userProfileURL).id,
+              this.fetchURLData(newUser.userProfileURL).profileURL,
               newUser.name,
               newUser.rank,
               newUser.helpfulVotes,
@@ -131,9 +132,9 @@ export const methods = {
               [],
               []
           );
-          if (savedUsers.map(user => user.id).includes(this.fetchURLData(fetchURL).id)) {
+          if (savedUsers.map(user => user.id).includes(this.fetchURLData(newUser.userProfileURL).id)) {
               savedUsers
-              .find(user => user.id === this.fetchURLData(fetchURL).id)
+              .find(user => user.id === this.fetchURLData(newUser.userProfileURL).id)
               .saveToHistoryIfUpdated(u);
           } else {
               savedUsers.push(u);
@@ -144,7 +145,7 @@ export const methods = {
           await userStorage.set("users", savedUsers);
           resolve(true)
       }else{
-        console.error("Error saving user", this.fetchURLData(fetchURL));
+        console.error("Error saving user", this.fetchURLData(newUser.userProfileURL));
         reject('Error while saving user')
       }
 

@@ -49,7 +49,7 @@ export default class App extends Component {
 
     ipcRenderer.on("profileScraped", (event, profile) => {
       methods
-        .saveUser(profile, this.state.users, this.state.config.fetchURL)
+        .saveUser(profile, this.state.users)
         .then(() => {
           userStorage
             .get("users")
