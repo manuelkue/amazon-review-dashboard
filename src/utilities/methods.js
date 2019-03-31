@@ -1,3 +1,4 @@
+import React from "react"
 import { Storage, reviewStorage, userStorage } from "./Storage";
 import { Review } from "../Models/Review";
 import { User } from "../Models/User";
@@ -148,5 +149,14 @@ export const methods = {
       }
 
     })
+  },
+
+  getProductTitle(review){
+    let formerProductTitle = <span className="productDeleted">not available anymore</span>
+
+    if(!review.productTitle && review.reviewHistory.find(historyItem => historyItem.productTitle)){
+        formerProductTitle = <span className="productDeleted">{review.reviewHistory.find(historyItem => historyItem.productTitle).productTitle}</span>
+    }
+    return review.productTitle || formerProductTitle;
   }
 };

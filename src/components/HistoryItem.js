@@ -23,16 +23,10 @@ export const HistoryItem = ({review}) => {
         }
     })
 
-    let formerProductTitle = <span className="productDeleted">not available anymore</span>
-
-    if(!review.productTitle && review.reviewHistory.find(historyItem => historyItem.productTitle)){
-        formerProductTitle = <span className="productDeleted">{review.reviewHistory.find(historyItem => historyItem.productTitle).productTitle}</span>
-    }
-
     return(
         <div className='historyItem card'>
         <div>Updated: {new Date(review.syncTimestamp).toLocaleDateString() + ', ' + new Date(review.syncTimestamp).toLocaleTimeString()}</div>
-        <div className="truncateString">{review.productTitle || formerProductTitle}</div>
+        <div className="truncateString">{methods.getProductTitle(review)}</div>
         <div>{review.userRating} <i className="material-icons" style={{fontSize : '12px'}}>star</i></div>
         <div>Review from: {new Date(review.date).toLocaleDateString()}</div>
             {itemHistory}
