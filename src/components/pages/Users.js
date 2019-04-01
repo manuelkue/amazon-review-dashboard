@@ -11,10 +11,10 @@ export const Users = ({config, status, users, selectUser, saveNewFetchURL, saveN
     return (
         <div className="users">
             <h1>User</h1>
-            <label>
+            <div className = "inputHeading">
                 Choose your profile {status.fetchURLValid?'':'- invalid URL'}<br />
-                <input className={status.fetchURLValid?'':'invalid'} placeholder='Link to user profile (something like "https://www.amazon.de/gp/profile/amzn1.account.XXXXXXXXXXXXXXXXXXXXXXXXXXXX")' type="text" defaultValue={config.fetchURL} onChange={saveNewFetchURL} ></input>
-            </label>
+            </div>
+            <input className={status.fetchURLValid?'':'invalid'} placeholder='Link to user profile (something like "https://www.amazon.de/gp/profile/amzn1.account.XXXXXXXXXXXXXXXXXXXXXXXXXXXX")' type="text" defaultValue={config.fetchURL} onChange={saveNewFetchURL} ></input>
             <div className='userCards'>
                 {usersComponents}
             </div>

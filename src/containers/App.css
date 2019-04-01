@@ -51,6 +51,8 @@
   --spacing-l: 15px;
   --spacing-xl: 25px;
 
+  --height-m: 45px;
+
   --border-radius-s: 2px;
   --border-radius-m: 5px;
   --border-radius-l: 10px;
@@ -87,26 +89,33 @@ body{
 }
 
 h1{
+  display: flex;
+  align-items: center;
+  line-height: var(--height-m);
   font-weight: 600;
-  font-size: 1.4em;
+  font-size: 1.8em;
   text-transform: uppercase;
-  margin:0 0 0.5em 0;
+  margin:unset;
+  padding:0;
 }
 .truncateString{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.inputHeading{
+  margin-bottom: var(--spacing-m);
+}
 input{
+  background-color: var(--color-lighter);
   box-sizing: border-box;
   border-radius: var(--border-radius-m);
   border: 0;
   width: 100%;
   padding: var(--spacing-l);
-  margin-top: var(--spacing-m);
 }
 input:hover, input:focus{
-  background-color: var(--color-lighter);
+  background-color: var(--color-white);
   background-image: url('../assets/images/create.png');
   background-repeat: no-repeat;
   background-size: 30px;
@@ -374,6 +383,24 @@ input:hover, input:focus{
   box-shadow: var(--shadow1);
   border-radius: var(--border-radius-s);
   overflow: hidden;
+}
+
+.filterWrapper{
+  display: grid;
+  grid-template-columns: 3fr 2fr auto auto auto;
+  gap: var(--spacing-m);
+}
+
+.filterWrapper > label{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-m);
+}
+.filterWrapper > label > input{
+  width: unset;
+  margin: unset;
+  margin-left: var(--spacing-l);
 }
 
 .selectable{
