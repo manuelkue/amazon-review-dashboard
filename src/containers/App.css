@@ -68,7 +68,7 @@
   --color-secondary: rgb(250,158,0);
   --color-tertiary: rgb(181,22,77);
 
-  --shadow1: var(--color-light2) 0 0 5px 1px;
+  --shadow1: rgba(0,0,0,0.1) 0 0 5px 1px;
   --shadow2: rgba(0,0,0,0.1) 0px 0px 20px 0px;
 }
 
@@ -360,6 +360,7 @@ input:hover, input:focus{
 }
 
 .historyItem{
+  background: var(--color-white);
 }
 
 .historySubItem{
@@ -385,7 +386,7 @@ input:hover, input:focus{
 }
 .reviewItem{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2em 3.5fr 3.5fr 0.6fr 0.6fr 0.6fr 0.6fr 0.7fr;
   grid-gap: var(--spacing-xl);
   padding: var(--spacing-l) var(--spacing-m);
   margin-bottom: 1px;
@@ -394,6 +395,7 @@ input:hover, input:focus{
 .reviewItem:last-of-type{
   margin: 0;
 }
+
 .reviewsHeader{
   font-weight: 600;
   text-transform: uppercase;
@@ -409,16 +411,6 @@ input:hover, input:focus{
 .externalLink:hover{
   color: var(--color-secondary);
   cursor: pointer;
-}
-
-.reviewItem > div:nth-of-type(1) {
-  grid-column: 1/3
-}
-.reviewItem > div:nth-of-type(2) {
-  grid-column: 1/3
-}
-.reviewItem > div:nth-of-type(3) {
-  grid-column: 1/3
 }
 
 .productDeleted{
@@ -455,36 +447,35 @@ input:hover, input:focus{
 
 
 
-@media (min-width: 576px){
+@media (max-width: 2000px){
+  .reviewItem{
+    grid-template-columns: 2em 3.5fr 3.5fr 0.6fr 0.6fr 0.6fr 0.6fr 1.2fr;
+  }
 }
 
-@media (min-width: 992px){
+@media (max-width: 1600px){
   .reviewItem{
-    grid-template-columns: 2em 3.5fr 3.5fr 1fr 1fr 1fr;
+    grid-template-columns: 2em 3.5fr 3.5fr 0.6fr 0.6fr 0.6fr 0.6fr 1.5fr;
   }
-  .reviewItem > div:nth-of-type(7) {
+}
+
+@media (max-width: 1200px){
+  .reviewItem{
+    grid-template-columns: 2em 3.5fr 3.5fr 0.8fr 0.8fr 1.3fr;
+  }
+  .reviewItem .columnReviewDate {
     display: none;
   }
-  .reviewItem > div:nth-of-type(1) {
-    grid-column: 1;
-  }
-  .reviewItem > div:nth-of-type(2) {
-    grid-column: 2;
-  }
-  .reviewItem > div:nth-of-type(3) {
-    grid-column: 3;
-  }
-
-  .reviewItem > div:last-of-type{
-    justify-self: end;
+  .reviewItem .columnAverageRating {
+    display: none;
   }
 }
 
-@media (min-width: 1200px){
+@media (max-width: 992px){
   .reviewItem{
-    grid-template-columns: 2em 3.5fr 3.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2em 3.5fr 0.6fr 0.6fr 1fr;
   }
-  .reviewItem > div:nth-of-type(7) {
-    display: unset;
+  .reviewItem .columnReviewTitle {
+    display: none;
   }
 }

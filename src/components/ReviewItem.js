@@ -17,7 +17,7 @@ export const ReviewItem = ({review, reviewFunctions}) => {
             averageRating,
             userRating,
             helpfulVotes,
-            // comments,
+            comments,
             date,
             // reviewHistory,
             // updatedParams,
@@ -27,13 +27,14 @@ export const ReviewItem = ({review, reviewFunctions}) => {
         //@TODO: selected umsetzen. Links to Amazon Seite / Produkt. Öffnet Review Details. Fehler beheben (am MacBook kam einer)
         return(
             <div className={'reviewItem' + (selected? ' selected':' selectable')} onClick={() => reviewFunctions.reviewSelected(review)}>
-                <div className="material-icons externalLink" onClick={() => reviewFunctions.idSelected(externalId)}>open_in_new</div>
-                <div className="truncateString">{methods.getProductTitle(review)}</div>
-                <div className="truncateString">{reviewTitle}</div>
-                <div className="truncateString">{averageRating}</div>
-                <div className="truncateString">{userRating}</div>
-                <div className="truncateString">{helpfulVotes}</div>
-                <div className="truncateString">{new Date(date).toLocaleDateString()}</div>
+                <div className="material-icons columnLinkToReview externalLink" onClick={() => reviewFunctions.idSelected(externalId)}>open_in_new</div>
+                <div className="truncateString columnProductTitle">{methods.getProductTitle(review)}</div>
+                <div className="truncateString columnReviewTitle">{reviewTitle}</div>
+                <div className="truncateString columnAverageRating">{averageRating}</div>
+                <div className="truncateString columnUserRating">{userRating}</div>
+                <div className="truncateString columnHelpfulVotes">{helpfulVotes}</div>
+                <div className="truncateString columnComments">{comments}</div>
+                <div className="truncateString columnReviewDate">{new Date(date).toLocaleDateString()}</div>
             </div>
         )
 }

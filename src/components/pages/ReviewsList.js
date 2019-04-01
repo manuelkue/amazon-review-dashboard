@@ -42,13 +42,14 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
             <div className="reviews-list">
                 <h1>Reviews</h1>
                 <div className="reviewItem reviewsHeader">
-                    <div className="material-icons" >open_in_new</div>
-                    <div>Product</div>
-                    <div>Review Title</div>
-                    <div className="material-icons" style={{fontSize : '16px'}}>star_half</div>
-                    <div className="material-icons" style={{fontSize : '16px'}}>star</div>
-                    <div className="material-icons" style={{fontSize : '16px'}}>thumb_up</div>
-                    <div>Date</div>
+                    <div className="material-icons columnLinkToReview" >open_in_new</div>
+                    <div className="columnProductTitle">Product</div>
+                    <div className="columnReviewTitle">Review Title</div>
+                    <div className="material-icons columnAverageRating" style={{fontSize : '16px'}}>star_half</div>
+                    <div className="material-icons columnUserRating" style={{fontSize : '16px'}}>star</div>
+                    <div className="material-icons columnHelpfulVotes" style={{fontSize : '16px'}}>thumb_up</div>
+                    <div className="material-icons columnComments" style={{fontSize : '16px'}}>message</div>
+                    <div className="columnReviewDate">Date</div>
                 </div>
                 <ProgressBar progress={status.scrapeProgress}/>
                 <div className="reviewItemsWrapper">

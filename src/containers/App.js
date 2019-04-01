@@ -22,6 +22,7 @@ export default class App extends Component {
         fetchURL: "",
         maxReviewNumberOnPartScrape: 100,
         defaultToastDuration: 95000,
+        maxToastsCountVisible : 9,
         saveMessageAfterDuration: 2000,
         sortReviewsBy: 'date',
         sortReviewsAscending: false
@@ -427,6 +428,11 @@ export default class App extends Component {
         }, duration);
       }
     )
+    // Dismiss toasts if there are too many in the sidebar
+    let toastsCount = this.state.status.toasts.length;
+    for (let index = 0; index < toastsCount - this.state.config.maxToastsCountVisible; index++) {
+      this.dismissToast(this.state.status.toasts[toastsCount - 1 - index].id);
+    }
   }
 
   async dismissToast(id){

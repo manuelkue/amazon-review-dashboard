@@ -165,17 +165,12 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
 }
 
 function makeJsonURL(userProfileURL, responseObj, firstResponse){
-  const jsonURL = 
-    "https://" + new URL(userProfileURL).hostname + "/profilewidget/timeline/visitor?nextPageToken=%7B%22st%22%3A%7B%22n%22%3A%22" + 
-    JSON.parse(responseObj.nextPageToken)["st"]["n"] + 
-    "%22%7D%2C%22ctrId.ctrTy.mpId.ctrbnTy%22%3A%7B%22s%22%3A%22" + 
-    JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId.ctrbnTy"]["s"] + 
-    "%22%7D%2C%22ctrbnId%22%3A%7B%22s%22%3A%22" + 
-    JSON.parse(responseObj.nextPageToken)["ctrbnId"]["s"] + 
-    "%22%7D%2C%22ctrId.ctrTy.mpId%22%3A%7B%22s%22%3A%22" + 
-    JSON.parse(responseObj.nextPageToken)["ctrId.ctrTy.mpId"]["s"] + 
-    "%22%7D%7D" + 
-    firstResponse.url().split('nextPageToken=')[1]
+
+    const jsonURL = ""+
+      firstResponse.url().split('nextPageToken=')[0] +
+      'nextPageToken=' +
+      encodeURIComponent(responseObj.nextPageToken) +
+      firstResponse.url().split('nextPageToken=')[1]
 
   return jsonURL;
 }
