@@ -371,7 +371,7 @@ export default class App extends Component {
             config: {
               ...this.state.config,
               fetchURL: methods.fetchURLData(result[0]).profileURL,
-              maxReviewNumberOnPartScrape: result[1]
+              maxReviewNumberOnPartScrape: result[1] || this.state.config.maxReviewNumberOnPartScrape
             }
           },() => {
             console.log('result :', result);
