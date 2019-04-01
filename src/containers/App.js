@@ -21,6 +21,7 @@ export default class App extends Component {
       config: {
         fetchURL: "",
         maxReviewNumberOnPartScrape: 100,
+        language: 'en',
         defaultToastDuration: 95000,
         maxToastsCountVisible : 9,
         saveMessageAfterDuration: 2000,
@@ -365,17 +366,17 @@ export default class App extends Component {
 
       console.log("AppInit start");
       await configStorage
-        .getMulti(["fetchURL", "maxReviewNumberOnPartScrape"])
-        .then(result => {
+        .getMulti(["language", "fetchURL", "maxReviewNumberOnPartScrape"])
+        .then(configStore => {
           this.setState({
             config: {
               ...this.state.config,
-              fetchURL: methods.fetchURLData(result[0]).profileURL,
-              maxReviewNumberOnPartScrape: result[1] || this.state.config.maxReviewNumberOnPartScrape
+              language: configStore.language || this.state.config.language,
+              fetchURL: methods.fetchURLData(configStore.fetchURL).profileURL,
+              maxReviewNumberOnPartScrape: configStore.maxReviewNumberOnPartScrape || this.state.config.maxReviewNumberOnPartScrape
             }
           },() => {
-            console.log('result :', result);
-            console.log('maxReviewNumberOnPartScrape :', this.state.config.maxReviewNumberOnPartScrape);
+            console.log('Fetched Config :', this.state.config);
           });
         })
         .catch(err =>

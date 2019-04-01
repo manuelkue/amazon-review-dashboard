@@ -44,15 +44,15 @@ export class Storage {
     });
   }
 
-  // This will return multiple properties on the `data` object in an object array
+  // This will return multiple properties on the `data` object to an object containing the properties of the given array
   getMulti(keys) {
     return new Promise((resolve, reject) => {
       parseDataFile(this.path, this.opts.defaults)
         .then(file => {
           if(Array.isArray(keys)){
-            let resultsArr = []
-            keys.forEach(key => resultsArr.push(file[key]))
-            resolve(resultsArr);
+            let resultsObj = {}
+            keys.forEach(key => resultsObj[key] = (file[key]))
+            resolve(resultsObj);
           }else{
             reject('No key array provided')
           }

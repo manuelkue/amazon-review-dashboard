@@ -54,7 +54,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
         methods.sortObjectArray(filteredReviews, config.sortReviewsBy, config.sortReviewsAscending)
         const reviewsComponents = [...filteredReviews].slice(0, loadedReviewsCount)
             .map(review => 
-                <ReviewItem key={review.externalId} review={review} reviewFunctions={reviewFunctions} />
+                <ReviewItem key={review.externalId} config = {config} review={review} reviewFunctions={reviewFunctions} />
             )
             
         return (

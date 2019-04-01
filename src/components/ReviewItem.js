@@ -5,7 +5,7 @@ import { methods } from "../utilities/methods";
 
 // @TODO deleted reviews are shown crossed out
 
-export const ReviewItem = ({review, reviewFunctions}) => {
+export const ReviewItem = ({config, review, reviewFunctions}) => {
 
         const{
             externalId,
@@ -34,7 +34,7 @@ export const ReviewItem = ({review, reviewFunctions}) => {
                 <div className="truncateString columnUserRating">{userRating}</div>
                 <div className="truncateString columnHelpfulVotes">{helpfulVotes}</div>
                 <div className="truncateString columnComments">{comments}</div>
-                <div className="truncateString columnReviewDate">{new Date(date).toLocaleDateString()}</div>
+                <div className="truncateString columnReviewDate">{new Date(date).toLocaleDateString(config.language ,{year: '2-digit', month: '2-digit', day: '2-digit' })}</div>
             </div>
         )
 }
