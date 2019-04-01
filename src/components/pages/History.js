@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Component } from "react"
+import React, { useEffect, useState } from "react"
 import { HistoryItem } from "../HistoryItem";
 import { ProgressBar } from "../progressBar";
 import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";

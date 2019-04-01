@@ -1,5 +1,4 @@
 import React from "react"
-import {UserCard} from '../UserCard'
 
 export const Settings = ({config, status, saveNewPartialCrawlNumber})  => {
 
