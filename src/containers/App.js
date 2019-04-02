@@ -14,6 +14,11 @@ import { reviewStorage, userStorage, configStorage, logStorage } from "../utilit
 //Electron connected functions
 const { ipcRenderer, shell } = window.require("electron");
 
+const initialValues = {
+  sortReviewsBy: 'date',
+  sortReviewsAscending: false
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -26,8 +31,8 @@ export default class App extends Component {
         defaultToastDuration: 95000,
         maxToastsCountVisible : 9,
         saveMessageAfterDuration: 2000,
-        sortReviewsBy: 'date',
-        sortReviewsAscending: false
+        sortReviewsBy: initialValues.sortReviewsBy,
+        sortReviewsAscending: initialValues.sortReviewsAscending
       },
       status:{
         fetchURLGetsValidated: "",
@@ -254,11 +259,21 @@ export default class App extends Component {
 
   reviewFunctions = {
     sortBy : header =>  {
-      const asc = this.state.config.sortReviewsBy === header ? !this.state.config.sortReviewsAscending : this.state.config.sortReviewsAscending
+      // Be able to click through sort states: desc > asc > initialValue
+      let asc = initialValues.sortReviewsAscending;
+      let sort = header;
+
+      if(this.state.config.sortReviewsBy === header){
+        if(this.state.config.sortReviewsAscending === !initialValues.sortReviewsAscending){
+          sort = initialValues.sortReviewsBy;
+        }
+        else asc = !this.state.config.sortReviewsAscending;
+      }      
+      
       this.setState({
         config : {
           ...this.state.config,
-          sortReviewsBy: header,
+          sortReviewsBy: sort,
           sortReviewsAscending: asc
         }
       })
@@ -304,7 +319,7 @@ export default class App extends Component {
         },
         () => {
           configStorage.set("fetchURL", url);
-          this.startCrawlClickHandler(10, true);
+          this.startCrawlClickHandler(0, true);
         }
       );
       if(this.saveFetchUrlTimer){

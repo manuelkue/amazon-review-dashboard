@@ -259,7 +259,6 @@ input:hover, input:focus{
 .userStats{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: var(--spacing-m) 0;
 }
 
 .userStats .material-icons{
@@ -508,6 +507,9 @@ input:hover, input:focus{
 .reviewsHeader > div:not(.columnLinkToReview) {
   cursor: pointer;
 }
+.reviewsHeader > div:not(.columnLinkToReview):hover {
+  color: var(--color-primary);
+}
 
 .reviewsHeader > div.sortingAsc, .reviewsHeader > div.sortingDesc{
   color: var(--color-primary);
@@ -569,6 +571,10 @@ input:hover, input:focus{
   background: var(--color-primary);
   color: var(--color-text-light);
   /*border: var(--border-width) solid var(--color-dark);*/
+}
+
+.profile.card{
+  border-radius: var(--border-radius-max);
 }
 
 .settings{}
