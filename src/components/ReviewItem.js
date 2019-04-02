@@ -30,10 +30,10 @@ export const ReviewItem = ({config, review, reviewFunctions}) => {
                 <div className="material-icons columnLinkToReview externalLink" onClick={() => reviewFunctions.idSelected(externalId)}>open_in_new</div>
                 <div className="truncateString columnProductTitle">{methods.getProductTitle(review)}</div>
                 <div className="truncateString columnReviewTitle">{reviewTitle}</div>
-                <div className="truncateString columnAverageRating">{averageRating}</div>
-                <div className="truncateString columnUserRating">{userRating}</div>
-                <div className="truncateString columnHelpfulVotes">{helpfulVotes}</div>
-                <div className="truncateString columnComments">{comments}</div>
+                <div className="truncateString columnAverageRating">{(+averageRating).toLocaleString(config.language)}</div>
+                <div className="truncateString columnUserRating">{(+userRating).toLocaleString(config.language)}</div>
+                <div className="truncateString columnHelpfulVotes">{(+helpfulVotes).toLocaleString(config.language)}</div>
+                <div className="truncateString columnComments">{(+comments).toLocaleString(config.language)}</div>
                 <div className="truncateString columnReviewDate">{new Date(date).toLocaleDateString(config.language ,{year: '2-digit', month: '2-digit', day: '2-digit' })}</div>
             </div>
         )

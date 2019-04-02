@@ -109,7 +109,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
                 <ProgressBar progress={status.scrapeProgress}/>
                 <div className="reviewItemsWrapper">
                     {!reviewsComponents.length && 
-                        <div className="reviewItem review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
+                        <div className="reviewItem review-notification"><span>No reviews found</span></div>
                     }
                     {reviewsComponents}
                     {!!reviewsComponents.length && 

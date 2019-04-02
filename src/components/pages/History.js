@@ -29,7 +29,7 @@ export const History = ({config, status, reviews}) => {
             loadedReviews.filter(review => config.fetchURL.includes(review.userId) && review.reviewHistory.length)
             .slice(0, loadedHistoryItemsCount)
             .map(review => 
-                <HistoryItem key={review.externalId} review={review} />
+                <HistoryItem key={review.externalId} config={config} review={review} />
             )
             
         return (

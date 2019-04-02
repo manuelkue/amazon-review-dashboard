@@ -9,7 +9,7 @@ export const UserCard = ({user, selectUser, config}) => {
             <div className="picturewrapper">
                 <img src={methods.fetchURLData(user.profileURL).avatarURL} />
             </div>
-            <UserStats user={user} />
+            <UserStats config={config} user={user} />
         </div>
     )
 }

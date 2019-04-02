@@ -54,8 +54,8 @@
   --height-m: 45px;
 
   --border-radius-s: 2px;
-  --border-radius-m: 5px;
-  --border-radius-l: 10px;
+  --border-radius-m: 3px;
+  --border-radius-l: 5px;
 
   --color-white: #fff;
   --color-lighter: rgb(249, 249, 249);
@@ -104,7 +104,8 @@ h1{
   text-overflow: ellipsis;
 }
 .inputHeading{
-  margin-bottom: var(--spacing-m);
+  margin: var(--spacing-l) 0 var(--spacing-m);
+  font-weight: bold;
 }
 input{
   background-color: var(--color-lighter);
@@ -445,6 +446,10 @@ input:hover, input:focus{
   font-style: italic;
 }
 
+.review-notification{
+  background: var(--color-white);
+}
+
 .review-notification > span{
   grid-column: 1/8;
   font-style: italic;
@@ -471,7 +476,29 @@ input:hover, input:focus{
   /*border: var(--border-width) solid var(--color-dark);*/
 }
 
+.settings{}
 
+.languagesWrapper{
+  display: flex;
+}
+
+.languagesWrapper > div{
+  display: flex;
+  align-items: center;
+  height: var(--height-m);
+  padding: 0 var(--spacing-m);
+  background: var(--color-white);
+  border-radius: var(--border-radius-m);
+  margin-right: var(--spacing-m);
+  cursor: pointer;
+}
+
+.languagesWrapper > div.selected{
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  font-weight: bold;
+  cursor: default;
+}
 
 
 @media (max-width: 2000px){

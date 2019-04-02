@@ -22,6 +22,7 @@ export default class App extends Component {
         fetchURL: "",
         maxReviewNumberOnPartScrape: 100,
         language: 'en',
+        languagesAvailable: [{short: 'en', long:'English'}, {short: 'de', long:'Deutsch'}],
         defaultToastDuration: 95000,
         maxToastsCountVisible : 9,
         saveMessageAfterDuration: 2000,
@@ -96,7 +97,7 @@ export default class App extends Component {
               this.setState({
                 reviews: methods.arr2ReviewClassArr(reviews)
               }, () => {
-                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString()}`)
+                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString(this.state.config.language)}`)
               });
             })
             .catch(err => console.error(err));
@@ -116,7 +117,7 @@ export default class App extends Component {
                   reviews: methods.arr2ReviewClassArr(reviews)
                 },
                 () => {
-                  this.newToast('success', `Reviews loaded: ${reviewsScraped.length.toLocaleString()}`)
+                  this.newToast('success', `Reviews loaded: ${reviewsScraped.length.toLocaleString(this.state.config.language)}`)
                 }
               );
             })
@@ -133,7 +134,7 @@ export default class App extends Component {
           isScrapingPartially: false
         }
       },() => {
-        this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1).toLocaleString()} s`)
+        this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1).toLocaleString(this.state.config.language)} s`)
       });
     });
     ipcRenderer.on("scrapeWarning", (event, message) => {
@@ -197,7 +198,7 @@ export default class App extends Component {
               <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={this.state.reviews} />} />
               <Route path="/reviews" render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
               <Route path="/users" render={() => <Users config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
-              <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} saveNewPartialCrawlNumber={this.saveNewPartialCrawlNumber} /> } />
+              <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} settingsFunctions={this.settingsFunctions} /> } />
               <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={this.state.reviews} users={this.state.users} /> } />
             </Switch>
           </div>
@@ -315,30 +316,47 @@ export default class App extends Component {
     );
   }
 
-  saveNewPartialCrawlNumber = async event => {
-    const crawlNumber = +event.target.value;
-    await this.validatePartialCrawlNumber(crawlNumber);
-    if (this.state.status.crawlNumberValid) {
-      if(this.saveCrawlNumberTimer){
-        clearTimeout(this.saveCrawlNumberTimer)
-      }
-      this.saveCrawlNumberTimer = setTimeout(() => {
-        this.newToast('notification', `Partial crawl number saved: ${crawlNumber.toLocaleString()}`)
-        this.saveCrawlNumberTimer = null
-      }, this.state.config.saveMessageAfterDuration)
+  settingsFunctions = {
+    saveLanguage : async language => {
+      this.newToast('notification', `Language saved: ${language.long}`, 2000)
       this.setState(
         {
           config: {
             ...this.state.config,
-            maxReviewNumberOnPartScrape: crawlNumber
+            language: language.short
           }
         },
         () => {
-          configStorage.set("maxReviewNumberOnPartScrape", crawlNumber);
+          configStorage.set("language", language.short);
         }
       );
+    },
+  
+    saveNewPartialCrawlNumber : async event => {
+      const crawlNumber = +event.target.value;
+      await this.validatePartialCrawlNumber(crawlNumber);
+      if (this.state.status.crawlNumberValid) {
+        if(this.saveCrawlNumberTimer){
+          clearTimeout(this.saveCrawlNumberTimer)
+        }
+        this.saveCrawlNumberTimer = setTimeout(() => {
+          this.newToast('notification', `Partial crawl number saved: ${crawlNumber.toLocaleString(this.state.config.language)}`)
+          this.saveCrawlNumberTimer = null
+        }, this.state.config.saveMessageAfterDuration)
+        this.setState(
+          {
+            config: {
+              ...this.state.config,
+              maxReviewNumberOnPartScrape: crawlNumber
+            }
+          },
+          () => {
+            configStorage.set("maxReviewNumberOnPartScrape", crawlNumber);
+          }
+        );
+      }
     }
-  };
+  }
 
   async validatePartialCrawlNumber(crawlNumber) {
     await this.setState({

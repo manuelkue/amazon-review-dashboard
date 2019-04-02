@@ -10,7 +10,7 @@ export const Profile = ({user, config}) => {
                 <img src={config ? (methods.fetchURLData(config.fetchURL).avatarURL) : ''} />
             </div>
             {user?
-                <UserStats user={user} />
+                <UserStats config={config} user={user} />
                 :
                 <div className="notification"><div>No user profile provided.</div></div>
             }
