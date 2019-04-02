@@ -70,6 +70,8 @@
   --color-secondary: rgb(250,158,0);
   --color-tertiary: rgb(181,22,77);
 
+  --background-darker: rgba(77,77,77, 0.3);
+
   --shadow1: rgba(0,0,0,0.1) 0 0 5px 1px;
   --shadow2: rgba(0,0,0,0.1) 0px 0px 20px 0px;
 }
@@ -82,6 +84,24 @@
   to {
       transform: rotate(359deg);
   }
+}
+
+@keyframes slideup {
+  from {margin-bottom: -30px; opacity: 0;}
+  to {margin-bottom: 0px; opacity: 1;}
+}
+@keyframes slidedown {
+  from {margin-top: -30px; opacity: 0;}
+  to {margin-top: 0px; opacity: 1;}
+}
+
+@keyframes scaleup {
+  from {transform: scale(0); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+@keyframes scaledown {
+  from {transform: scale(1); opacity: 0;}
+  to {transform: scale(0);opacity: 1;}
 }
 
 body{
@@ -167,6 +187,7 @@ input:hover, input:focus{
 }
 
 .profile .picturewrapper{
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -188,6 +209,26 @@ input:hover, input:focus{
   box-shadow: var(--color-light2) 0 0 0 5px inset, var(--color-light) 0 0 0 8px inset;
   min-width: 102%;
   height: 102%;
+}
+.profile .picturewrapper .reloadProfile{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-darker);
+  color: var(--color-light);
+  font-size: 1px;
+  font-weight: bolder;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+.profile .picturewrapper:hover .reloadProfile, .profile .picturewrapper .reloadProfile.loading{
+  opacity: 0.8;
+  font-size: 60px;
+  transition: all 0.2s ease-in-out;
 }
 
 .profile .notification{
@@ -308,10 +349,13 @@ input:hover, input:focus{
   justify-content: center;
   color:var(--color-light);
   cursor: pointer;
+  transition: all 0.2s color 0s ease-in-out;
 }
 
-.nav .link:hover{
+.nav .link:not(.selected):hover{
   color:var(--color-secondary);
+  transform: scale(1.1);
+  transition: all 0.2s color 0s ease-in-out;
 }
 
 .nav .link.selected{
@@ -434,7 +478,10 @@ input:hover, input:focus{
 .reviewsHeader > div{
   display: flex;
   align-items: center;
+  transform: scale(1);
+  transition: all 0.3s ease-in-out;
 }
+
 .reviewsHeader > div:not(.columnLinkToReview) {
   cursor: pointer;
 }
@@ -455,9 +502,11 @@ input:hover, input:focus{
 
 .reviewsHeader > div.sortingAsc::before{
   content: 'keyboard_arrow_up';
+  animation: slideup 0.2s;
 }
 .reviewsHeader > div.sortingDesc::before{
   content: 'keyboard_arrow_down';
+  animation: slidedown 0.2s;
 }
 
 .reviewItem.selected{

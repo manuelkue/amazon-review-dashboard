@@ -35,8 +35,9 @@ export default class App extends Component {
         crawlNumberValid: false,
         scrapeStatus: "-",
         scrapeProgress: 0,
-        isScrapingComplete: false,
+        isScrapingFull: false,
         isScrapingPartially: false,
+        isScrapingProfile: false,
         appInitStarted: false,
         toasts: []
       },
@@ -130,8 +131,9 @@ export default class App extends Component {
         status: {
           ...this.state.status,
           scrapeStatus: "Scrape completed",
-          isScrapingComplete: false,
-          isScrapingPartially: false
+          isScrapingFull: false,
+          isScrapingPartially: false,
+          isScrapingProfile: false
         }
       },() => {
         this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1).toLocaleString(this.state.config.language)} s`)
@@ -143,8 +145,9 @@ export default class App extends Component {
         status: {
           ...this.state.status,
           scrapeStatus: message,
-          isScrapingComplete: false,
-          isScrapingPartially: false
+          isScrapingFull: false,
+          isScrapingPartially: false,
+          isScrapingProfile: false
         }
       });
     });
@@ -155,8 +158,9 @@ export default class App extends Component {
         status: {
           ...this.state.status,
           scrapeStatus: message,
-          isScrapingComplete: false,
-          isScrapingPartially: false
+          isScrapingFull: false,
+          isScrapingPartially: false,
+          isScrapingProfile: false
         }
       });
     });
@@ -215,7 +219,7 @@ export default class App extends Component {
   }
 
   //@TODO: Implement autorefresh of profile at App-start / profile-URL change
-  startCrawlClickHandler(maxReviewNumber, onlyProfile = false) {
+  startCrawlClickHandler(maxReviewNumber = null, onlyProfile = false) {
     ipcRenderer.send("startCrawl", {
       url: this.state.config.fetchURL,
       maxReviewNumber: maxReviewNumber,
@@ -225,8 +229,9 @@ export default class App extends Component {
       status: {
         ...this.state.status,
         scrapeStatus: "Scraping... ",
-        isScrapingComplete: maxReviewNumber === 99999,
-        isScrapingPartially: maxReviewNumber !== 99999
+        isScrapingFull: maxReviewNumber === null,
+        isScrapingPartially: !!maxReviewNumber,
+        isScrapingProfile: onlyProfile
       }
     });
 

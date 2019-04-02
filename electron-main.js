@@ -25,6 +25,7 @@ ipcMain.on('startCrawl', (event, startCrawl) => {
 
 
 async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
+  console.log('maxReviewNumber :', maxReviewNumber);
   const scrapeStartTime = new Date().getTime()
   crawling = true;
   let reviews = [];
@@ -93,7 +94,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
             console.log("reviewsCount", reviews.length);
             mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
             
-            if(!responseObj.nextPageToken || reviews.length >= maxReviewNumber){
+            if(!responseObj.nextPageToken || (maxReviewNumber && reviews.length >= maxReviewNumber)){
               console.log("\n#############\nScrapeComplete");
               console.log("Total time of crawling", new Date().getTime() - scrapeStartTime, "ms")
               console.log("reviewsCount", reviews.length, "\n\n");

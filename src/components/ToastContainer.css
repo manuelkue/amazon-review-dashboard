@@ -36,7 +36,6 @@
   margin-bottom: calc(-2 * var(--spacing-m));
   max-height: 0;
   transition: all 0.3s ease-in-out;
-  animation: fadeout 0.3s;
 }
 
 @keyframes fadein {
