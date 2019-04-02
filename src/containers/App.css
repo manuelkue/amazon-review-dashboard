@@ -430,6 +430,16 @@ input:hover, input:focus{
   background: unset;
   cursor: default;
 }
+.reviewsHeader > div {
+  cursor: pointer;
+}
+
+.reviewsHeader > div.sortingAsc, .reviewsHeader > div.sortingDesc:hover{
+  color: var(--color-primary);
+}
+.reviewsHeader > div:hover, .reviewsHeader > div.sortingDesc, .reviewsHeader > div.sortingAsc:hover{
+  color: var(--color-secondary);
+}
 
 .selected{
   background: var(--color-primary);

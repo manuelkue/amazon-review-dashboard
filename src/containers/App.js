@@ -248,6 +248,17 @@ export default class App extends Component {
   }
 
   reviewFunctions = {
+    sortBy : header =>  {
+      const asc = this.state.config.sortReviewsBy === header ? true : false;
+      this.setState({
+        config : {
+          ...this.state.config,
+          sortReviewsBy: header,
+          sortReviewsAscending: asc
+        }
+      })
+    },
+
     idSelected : (reviewId) => {
       console.log(reviewId)
     },

@@ -39,6 +39,12 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
     const handleFilterOptionsChange = ({target}) => {
         setFilterOptions({...filterOptions, [target.name]: target.checked})
     }
+    const {sortBy} = reviewFunctions;
+
+    const sortingBy = header => {
+        if (config.sortReviewsBy === header) return config.sortReviewsAscending ? "sortingAsc " : "sortingDesc ";
+        return ''
+    }
 
     if(methods.fetchURLData(config.fetchURL)){
         let filteredReviews = [...reviews.filter(review => config.fetchURL.includes(review.userId))]
@@ -98,13 +104,13 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
 
                 <div className="reviewItem reviewsHeader">
                     <div className="material-icons columnLinkToReview" >open_in_new</div>
-                    <div className="columnProductTitle">Product</div>
-                    <div className="columnReviewTitle">Review Title</div>
-                    <div className="material-icons columnAverageRating" style={{fontSize : '16px'}}>star_half</div>
-                    <div className="material-icons columnUserRating" style={{fontSize : '16px'}}>star</div>
-                    <div className="material-icons columnHelpfulVotes" style={{fontSize : '16px'}}>thumb_up</div>
-                    <div className="material-icons columnComments" style={{fontSize : '16px'}}>message</div>
-                    <div className="columnReviewDate">Date</div>
+                    <div onClick={() => sortBy("productTitle")} className={sortingBy("productTitle") + "columnProductTitle"}>Product</div>
+                    <div onClick={() => sortBy("reviewTitle")}  className={sortingBy("reviewTitle") + "columnReviewTitle"}>Review Title</div>
+                    <div onClick={() => sortBy("averageRating")}className={sortingBy("averageRating") + "material-icons columnAverageRating"} style={{fontSize : '16px'}}>star_half</div>
+                    <div onClick={() => sortBy("userRating")}   className={sortingBy("userRating") + "material-icons columnUserRating"} style={{fontSize : '16px'}}>star</div>
+                    <div onClick={() => sortBy("helpfulVotes")} className={sortingBy("helpfulVotes") + "material-icons columnHelpfulVotes"} style={{fontSize : '16px'}}>thumb_up</div>
+                    <div onClick={() => sortBy("comments")}     className={sortingBy("comments") + "material-icons columnComments"} style={{fontSize : '16px'}}>message</div>
+                    <div onClick={() => sortBy("date")}         className={sortingBy("date") + "columnReviewDate"}>Date</div>
                 </div>
                 <ProgressBar progress={status.scrapeProgress}/>
                 <div className="reviewItemsWrapper">
