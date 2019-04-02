@@ -32,7 +32,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
 
     const showMoreReviews = () => {
         // Increase the number of displayed reviews to higher amount.
-        setLoadedReviewsCount(loadedReviewsCount + 1000)
+        setLoadedReviewsCount(loadedReviewsCount + 100)
         console.log("More Reviews loaded");
     }
 

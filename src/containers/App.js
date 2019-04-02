@@ -249,7 +249,7 @@ export default class App extends Component {
 
   reviewFunctions = {
     sortBy : header =>  {
-      const asc = this.state.config.sortReviewsBy === header ? true : false;
+      const asc = this.state.config.sortReviewsBy === header ? !this.state.config.sortReviewsAscending : this.state.config.sortReviewsAscending
       this.setState({
         config : {
           ...this.state.config,
