@@ -464,8 +464,15 @@ input:hover, input:focus{
   margin-bottom: 1px;
   align-items: center;
 }
-.reviewItem:last-of-type{
-  margin: 0;
+
+.reviewItem.selected{
+  background: var(--color-primary);
+  color: var(--color-light);
+  cursor: default;
+}
+
+.reviewItem:nth-last-child(2){
+  margin-bottom: 0;
 }
 
 .reviewsHeader{
@@ -505,12 +512,6 @@ input:hover, input:focus{
 .reviewsHeader > div.sortingDesc::before{
   content: 'keyboard_arrow_down';
   animation: slidedown 0.2s;
-}
-
-.reviewItem.selected{
-  background: var(--color-primary);
-  color: var(--color-light);
-  cursor: default;
 }
 .externalLink:hover{
   color: var(--color-secondary);
