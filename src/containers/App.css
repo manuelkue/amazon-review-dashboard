@@ -147,14 +147,11 @@ input:hover, input:focus{
   box-shadow: var(--shadow1), var(--shadow-border);
 }
 .button{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: var(--height-m);
+  line-height: var(--height-m);
   padding: 0 var(--spacing-l);
   background: var(--color-white);
-  border-radius: var(--border-radius-max);
-  margin-right: var(--spacing-m);
+  border-radius: calc(var(--height-m) / 2);
+  margin: 0 var(--spacing-m) var(--spacing-m) 0;
   cursor: pointer;
 }
 .button.selected{
@@ -578,6 +575,8 @@ input:hover, input:focus{
 
 .languagesWrapper{
   display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 
