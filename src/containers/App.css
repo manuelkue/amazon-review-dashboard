@@ -432,16 +432,32 @@ input:hover, input:focus{
 }
 .reviewsHeader > div {
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
-.reviewsHeader > div.sortingAsc, .reviewsHeader > div.sortingDesc:hover{
+.reviewsHeader > div.sortingAsc, .reviewsHeader > div.sortingDesc{
   color: var(--color-primary);
+  margin-left: -16px;
 }
-.reviewsHeader > div:hover, .reviewsHeader > div.sortingDesc, .reviewsHeader > div.sortingAsc:hover{
-  color: var(--color-secondary);
+.reviewsHeader > div::before{
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-size: 16px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  margin-bottom: -1px;
 }
 
-.selected{
+.reviewsHeader > div.sortingAsc::before{
+  content: 'keyboard_arrow_up';
+}
+.reviewsHeader > div.sortingDesc::before{
+  content: 'keyboard_arrow_down';
+}
+
+.reviewItem.selected{
   background: var(--color-primary);
   color: var(--color-light);
   cursor: default;

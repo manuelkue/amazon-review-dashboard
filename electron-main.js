@@ -120,7 +120,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
           }
         }else{
           //@TODO: Send Message, that user has no reviews visible
-          console.log("No reviews available/visible");
+          console.log("No public reviews available/visible");
           mainWindow.webContents.send('scrapeWarning', 'No reviews available/visible')
           await closeConnection (page, browser)
         }
