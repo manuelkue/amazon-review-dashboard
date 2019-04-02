@@ -66,7 +66,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
         return (
             <div className="reviews-list">
                 <div className="filterWrapper">
-                    <h1 className="truncateString">Reviews {filterTerm ? "- " + filteredReviews.length : ''}</h1>
+                    <h1 className="truncateString">Reviews{filterTerm ? ": " + filteredReviews.length : ''}</h1>
                     <input
                         placeholder='Filter reviews...'
                         type="text" value={filterTerm}
