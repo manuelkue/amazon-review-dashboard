@@ -4,7 +4,7 @@ export const Settings = ({config, status, settingsFunctions})  => {
 
     const availableLanguages = config.languagesAvailable
         .map(language => 
-            <div className={config.language === language.short ? 'selected' : ''} key={language.short} onClick={() => settingsFunctions.saveLanguage(language)}>{language.long}</div>
+            <div className={"button" + (config.language === language.short ? ' selected' : '')} key={language.short} onClick={() => settingsFunctions.saveLanguage(language)}>{language.long}</div>
         )
 
     return (

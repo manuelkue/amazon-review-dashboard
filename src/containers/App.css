@@ -56,6 +56,7 @@
   --border-radius-s: 2px;
   --border-radius-m: 3px;
   --border-radius-l: 5px;
+  --border-radius-max: 500px;
 
   --color-white: #fff;
   --color-lighter: rgb(249, 249, 249);
@@ -74,8 +75,9 @@
 
   --shadow1: rgba(0,0,0,0.1) 0 0 5px 1px;
   --shadow2: rgba(0,0,0,0.1) 0px 0px 20px 0px;
-}
 
+  --shadow-border: rgba(0,0,0,0.05) 0 0 0 1px;
+}
 
 @keyframes rotation {
   from {
@@ -130,7 +132,7 @@ h1{
 input{
   background-color: var(--color-lighter);
   box-sizing: border-box;
-  border-radius: var(--border-radius-m);
+  border-radius: var(--border-radius-max);
   border: 0;
   width: 100%;
   padding: var(--spacing-l);
@@ -141,6 +143,25 @@ input:hover, input:focus{
   background-repeat: no-repeat;
   background-size: 30px;
   background-position: right var(--spacing-m) center;
+  outline: none;
+  box-shadow: var(--shadow1), var(--shadow-border);
+}
+.button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--height-m);
+  padding: 0 var(--spacing-l);
+  background: var(--color-white);
+  border-radius: var(--border-radius-max);
+  margin-right: var(--spacing-m);
+  cursor: pointer;
+}
+.button.selected{
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: bold;
+  cursor: default;
 }
 
 .invalid{
@@ -192,7 +213,7 @@ input:hover, input:focus{
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border-radius: 500px;
+  border-radius: var(--border-radius-max);
   width: 80px;
   min-width:80px;
   height: 80px;
@@ -205,7 +226,7 @@ input:hover, input:focus{
   background-size: cover;
   background-position: center;
   display: flex;
-  border-radius: 500px;
+  border-radius: var(--border-radius-max);
   box-shadow: var(--color-light2) 0 0 0 5px inset, var(--color-light) 0 0 0 8px inset;
   min-width: 102%;
   height: 102%;
@@ -266,7 +287,7 @@ input:hover, input:focus{
   display: flex;
   flex-direction: row;
   background: var(--color-dark);
-  border-radius: 500px;
+  border-radius: var(--border-radius-max);
   width: fit-content;
   margin: var(--spacing-xl) auto;
   box-shadow: var(--shadow1);
@@ -279,7 +300,7 @@ input:hover, input:focus{
   align-items: center;
   background: var(--color-light);
   margin: var(--spacing-s);
-  border-radius: 500px;
+  border-radius: var(--border-radius-max);
   padding: var(--spacing-m);
   padding-right: var(--spacing-xl);
   cursor: pointer;
@@ -557,24 +578,6 @@ input:hover, input:focus{
 
 .languagesWrapper{
   display: flex;
-}
-
-.languagesWrapper > div{
-  display: flex;
-  align-items: center;
-  height: var(--height-m);
-  padding: 0 var(--spacing-m);
-  background: var(--color-white);
-  border-radius: var(--border-radius-m);
-  margin-right: var(--spacing-m);
-  cursor: pointer;
-}
-
-.languagesWrapper > div.selected{
-  background: var(--color-primary);
-  color: var(--color-text-light);
-  font-weight: bold;
-  cursor: default;
 }
 
 
