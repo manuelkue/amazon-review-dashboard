@@ -478,8 +478,6 @@ input:hover, input:focus{
 .reviewsHeader > div{
   display: flex;
   align-items: center;
-  transform: scale(1);
-  transition: all 0.3s ease-in-out;
 }
 
 .reviewsHeader > div:not(.columnLinkToReview) {
