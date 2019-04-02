@@ -430,10 +430,13 @@ input:hover, input:focus{
   background: unset;
   cursor: default;
 }
-.reviewsHeader > div {
-  cursor: pointer;
+
+.reviewsHeader > div{
   display: flex;
   align-items: center;
+}
+.reviewsHeader > div:not(.columnLinkToReview) {
+  cursor: pointer;
 }
 
 .reviewsHeader > div.sortingAsc, .reviewsHeader > div.sortingDesc{
