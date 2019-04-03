@@ -26,7 +26,7 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
                         <i className="material-icons">
                             {param === 'rank'? 'equalizer' : ''}
                             {param === 'helpfulVotes'? 'thumb_up' : ''}
-                            {param === 'reviewsCount'? 'create' : ''}
+                            {param === 'reviewsCount'? 'assignment' : ''}
                             {param === 'commentsCount'? 'comment' : ''}
                         </i>
                         {(updateDifference > 0 ? '+':'')}
