@@ -44,7 +44,7 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
                     <i className={"material-icons" + (status.isScrapingFull? ' loading' : '') }>refresh</i>
                     <span>Complete</span>
                 </div>
-                <div className="syncButton" onClick={() => startCrawlClickHandler(config.maxReviewNumberOnPartScrape)}>
+                <div className="syncButton" onClick={() => startCrawlClickHandler({maxReviewNumber: config.maxReviewNumberOnPartScrape})}>
                     <i className={"material-icons" + (status.isScrapingPartially? ' loading' : '') }>refresh</i>
                     <span>Partially</span>
                 </div>

@@ -43,6 +43,7 @@ export default class App extends Component {
         isScrapingFull: false,
         isScrapingPartially: false,
         isScrapingProfile: false,
+        isScrapingOldOnes: false,
         appInitStarted: false,
         toasts: []
       },
@@ -224,11 +225,15 @@ export default class App extends Component {
   }
 
   //@TODO: Implement autorefresh of profile at App-start / profile-URL change
-  startCrawlClickHandler(maxReviewNumber = null, onlyProfile = false) {
+  //Handler can crawl full (maxReviewNumber = null), partially (maxReviewNumber != null), only profileStats and can begin at/after a specific review = {externalId, date}
+  startCrawlClickHandler({maxReviewNumber = null, onlyProfile = false, startAfterReview = null} = {}) {
+    if(onlyProfile) maxReviewNumber = 0
+
     ipcRenderer.send("startCrawl", {
       url: this.state.config.fetchURL,
       maxReviewNumber: maxReviewNumber,
-      onlyProfile
+      onlyProfile,
+      startAfterReview
     });
     this.setState({
       status: {
@@ -236,7 +241,8 @@ export default class App extends Component {
         scrapeStatus: "Scraping... ",
         isScrapingFull: maxReviewNumber === null,
         isScrapingPartially: !!maxReviewNumber,
-        isScrapingProfile: onlyProfile
+        isScrapingProfile: onlyProfile,
+        isScrapingOldOnes: !!startAfterReview
       }
     });
 
@@ -319,7 +325,7 @@ export default class App extends Component {
         },
         () => {
           configStorage.set("fetchURL", url);
-          this.startCrawlClickHandler(0, true);
+          this.startCrawlClickHandler({onlyProfile: true});
         }
       );
       if(this.saveFetchUrlTimer){

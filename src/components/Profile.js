@@ -8,7 +8,7 @@ export const Profile = ({user, status, startCrawlClickHandler, config}) => {
         <div className="profile">
             <div className="picturewrapper">
                 <img src={config ? (methods.fetchURLData(config.fetchURL).avatarURL) : ''} />
-                <div className={"reloadProfile material-icons" + (status.isScrapingProfile? ' loading' : '') } onClick={() => startCrawlClickHandler(0, true)}>refresh</div>
+                <div className={"reloadProfile material-icons" + (status.isScrapingProfile? ' loading' : '') } onClick={() => startCrawlClickHandler({onlyProfile: true})}>refresh</div>
             </div>
             {user?
                 <UserStats config={config} user={user} />
