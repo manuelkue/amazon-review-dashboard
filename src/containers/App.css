@@ -144,6 +144,7 @@ input{
   border: 0;
   width: 100%;
   padding: var(--spacing-l);
+  transition: box-shadow 0.1s ease-in-out,  box-shadow 0.1s ease-in-out, background-color 0.1s ease-in-out;
 }
 input:hover, input:focus{
   background-color: var(--color-white);
@@ -153,6 +154,7 @@ input:hover, input:focus{
   background-position: right var(--spacing-m) center;
   outline: none;
   box-shadow: var(--shadow1), var(--shadow-border);
+  transition: box-shadow 0.1s ease-in-out, background-color 0.1s ease-in-out;
 }
 .button{
   line-height: var(--height-m);
@@ -341,6 +343,7 @@ input:hover, input:focus{
 .syncStatsEntry{
   display: flex;
   margin-right: var(--spacing-l);
+  animation: slidedown 0.2s ease-in-out;
 }
 
 .syncStatsEntry .material-icons{
@@ -599,6 +602,7 @@ input:hover, input:focus{
 
 .profile.card{
   border-radius: var(--border-radius-max);
+  animation: slidedown 0.2s;
 }
 
 .settings{}

@@ -24,10 +24,6 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
         filterByReviewText : false
     })
 
-    useEffect(() => {
-        showMoreReviews()
-    }, [])
-
     const showMoreReviews = () => {
         // Increase the number of displayed reviews to higher amount.
         setLoadedReviewsCount(loadedReviewsCount + 200)
@@ -42,10 +38,9 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
             entries => {
                 //Check if intersection is coming from top / bottom
                 if(entries[0].boundingClientRect.height == entries[0].intersectionRect.height){
-                    console.log("remove hovering class", entries[0]);
                     reviewsHeaderElement.classList.remove("hovering");
+                    setLoadedReviewsCount(230);
                 }else{
-                    console.log("add hovering class", entries[0]);
                     reviewsHeaderElement.classList.add("hovering");
                 }
               },
