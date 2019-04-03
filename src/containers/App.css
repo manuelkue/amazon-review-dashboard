@@ -163,7 +163,14 @@ input:hover, input:focus{
   border-radius: calc(var(--height-m) / 2);
   margin: 0 var(--spacing-m) var(--spacing-m) 0;
   cursor: pointer;
+  box-shadow: var(--shadow-border);
+  transition: all 0.1s ease-in-out;
 }
+.button:hover{
+  background: var(--color-lighter);
+  transition: all 0.1s ease-in-out;
+}
+
 .button.selected{
   background: var(--color-primary);
   color: var(--color-white);
