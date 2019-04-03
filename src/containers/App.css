@@ -513,14 +513,14 @@ input:hover, input:focus{
   cursor: default;
   position: sticky;
   top: var(--spacing-m);
-  transition: all 0.2s ease-in-out, position 0s, border 0s;
+  transition: box-shadow 0.2s ease-in-out;
   border-radius: var(--border-radius-l);
 }
 .reviewsHeader.hovering{
   background: var(--color-light);
   box-shadow: var(--shadow1);
   border-bottom: 2px solid var(--color-light2);
-  transition: all 0.2s ease-in-out, position 0s, border 0s;
+  transition: box-shadow 0.2s ease-in-out;
 }
 
 .reviewsHeader > div{
