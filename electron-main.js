@@ -171,13 +171,11 @@ function makeJsonURL(userProfileURL, responseObj, firstResponse, startAfterRevie
 
   //Inject startAfterReview into nextPageToken
   if (startAfterReview){
-    regex = /{"st":{"n":"\d+/g;
-    replace = '{"st":{"n":"' + startAfterReview.date;
+    //Regex finds places, groups them and replaces the groups with $1,...$4
+    regex = /(?:({"st":{"n":")(\d+))(.+)(?:(amzn1\.productreview\.))(.{14})/g;
+    replace = '$1' + startAfterReview.date + '$3$4' + startAfterReview.externalId;
     responseObj.nextPageToken = responseObj.nextPageToken.replace(regex, replace)
-
-    //@TODO: Replace amzn1.productreview.RCWZ8YGTKKN6U with startAfterReview.externalId
   }
-  console.log('responseObj.nextPageToken :', responseObj.nextPageToken);
     const jsonURL = ""+
       firstResponse.url().split('nextPageToken=')[0] +
       'nextPageToken=' +
