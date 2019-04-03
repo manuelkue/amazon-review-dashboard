@@ -71,12 +71,15 @@ export const methods = {
       let savedReviews = [...currentReviews];
       console.log("currentReviews", [...currentReviews]);
 
+      // Create Timestamp here to give every review that's synced together the same timestamp
+      const syncTimestamp = +new Date().getTime();
+
       newReviews.forEach(r => {
         //@TODO: Get real commentCount ID here
         r = new Review({
           externalId: r.externalId,
           userId: this.fetchURLData(fetchURL).id,
-          syncTimestamp: +new Date().getTime(),
+          syncTimestamp: syncTimestamp,
           productTitle: r.product.title,
           productAsin: r.product.asin,
           productMissing: r.product.missing,

@@ -20,11 +20,11 @@ const storage = new Storage({
 
 ipcMain.on('startCrawl', (event, startCrawl) => {
   console.log("\n\ncrawling from", startCrawl.url, "\n")
-  crawlReviews(startCrawl.url, startCrawl.maxReviewNumber, startCrawl.onlyProfile)
+  crawlReviews(startCrawl.url, startCrawl.maxReviewNumber, startCrawl.onlyProfile, startCrawl.startAfterReview)
 })
 
 
-async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
+async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile, startAfterReview){
   console.log('maxReviewNumber :', maxReviewNumber);
   const scrapeStartTime = new Date().getTime()
   crawling = true;
@@ -106,7 +106,9 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
               await closeConnection (jsonPage, browser)
             }else{
               //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
-              const jsonURL = makeJsonURL(userProfileURL, responseObj, response);
+              const jsonURL = makeJsonURL(userProfileURL, responseObj, response, startAfterReview);
+              // Reset start after review, so it doesn't get used everytime
+              startAfterReview = null;
               console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
   
               await jsonPage.goto(jsonURL);
@@ -165,8 +167,17 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile){
   })
 }
 
-function makeJsonURL(userProfileURL, responseObj, firstResponse){
+function makeJsonURL(userProfileURL, responseObj, firstResponse, startAfterReview){
 
+  //Inject startAfterReview into nextPageToken
+  if (startAfterReview){
+    regex = /{"st":{"n":"\d+/g;
+    replace = '{"st":{"n":"' + startAfterReview.date;
+    responseObj.nextPageToken = responseObj.nextPageToken.replace(regex, replace)
+
+    //@TODO: Replace amzn1.productreview.RCWZ8YGTKKN6U with startAfterReview.externalId
+  }
+  console.log('responseObj.nextPageToken :', responseObj.nextPageToken);
     const jsonURL = ""+
       firstResponse.url().split('nextPageToken=')[0] +
       'nextPageToken=' +
