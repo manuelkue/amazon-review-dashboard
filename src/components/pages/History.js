@@ -37,7 +37,8 @@ export const History = ({config, status, reviews}) => {
                 <h1>History</h1>
                 <ProgressBar progress={status.scrapeProgress}></ProgressBar>
                 {!historyComponents.length && 
-                    <div className="reviewItem review-notification"><span>Reviews loaded: {status.scrapeProgress}%</span></div>
+
+                    <div className="reviewItem review-notification reviewItemsWrapper"><span>No reviews found</span></div>
                 }
                 <div className="historyItemWrapper">
                     {historyComponents}
