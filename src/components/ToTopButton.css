@@ -1,0 +1,21 @@
+@import url("../containers/App.css");
+
+.toTopButton{
+  display: flex;
+  position: absolute;
+  text-align: center;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  box-shadow: var(--shadow1), var(--shadow2), var(--shadow-border);
+  color: var(--color-text-dark);
+  font-weight: bolder;
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.2s ease-in-out;
+}
+
+.toTopButton.invisible{
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s ease-in-out;
+}

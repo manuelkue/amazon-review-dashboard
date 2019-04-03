@@ -3,6 +3,7 @@ import ReviewItem from "../ReviewItem";
 
 import {methods} from "../../utilities/methods";
 import { ProgressBar } from "../progressBar";
+import { ToTopButton } from "../ToTopButton";
 import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
 
 
@@ -23,11 +24,16 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
         filterByReviewTitle : true,
         filterByReviewText : false
     })
+    const [showMoreReviewsBlocked, setShowMoreReviewsBlocked] = useState(false)
 
     const showMoreReviews = () => {
         // Increase the number of displayed reviews to higher amount.
-        setLoadedReviewsCount(loadedReviewsCount + 200)
-        console.log("More Reviews loaded");
+        if(showMoreReviewsBlocked){
+            console.log("Loading of more reviews blocked while searching");
+        }else{
+            setLoadedReviewsCount(loadedReviewsCount + 200)
+            console.log("More Reviews loaded");
+        }
     }
 
     //Stick reviewsHeader to top and change styling
@@ -39,9 +45,11 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
                 //Check if intersection is coming from top / bottom
                 if(entries[0].boundingClientRect.height == entries[0].intersectionRect.height){
                     reviewsHeaderElement.classList.remove("hovering");
+                    document.querySelector(".toTopButton").classList.add("invisible");
                     setLoadedReviewsCount(230);
                 }else{
                     reviewsHeaderElement.classList.add("hovering");
+                    document.querySelector(".toTopButton").classList.remove("invisible");
                 }
               },
               {threshold: 1}
@@ -56,6 +64,14 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
             console.log("oberserver disconnected");
         })
     }, [])
+
+    const handleFilterTermInput = (event) => {
+        setFilterTerm(event.target.value.toLowerCase())
+        setShowMoreReviewsBlocked(true);
+        setTimeout(() => {
+            setShowMoreReviewsBlocked(false);
+        }, 1000);
+    }
 
     const handleFilterOptionsChange = ({target}) => {
         setFilterOptions({...filterOptions, [target.name]: target.checked})
@@ -83,15 +99,16 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
             .map(review => 
                 <ReviewItem key={review.externalId} config = {config} review={review} reviewFunctions={reviewFunctions} />
             )
-            
+
         return (
             <div className="reviews-list">
+                <ToTopButton/>
                 <div className="filterWrapper">
                     <h1 className="truncateString">Reviews{filterTerm ? ": " + filteredReviews.length : ''}</h1>
                     <input
                         placeholder='Filter reviews...'
                         type="text" value={filterTerm}
-                        onChange={(event) => setFilterTerm(event.target.value.toLowerCase())}
+                        onChange={handleFilterTermInput}
                     />
                     <label>
                         Product:
@@ -140,7 +157,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
                     }
                     {reviewsComponents}
                     {!!reviewsComponents.length && 
-                        <InfinitLoadingSentinel actionOnIntersecting={showMoreReviews} distanceToBottom={200} />
+                        <InfinitLoadingSentinel actionOnIntersecting={showMoreReviews} distanceToBottom={50} />
                     }
                 </div>
             </div>
