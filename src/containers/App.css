@@ -110,6 +110,14 @@ body{
   background: var(--color-light);
 }
 
+.sentinel{
+  display: block;
+  width: 1px;
+  height: 1px;
+  margin-top: -1px;
+  visibility: hidden;
+}
+
 h1{
   display: flex;
   align-items: center;
@@ -414,11 +422,17 @@ input:hover, input:focus{
 
 .main{
   padding: var(--spacing-m);
+  /* position sticky has problems with parent's padding, so it's moved to margin-top of first child */
+  padding-top: 0;
   background: var(--color-light);
   width: 100%;
   max-height:calc(100vh - var(--spacing-m) * 2 - var(--spacing-s));
   overflow-y: auto;
   border-top: var(--spacing-s) solid var(--color-dark);
+}
+
+.main >:first-child{
+  margin-top: var(--spacing-m)
 }
 
 .history{
@@ -497,6 +511,15 @@ input:hover, input:focus{
   text-transform: uppercase;
   background: unset;
   cursor: default;
+  position: sticky;
+  top:0px;
+  transition: all 0.2s, position 0s;
+}
+.reviewsHeader.hovering{
+  background: var(--color-light);
+  box-shadow: var(--shadow1);
+  border-bottom: 2px solid var(--color-light2);
+  transition: all 0.2s, position 0s;
 }
 
 .reviewsHeader > div{

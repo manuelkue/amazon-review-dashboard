@@ -11,8 +11,6 @@ import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
 // -> ({reviews, config}) = (props)
 // Utilizes hooks to use "class functionality" (useState, useEffect)
 
-//@TODO: Include search field to filter reviews
-
 //@TODO: integrate sort by clicking the header, sort for deleted as well
 
 export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
@@ -35,6 +33,34 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
         setLoadedReviewsCount(loadedReviewsCount + 200)
         console.log("More Reviews loaded");
     }
+
+    //Stick reviewsHeader to top and change styling
+    let reviewsHeaderElement;
+    let reviewsHeaderObserver;
+    useEffect(() => {
+        reviewsHeaderObserver = new IntersectionObserver(
+            entries => {
+                //Check if intersection is coming from top / bottom
+                if(entries[0].boundingClientRect.height == entries[0].intersectionRect.height){
+                    console.log("remove hovering class", entries[0]);
+                    reviewsHeaderElement.classList.remove("hovering");
+                }else{
+                    console.log("add hovering class", entries[0]);
+                    reviewsHeaderElement.classList.add("hovering");
+                }
+              },
+              {threshold: 1}
+        )
+        setTimeout(() => {
+            reviewsHeaderElement = document.querySelector(".reviewItem.reviewsHeader")
+            reviewsHeaderObserver.observe(document.querySelector(".sentinel"))
+        }, 100);
+
+        return(() => {
+            reviewsHeaderObserver.disconnect();
+            console.log("oberserver disconnected");
+        })
+    }, [])
 
     const handleFilterOptionsChange = ({target}) => {
         setFilterOptions({...filterOptions, [target.name]: target.checked})
@@ -101,7 +127,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
                     </label>
                 </div>
 
-
+                <div className="sentinel"></div>
                 <div className="reviewItem reviewsHeader">
                     <div className="material-icons columnLinkToReview" >open_in_new</div>
                     <div onClick={() => sortBy("productTitle")} className={sortingBy("productTitle") + "columnProductTitle"}>Product</div>
