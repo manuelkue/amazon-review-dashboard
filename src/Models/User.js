@@ -12,7 +12,10 @@ export class User {
     updatedParams
     userHistory
 
-    constructor(id, profileURL, name, rank, helpfulVotes, reviewsCount, syncTimestamp, updatedParams = [], userHistory = []) {
+    scrapeIncompleteAfterReviewId
+    scrapeIncompleteAtDate
+
+    constructor(id, profileURL, name, rank, helpfulVotes, reviewsCount, syncTimestamp, scrapeIncompleteAfterReviewId, scrapeIncompleteAtDate, updatedParams = [], userHistory = []) {
         this.id = typeof id === 'string'? id : ''
         this.profileURL = typeof profileURL === 'string'? profileURL : ''
         this.name = typeof name === 'string'? name : ''
@@ -22,6 +25,9 @@ export class User {
         this.syncTimestamp = !isNaN(+syncTimestamp)? +syncTimestamp : 0
         this.updatedParams = Array.isArray(updatedParams)? updatedParams : []
         this.userHistory = Array.isArray(userHistory)? userHistory : []
+
+        this.scrapeIncompleteAfterReviewId = typeof scrapeIncompleteAfterReviewId === 'string'? scrapeIncompleteAfterReviewId : ''
+        this.scrapeIncompleteAtDate = !isNaN(+scrapeIncompleteAtDate)? +scrapeIncompleteAtDate : 0
     }
     
     //Check whether a user with the same id has been updated, return all updated Params

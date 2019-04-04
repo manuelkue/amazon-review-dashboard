@@ -96,9 +96,15 @@ export const methods = {
           reviewHistory: []
         });
         if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {
-          savedReviews
-            .find(rev => rev.externalId === r.externalId)
-            .saveToHistoryIfUpdated(r);
+          try{
+            savedReviews
+              .find(rev => rev.externalId === r.externalId)
+              .saveToHistoryIfUpdated(r);
+          }
+          catch (err){
+            console.log("Error at review", savedReviews.find(rev => rev.externalId === r.externalId));
+            console.log(err);
+          }
         } else {
           savedReviews.push(r);
           console.log("foundNew", r);
@@ -132,6 +138,8 @@ export const methods = {
               newUser.helpfulVotes,
               newUser.reviewsCount,
               +new Date().getTime(),
+              '',
+              0,
               [],
               []
           );

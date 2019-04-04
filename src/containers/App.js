@@ -93,10 +93,10 @@ export default class App extends Component {
       });
       console.log("ScrapeProgress", this.state.status.scrapeProgress);
     });
-    ipcRenderer.on("reviewsScrapedInterrupted", (event, newReviews) => {
+    ipcRenderer.on("reviewsScrapedInterrupted", (event, {newReviews, userProfileURL}) => {
       // @TODO show the user that only partially fetched and how much, !!!!Toast erzeugen!!!!!
       methods
-        .saveReviews(newReviews, this.state.reviews, this.state.config.fetchURL)
+        .saveReviews(newReviews, this.state.reviews, userProfileURL)
         .then(() => {
           reviewStorage
             .get("reviews")
@@ -104,14 +104,15 @@ export default class App extends Component {
               this.setState({
                 reviews: methods.arr2ReviewClassArr(reviews)
               }, () => {
-                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString(this.state.config.language)}`)
+                this.saveScrapeIncompleteData(methods.fetchURLData(userProfileURL).id, newReviews[newReviews.length-1].externalId, +new Date().getTime());
+                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString(this.state.config.language)}`);
               });
             })
             .catch(err => console.error(err));
         })
         .catch(err => console.error(err));
     });
-    ipcRenderer.on("reviewsScraped", (event, reviewsScraped) => {
+    ipcRenderer.on("reviewsScraped", (event, {reviewsScraped, userProfileURL}) => {
       console.log("reviews", reviewsScraped);
       methods
         .saveReviews(reviewsScraped, this.state.reviews, this.state.config.fetchURL)
@@ -124,6 +125,7 @@ export default class App extends Component {
                   reviews: methods.arr2ReviewClassArr(reviews)
                 },
                 () => {
+                  this.saveScrapeIncompleteData(methods.fetchURLData(userProfileURL).id, '', 0)
                   this.newToast('success', `Reviews loaded: ${reviewsScraped.length.toLocaleString(this.state.config.language)}`)
                 }
               );
@@ -225,24 +227,25 @@ export default class App extends Component {
   }
 
   //@TODO: Implement autorefresh of profile at App-start / profile-URL change
-  //Handler can crawl full (maxReviewNumber = null), partially (maxReviewNumber != null), only profileStats and can begin at/after a specific review = {externalId, date}
-  startCrawlClickHandler({maxReviewNumber = null, onlyProfile = false, startAfterReview = null} = {}) {
+  //Handler can crawl full (maxReviewNumber = null), partially (maxReviewNumber != null), only profileStats and can begin at/after a specific review = externalId
+  startCrawlClickHandler({maxReviewNumber = null, onlyProfile = false, startAfterReviewId = null} = {}) {
     if(onlyProfile) maxReviewNumber = 0
 
     ipcRenderer.send("startCrawl", {
       url: this.state.config.fetchURL,
       maxReviewNumber: maxReviewNumber,
       onlyProfile,
-      startAfterReview
+      startAfterReview: this.state.reviews.find(review => review.externalId === startAfterReviewId)
     });
     this.setState({
       status: {
         ...this.state.status,
         scrapeStatus: "Scraping... ",
+        scrapeProgress: 0,
         isScrapingFull: maxReviewNumber === null,
         isScrapingPartially: !!maxReviewNumber,
         isScrapingProfile: onlyProfile,
-        isScrapingOldOnes: !!startAfterReview
+        isScrapingOldOnes: !!startAfterReviewId
       }
     });
 
@@ -460,6 +463,19 @@ export default class App extends Component {
     } else {
       console.log("AppInit already started");
     }
+  }
+
+  saveScrapeIncompleteData(userId, afterReviewId, atDate){
+    const users = [...this.state.users];
+    const activeUser = users.find(user => user.id === userId);
+    activeUser.scrapeIncompleteAfterReviewId = afterReviewId;
+    activeUser.scrapeIncompleteAtDate = atDate;
+
+    this.setState({
+      users: users
+    }, () => {
+      userStorage.set("users", users)
+    })
   }
 
   async newToast(type, message, duration = this.state.config.defaultToastDuration){

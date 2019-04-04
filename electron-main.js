@@ -85,7 +85,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile, startA
             //@TODO: If no reviews available, fail gracefully
   
             let responseTimout = setTimeout(() => {
-              mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
+              mainWindow.webContents.send('reviewsScrapedInterrupted', {newReviews: reviews, userProfileURL})
               console.log("\n\Timeout at responseObj:\n\n", responseObj);
               interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage, browser)
             }, timeoutForResponse)
@@ -99,7 +99,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile, startA
               console.log("Total time of crawling", new Date().getTime() - scrapeStartTime, "ms")
               console.log("reviewsCount", reviews.length, "\n\n");
               crawling = false;
-              mainWindow.webContents.send('reviewsScraped', reviews)
+              mainWindow.webContents.send('reviewsScraped', {reviewsScraped: reviews, userProfileURL})
               mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
               
               clearTimeout(responseTimout);

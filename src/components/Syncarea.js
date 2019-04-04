@@ -50,6 +50,9 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
                 </div>
             </div>
             <div className='syncStatus'>
+            {user && user.scrapeIncompleteAfterReviewId ? 
+                <div className="button" onClick={() => startCrawlClickHandler({startAfterReviewId: user.scrapeIncompleteAfterReviewId})}>Continue with review {user ? user.scrapeIncompleteAfterReviewId : ''}</div>
+            :''}
                 <span>Status: </span>
                 <span>{status.scrapeStatus} </span>
                 {status.scrapeProgress? <span>{status.scrapeProgress}%</span> : '' }

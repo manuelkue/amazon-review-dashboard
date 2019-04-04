@@ -90,6 +90,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
                 if(
                     (review.productTitle.toLowerCase().includes(filterTerm) && filterOptions.filterByProduct)
                     || (review.reviewTitle.toLowerCase().includes(filterTerm) && filterOptions.filterByReviewTitle)
+                    || (review.externalId.toLowerCase().includes(filterTerm) && filterOptions.filterByReviewTitle)
                     || (review.reviewText.toLowerCase().includes(filterTerm) && filterOptions.filterByReviewText)
                 ) return true
                 return false;
