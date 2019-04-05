@@ -44,7 +44,7 @@ export default class App extends Component {
         isScrapingFull: false,
         isScrapingPartially: false,
         isScrapingProfile: false,
-        isScrapingOldOnes: false,
+        isScrapingContinued: false,
         appInitStarted: false,
         toasts: []
       },
@@ -82,12 +82,20 @@ export default class App extends Component {
     ipcRenderer.on("reviewsScrapedSoFar", (event, reviewsCount) => {
       //@TODO: Save reviews scraped so far, to get newest reviews if Amazon blocks
       // Also to directly show user new loaded reviews. Has not to wait until all are loaded
+
+      const activeUser = this.state.users.find(user => this.state.config.fetchURL.includes(user.id));
+      let crawlOffset = 0;
+      if(this.state.status.isScrapingContinued){
+        crawlOffset = this.state.reviews.filter(review => review.userId === activeUser.id).findIndex(review => review.externalId === activeUser.scrapeIncompleteAfterReviewId)
+      }
+      console.log('Starting at #', crawlOffset, "of", activeUser.reviewsCount, 'reviews');
+
       this.setState({
         status: {
           ...this.state.status,
           scrapeProgress:
-            this.state.users.find(user => this.state.config.fetchURL.includes(user.id)).reviewsCount ?
-              methods.round((reviewsCount * 100) / (this.state.status.scrapeCountToReach),0)
+            activeUser.reviewsCount ?
+              methods.round(((reviewsCount + crawlOffset) * 100) / (this.state.status.scrapeCountToReach),0)
               :
               0
         }
@@ -231,6 +239,11 @@ export default class App extends Component {
   //Handler can crawl full (maxReviewNumber = null), partially (maxReviewNumber != null), only profileStats and can begin at/after a specific review = externalId
   startCrawlClickHandler({isFullScrape = false, maxReviewNumber = null, onlyProfile = false, startAfterReviewId = null} = {}) {
 
+    if (startAfterReviewId) isFullScrape = true;
+
+    let scrapeCountToReach = this.state.config.maxReviewNumberOnPartScrape;
+    if(isFullScrape) scrapeCountToReach = this.state.users.find(user => this.state.config.fetchURL.includes(user.id)).reviewsCount;
+
     ipcRenderer.send("startCrawl", {
       url: this.state.config.fetchURL,
       isFullScrape,
@@ -243,11 +256,11 @@ export default class App extends Component {
         ...this.state.status,
         scrapeStatus: "Scraping... ",
         scrapeProgress: 0,
-        scrapeCountToReach: maxReviewNumber,
+        scrapeCountToReach: scrapeCountToReach,
         isScrapingFull: isFullScrape,
         isScrapingPartially: !!maxReviewNumber,
         isScrapingProfile: onlyProfile,
-        isScrapingOldOnes: !!startAfterReviewId
+        isScrapingContinued: !!startAfterReviewId
       }
     });
 
