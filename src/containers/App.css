@@ -297,6 +297,11 @@ input:hover, input:focus{
   max-width: 120px;
 }
 
+.userStats .userName{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .syncarea{
 }
 
@@ -447,6 +452,12 @@ input:hover, input:focus{
 
 .main >:first-child{
   margin-top: var(--spacing-m)
+}
+
+@media (max-width: 992px){
+  .main h1:first-child{
+    display: none;
+  }
 }
 
 .history{

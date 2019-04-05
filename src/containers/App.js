@@ -40,6 +40,7 @@ export default class App extends Component {
         crawlNumberValid: false,
         scrapeStatus: "-",
         scrapeProgress: 0,
+        scrapeCountToReach: 0,
         isScrapingFull: false,
         isScrapingPartially: false,
         isScrapingProfile: false,
@@ -86,7 +87,7 @@ export default class App extends Component {
           ...this.state.status,
           scrapeProgress:
             this.state.users.find(user => this.state.config.fetchURL.includes(user.id)).reviewsCount ?
-              methods.round((reviewsCount * 100) / this.state.users.find(user => this.state.config.fetchURL.includes(user.id)).reviewsCount,0)
+              methods.round((reviewsCount * 100) / (this.state.status.scrapeCountToReach),0)
               :
               0
         }
@@ -228,12 +229,12 @@ export default class App extends Component {
 
   //@TODO: Implement autorefresh of profile at App-start / profile-URL change
   //Handler can crawl full (maxReviewNumber = null), partially (maxReviewNumber != null), only profileStats and can begin at/after a specific review = externalId
-  startCrawlClickHandler({maxReviewNumber = null, onlyProfile = false, startAfterReviewId = null} = {}) {
-    if(onlyProfile) maxReviewNumber = 0
+  startCrawlClickHandler({isFullScrape = false, maxReviewNumber = null, onlyProfile = false, startAfterReviewId = null} = {}) {
 
     ipcRenderer.send("startCrawl", {
       url: this.state.config.fetchURL,
-      maxReviewNumber: maxReviewNumber,
+      isFullScrape,
+      maxReviewNumber,
       onlyProfile,
       startAfterReview: this.state.reviews.find(review => review.externalId === startAfterReviewId)
     });
@@ -242,7 +243,8 @@ export default class App extends Component {
         ...this.state.status,
         scrapeStatus: "Scraping... ",
         scrapeProgress: 0,
-        isScrapingFull: maxReviewNumber === null,
+        scrapeCountToReach: maxReviewNumber,
+        isScrapingFull: isFullScrape,
         isScrapingPartially: !!maxReviewNumber,
         isScrapingProfile: onlyProfile,
         isScrapingOldOnes: !!startAfterReviewId

@@ -40,7 +40,7 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
     return(
         <div className="syncarea">
             <div className="syncButtonsWrapper">
-                <div className="syncButton" onClick={() => startCrawlClickHandler()}>
+                <div className="syncButton" onClick={() => startCrawlClickHandler({isFullScrape: true})}>
                     <i className={"material-icons" + (status.isScrapingFull? ' loading' : '') }>refresh</i>
                     <span>Complete</span>
                 </div>

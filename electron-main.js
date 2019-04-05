@@ -20,11 +20,11 @@ const storage = new Storage({
 
 ipcMain.on('startCrawl', (event, startCrawl) => {
   console.log("\n\ncrawling from", startCrawl.url, "\n")
-  crawlReviews(startCrawl.url, startCrawl.maxReviewNumber, startCrawl.onlyProfile, startCrawl.startAfterReview)
+  crawlReviews(startCrawl.url, startCrawl.isFullScrape, startCrawl.maxReviewNumber, startCrawl.onlyProfile, startCrawl.startAfterReview)
 })
 
 
-async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile, startAfterReview){
+async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyProfile, startAfterReview){
   console.log('maxReviewNumber :', maxReviewNumber);
   const scrapeStartTime = new Date().getTime()
   crawling = true;
@@ -94,7 +94,7 @@ async function crawlReviews(userProfileURL, maxReviewNumber, onlyProfile, startA
             console.log("reviewsCount", reviews.length);
             mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
             
-            if(!responseObj.nextPageToken || (maxReviewNumber && reviews.length >= maxReviewNumber)){
+            if(!responseObj.nextPageToken || (!isFullScrape && reviews.length >= maxReviewNumber)){
               console.log("\n#############\nScrapeComplete");
               console.log("Total time of crawling", new Date().getTime() - scrapeStartTime, "ms")
               console.log("reviewsCount", reviews.length, "\n\n");
