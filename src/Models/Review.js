@@ -70,7 +70,7 @@ export class Review {
             this.reviewText !== review.reviewText && updatedParams.push('reviewText')
             this.userRating !== review.userRating && updatedParams.push('userRating')
             this.helpfulVotes !== review.helpfulVotes && updatedParams.push('helpfulVotes')
-            this.comments !== review.comments && updatedParams.push('comments')
+            +this.comments !== +review.comments && updatedParams.push('comments')
         }
         if(updatedParams.length) {
             console.log("updatedParams", updatedParams)

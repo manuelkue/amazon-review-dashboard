@@ -65,7 +65,7 @@ export const methods = {
     return reviewObjects;
   },
 
-  saveReviews(newReviews, currentReviews, fetchURL) {
+  saveReviews(newReviews, currentReviews, fetchURL, reviewsAlreadyReviewObjects = false) {
     return new Promise(async (resolve, reject) => {
 
       let savedReviews = [...currentReviews];
@@ -75,26 +75,36 @@ export const methods = {
       const syncTimestamp = +new Date().getTime();
 
       newReviews.forEach(r => {
-        //@TODO: Get real commentCount ID here
-        r = new Review({
-          externalId: r.externalId,
-          userId: this.fetchURLData(fetchURL).id,
-          syncTimestamp: syncTimestamp,
-          productTitle: r.product.title,
-          productAsin: r.product.asin,
-          productMissing: r.product.missing,
-          verifiedPurchase: r.verifiedPurchase,
-          vine: r.vine,
-          reviewTitle: r.title,
-          reviewText: r.text,
-          averageRating: +r.product.averageRating,
-          userRating: +r.rating,
-          helpfulVotes: +r.helpfulVotes,
-          comments: 0,
-          date: +r.sortTimestamp,
-          updatedParams: [],
-          reviewHistory: []
-        });
+
+        if(!reviewsAlreadyReviewObjects){
+          //@TODO: Get real commentCount ID here
+          r = new Review({
+            externalId: r.externalId,
+            userId: this.fetchURLData(fetchURL).id,
+            syncTimestamp: syncTimestamp,
+            productTitle: r.product.title,
+            productAsin: r.product.asin,
+            productMissing: r.product.missing,
+            verifiedPurchase: r.verifiedPurchase,
+            vine: r.vine,
+            reviewTitle: r.title,
+            reviewText: r.text,
+            averageRating: +r.product.averageRating,
+            userRating: +r.rating,
+            helpfulVotes: +r.helpfulVotes,
+            comments: 0,
+            date: +r.sortTimestamp,
+            updatedParams: [],
+            reviewHistory: []
+          });
+        }else{
+          console.log('review as ReviewObject after commentsupdate :', r);
+          r = {
+            ...r,
+            syncTimestamp: syncTimestamp
+          }
+        }
+
         if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {
           try{
             savedReviews

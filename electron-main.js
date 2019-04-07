@@ -5,7 +5,8 @@ const fetch = require('node-fetch')
 let mainWindow
 
 const maxCrawlingTime = 300000;
-let crawling;
+let isCrawlingReviews;
+let isCrawlingComments;
 
 const storage = new Storage({
   configName: 'user-preferences',
@@ -18,19 +19,42 @@ const storage = new Storage({
 // Puppeteer
 ////////////////////////
 
-ipcMain.on('startCrawl', (event, startCrawl) => {
+//Create browser globally to reference it in Electron window onReady.
+let browser;
+const headlessMode = true;
+
+ipcMain.on('startCrawl', async (event, startCrawl) => {
   console.log("\n\ncrawling from", startCrawl.url, "\n")
-  crawlReviews(startCrawl.url, startCrawl.isFullScrape, startCrawl.maxReviewNumber, startCrawl.onlyProfile, startCrawl.startAfterReview)
+  crawlReviews(startCrawl.url, startCrawl.isFullScrape, startCrawl.maxReviewNumber, startCrawl.onlyProfile, startCrawl.startAfterReview);
+})
+
+ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
+
+  const commentsCrawlStartTime = new Date().getTime()
+
+  //Array with objects of {reviewId, commentsCount}
+  let commentsCounts = [];
+  const start = async () => {
+    await Promise.all(reviewIds.map(async reviewId => {
+        commentsCounts.push({reviewId, commentsCount: await getCommentsCount(`https://${new URL(userProfileURL).hostname}/gp/customer-reviews/${reviewId}`)})
+    }))
+    console.log(`Count for reviews finished:`, commentsCounts);
+
+    console.log('Done')
+    mainWindow.webContents.send('commentsCrawled', commentsCounts)
+    console.log('commentsCrawled after :', new Date().getTime() - commentsCrawlStartTime, 'ms');
+    closeConnection(page);
+  }
+  start()
 })
 
 
 async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyProfile, startAfterReview){
   console.log('maxReviewNumber :', maxReviewNumber);
   const scrapeStartTime = new Date().getTime()
-  crawling = true;
+  isCrawlingReviews = true;
   let reviews = [];
 
-  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -65,7 +89,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
       })
       .catch(err => {
         console.log('gamificationError')
-        interruptedByAmazon(err, page, browser)
+        interruptedByAmazon(err, page)
       })
     }
 
@@ -87,7 +111,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
             let responseTimout = setTimeout(() => {
               mainWindow.webContents.send('reviewsScrapedInterrupted', {newReviews: reviews, userProfileURL})
               console.log("\n\Timeout at responseObj:\n\n", responseObj);
-              interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage, browser)
+              interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage)
             }, timeoutForResponse)
   
             reviews.push(...responseObj['contributions']);
@@ -98,12 +122,12 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
               console.log("\n#############\nScrapeComplete");
               console.log("Total time of crawling", new Date().getTime() - scrapeStartTime, "ms")
               console.log("reviewsCount", reviews.length, "\n\n");
-              crawling = false;
+              isCrawlingReviews = false;
               mainWindow.webContents.send('reviewsScraped', {reviewsScraped: reviews, userProfileURL})
               mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
               
               clearTimeout(responseTimout);
-              await closeConnection (jsonPage, browser)
+              await closeConnection (jsonPage)
             }else{
               //@TODO: Catch if nextPageToken but no JSON delivered / Amazon blocked?
               const jsonURL = makeJsonURL(userProfileURL, responseObj, response, startAfterReview);
@@ -125,13 +149,13 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
           //@TODO: Send Message, that user has no reviews visible
           console.log("No public reviews available/visible");
           mainWindow.webContents.send('scrapeWarning', 'No reviews available/visible')
-          await closeConnection (page, browser)
+          await closeConnection (page)
         }
       })
       .catch(err => {
         mainWindow.webContents.send('reviewsScrapedInterrupted', reviews)
         console.log('reviewCrawlError')
-        interruptedByAmazon(err, page, browser)
+        interruptedByAmazon(err, page)
       })
     }
   })
@@ -154,16 +178,16 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   
   // If no completeCrawl crawling has to be deactivated here
   if (onlyProfile){
-    crawling = false
+    isCrawlingReviews = false
     mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
-    await closeConnection (page, browser)
+    await closeConnection (page)
   }
   console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
   })
   .catch(async err => {
     mainWindow.webContents.send('scrapeError', 'Connection failed.\n')
     console.info('Connection failed');
-    await closeConnection(page, browser)
+    await closeConnection(page)
   })
 }
 
@@ -185,27 +209,57 @@ function makeJsonURL(userProfileURL, responseObj, firstResponse, startAfterRevie
   return jsonURL;
 }
 
-async function interruptedByAmazon(err, page, browser){
+async function interruptedByAmazon(err, page){
   mainWindow.webContents.send('scrapeError', 'Interrupted by Amazon')
-  crawling = false;
-  await closeConnection (page, browser)
+  isCrawlingReviews = false;
+  await closeConnection (page)
   console.error(err)
 }
 
 //@TODO: After reviews are crawled, fetch commmentsCount for each review
-async function crawlComments(url){
-  console.log('fetching comments for url :', url);
+async function getCommentsCount(reviewURL){
+
+  const page = await browser.newPage()
+
+  await page.setViewport({ width: 500, height: 1000 });
+
+  //Filter for relevant files & fetch json-Data
+  await page.setRequestInterception(true);
+  page.on('request', req => {
+      if(req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image' || req.resourceType() == 'xhr'){
+          req.abort();
+      }
+      else {
+          req.continue();
+      }
+  });
+
+  return new Promise(async (resolve, reject) => {
+    let commentsCount 
+  
+    await page.goto(reviewURL)
+    .then(async () => {
+      commentsCount = await page.$eval('span.review-comment-total', el => el.innerText)
+        .catch(() => console.error('$eval name not successfull'))
+      await page.close();
+      resolve(+commentsCount)
+    })
+    .catch(async err => {
+      mainWindow.webContents.send('scrapeError', 'Connection failed.\n')
+      console.info(`Connection failed for ${reviewURL}`);
+      reject(0)
+    })  
+  })
   //Go to new page, fetch count, send to application with review ID
   //OR
   //go to each page, collect all counts and send afterwards
 }
 
 
-async function closeConnection (page, browser){
+async function closeConnection (page){
       try{
         await setTimeout(async () => {
           await page.close();
-          await browser.close();
         },500)
         console.log("connection closed")
       }
@@ -221,19 +275,22 @@ async function closeConnection (page, browser){
 // Diese Methode wird aufgerufen, wenn Electron mit der
 // Initialisierung fertig ist und Browserfenster erschaffen kann.
 // Einige APIs können nur nach dem Auftreten dieses Events genutzt werden.
-app.on('ready', ()=>{
+app.on('ready', async ()=>{
   let { width, height } = storage.get('windowBounds');
   mainWindow = new BrowserWindow({ width, height })
+
+  browser = await puppeteer.launch({ headless: headlessMode })
 
   // mainWindow.on('resize', () => {
   //   let { width, height } = mainWindow.getBounds();
   //   storage.set('windowBounds', { width, height });
   // });
   
-  mainWindow.on('closed', () => {
+  mainWindow.on('closed', async () => {
     // Dereferenzieren des Fensterobjekts, normalerweise würden Sie Fenster
     // in einem Array speichern, falls Ihre App mehrere Fenster unterstützt. 
     // Das ist der Zeitpunkt, an dem Sie das zugehörige Element löschen sollten.
+    await browser.close();
     mainWindow = null
   })
 

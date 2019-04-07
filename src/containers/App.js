@@ -136,6 +136,7 @@ export default class App extends Component {
                 () => {
                   this.saveScrapeIncompleteData(methods.fetchURLData(userProfileURL).id, '', 0)
                   this.newToast('success', `Reviews loaded: ${reviewsScraped.length.toLocaleString(this.state.config.language)}`)
+                  ipcRenderer.send("crawlComments", {userProfileURL, reviewIds: reviewsScraped.map(review => review.externalId)});
                 }
               );
             })
@@ -155,6 +156,32 @@ export default class App extends Component {
       },() => {
         this.newToast('notification', `Fetch completed after ${methods.round(duration / 1000, 1).toLocaleString(this.state.config.language)} s`)
       });
+    });
+    ipcRenderer.on("commentsCrawled", (event, crawledCommentsCounts) => {
+      console.log('fetching comments for reviews :', crawledCommentsCounts);
+
+      const reviewsWithCommentCounts = crawledCommentsCounts.map(count => {
+        return {...this.state.reviews.find(item => item.externalId === count.reviewId), comments: count.commentsCount}
+      })
+
+      methods
+        .saveReviews(reviewsWithCommentCounts, this.state.reviews, this.state.config.fetchURL, true)
+        .then(() => {
+          reviewStorage
+            .get("reviews")
+            .then(reviews => {
+              this.setState(
+                {
+                  reviews: methods.arr2ReviewClassArr(reviews)
+                },
+                () => {
+                  this.newToast('success', `Comments loaded.`)
+                }
+              );
+            })
+            .catch(err => console.error(err));
+        })
+        .catch(err => console.error(err));
     });
     ipcRenderer.on("scrapeWarning", (event, message) => {
       this.newToast('warning', message)
