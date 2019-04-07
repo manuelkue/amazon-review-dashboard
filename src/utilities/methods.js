@@ -98,11 +98,11 @@ export const methods = {
             reviewHistory: []
           });
         }else{
-          console.log('review as ReviewObject after commentsupdate :', r);
           r = {
             ...r,
             syncTimestamp: syncTimestamp
           }
+          console.log('review as ReviewObject after commentsupdate :', r);
         }
 
         if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {

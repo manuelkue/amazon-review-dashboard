@@ -63,6 +63,8 @@ export class Review {
     //Check whether a review with the same externalId has been updated, return all updated Params
     showUpdatedParams(review){
         let updatedParams = []
+        console.log('review OLD :', this);
+        console.log('review NEW :', review);
         if(this.externalId === review.externalId && +this.syncTimestamp < +review.syncTimestamp){
             this.productTitle !== review.productTitle && updatedParams.push('productTitle')
             this.productMissing !== review.productMissing && updatedParams.push('productMissing')

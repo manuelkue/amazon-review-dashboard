@@ -35,15 +35,25 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
   //Array with objects of {reviewId, commentsCount}
   let commentsCounts = [];
   const start = async () => {
-    await Promise.all(reviewIds.map(async reviewId => {
-        commentsCounts.push({reviewId, commentsCount: await getCommentsCount(`https://${new URL(userProfileURL).hostname}/gp/customer-reviews/${reviewId}`)})
+    await Promise.all(reviewIds.map(reviewId => {
+      return new Promise((resolve, reject) => {
+        getCommentsCount(`https://${new URL(userProfileURL).hostname}/gp/customer-reviews/${reviewId}`)
+          .then(commentsCount => {
+            commentsCounts.push({reviewId, commentsCount});
+            console.log(`Count for review ${reviewId}: ${commentsCount}`);
+            resolve(true)
+          })
+          .catch(err => reject(err))
+      })
     }))
-    console.log(`Count for reviews finished:`, commentsCounts);
+    .then(results => console.log(`Count for ${reviewIds.length} reviews finished successfull`))
+    .catch(err => {
+      console.info(err);
+      console.log(`Count for reviews finished with ${commentsCounts.length} of ${reviewIds.length}`);
+    })
 
-    console.log('Done')
     mainWindow.webContents.send('commentsCrawled', commentsCounts)
     console.log('commentsCrawled after :', new Date().getTime() - commentsCrawlStartTime, 'ms');
-    closeConnection(page);
   }
   start()
 })
@@ -135,6 +145,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
               startAfterReview = null;
               console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
   
+              await hideAutomatedScraping(jsonPage);
               await jsonPage.goto(jsonURL);
               const content = await jsonPage.content(); 
               jsonObj = await jsonPage.evaluate(() =>  {
@@ -161,6 +172,8 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   })
 
 
+  console.log('page :', page);
+  await hideAutomatedScraping(page);
   await page.goto(userProfileURL)
   .then(async () => {
     name = await page.$eval('.name-container span', el => el.innerText)
@@ -219,6 +232,7 @@ async function interruptedByAmazon(err, page){
 //@TODO: After reviews are crawled, fetch commmentsCount for each review
 async function getCommentsCount(reviewURL){
 
+
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -235,24 +249,26 @@ async function getCommentsCount(reviewURL){
   });
 
   return new Promise(async (resolve, reject) => {
-    let commentsCount 
-  
+    let commentsCount;
+    await hideAutomatedScraping(page);
+
     await page.goto(reviewURL)
     .then(async () => {
       commentsCount = await page.$eval('span.review-comment-total', el => el.innerText)
-        .catch(() => console.error('$eval name not successfull'))
+        .catch(() => console.error('$eval count not successfull'))
       await page.close();
-      resolve(+commentsCount)
+      if(typeof commentsCount === 'number' && commentsCount >= 0 ){
+        resolve(+commentsCount)
+      }else{
+        reject(`Parsing not successfull ${reviewURL}`)
+      }
     })
     .catch(async err => {
-      mainWindow.webContents.send('scrapeError', 'Connection failed.\n')
-      console.info(`Connection failed for ${reviewURL}`);
-      reject(0)
+      mainWindow.webContents.send('scrapeError', 'Connection failed.\n');
+      closeConnection(page);
+      reject(`Connection failed for ${reviewURL}`)
     })  
   })
-  //Go to new page, fetch count, send to application with review ID
-  //OR
-  //go to each page, collect all counts and send afterwards
 }
 
 
@@ -266,6 +282,40 @@ async function closeConnection (page){
       catch{
         console.log("connection already closed")
       }
+}
+
+async function hideAutomatedScraping(page){
+  // https://intoli.com/blog/not-possible-to-block-chrome-headless/
+  const userAgent = 'Mozilla/5.0 (X11; Linux x86_64)' +
+  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36';
+  await page.setUserAgent(userAgent);
+  
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, 'webdriver', {
+      get: () => false,
+    });
+    window.navigator.chrome = {
+      ...window.navigator.chrome,
+      runtime: {}
+    };
+    
+    const originalQuery = window.navigator.permissions.query;
+    return window.navigator.permissions.query = (parameters) => (
+      parameters.name === 'notifications' ?
+        Promise.resolve({ state: Notification.permission }) :
+        originalQuery(parameters)
+    );
+  
+    Object.defineProperty(navigator, 'plugins', {
+      // This just needs to have `length > 0` for the current test,
+      // but we could mock the plugins too if necessary.
+      get: () => [1, 2, 3, 4, 5],
+    });
+  
+    Object.defineProperty(navigator, 'languages', {
+      get: () => ['en-US', 'en'],
+    });
+  });
 }
 
 ////////////////////////
