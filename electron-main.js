@@ -21,7 +21,7 @@ const storage = new Storage({
 
 //Create browser globally to reference it in Electron window onReady.
 let browser;
-const headlessMode = true;
+const headlessMode = false;
 
 ipcMain.on('startCrawl', async (event, startCrawl) => {
   console.log("\n\ncrawling from", startCrawl.url, "\n")
@@ -230,8 +230,6 @@ async function interruptedByAmazon(err, page){
 
 //@TODO: After reviews are crawled, fetch commmentsCount for each review
 async function getCommentsCount(reviewURL){
-
-
   const page = await browser.newPage()
 
   await page.setViewport({ width: 500, height: 1000 });
@@ -251,11 +249,12 @@ async function getCommentsCount(reviewURL){
     let commentsCount;
     await hideAutomatedScraping(page);
 
-    await page.goto(reviewURL)
+    await page.goto(reviewURL, { waitUntil: 'load' })
     .then(async () => {
       commentsCount = await page.$eval('span.review-comment-total', el => +el.innerText)
         .catch(() => console.error('$eval count not successfull'))
-      await closeConnection (page)
+      // await closeConnection (page)
+      console.log('commentsCount :', commentsCount);
       if(typeof commentsCount === 'number' && commentsCount >= 0 ){
         resolve(+commentsCount)
       }else{
@@ -264,7 +263,7 @@ async function getCommentsCount(reviewURL){
     })
     .catch(async err => {
       mainWindow.webContents.send('scrapeError', 'Connection failed.\n');
-      await closeConnection (page)
+      // await closeConnection (page)
       reject(`Connection failed for ${reviewURL}`)
     })  
   })
