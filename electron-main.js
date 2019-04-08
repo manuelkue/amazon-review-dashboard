@@ -35,7 +35,8 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
   //Array with objects of {reviewId, commentsCount}
   let commentsCounts = [];
   const start = async () => {
-    await Promise.all(reviewIds.map(reviewId => {
+    const currentReviewIds = reviewIds.filter(reviewId => !commentsCounts.map(count => count.reviewId).includes(reviewId)).slice(0, 10)
+    await Promise.all(currentReviewIds.map(reviewId => {
       return new Promise((resolve, reject) => {
         getCommentsCount(`https://${new URL(userProfileURL).hostname}/gp/customer-reviews/${reviewId}`)
           .then(commentsCount => {
@@ -46,7 +47,10 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
           .catch(err => reject(err))
       })
     }))
-    .then(results => console.log(`Count for ${reviewIds.length} reviews finished successfull`))
+    .then(results => {
+      console.log(`Count for ${currentReviewIds.length} reviews finished successfull`)
+      if(commentsCounts.length !== reviewIds.length) start()
+    })
     .catch(err => {
       console.info(err);
       console.log(`Count for reviews finished with ${commentsCounts.length} of ${reviewIds.length}`);
@@ -253,8 +257,7 @@ async function getCommentsCount(reviewURL){
     .then(async () => {
       commentsCount = await page.$eval('span.review-comment-total', el => +el.innerText)
         .catch(() => console.error('$eval count not successfull'))
-      // await closeConnection (page)
-      console.log('commentsCount :', commentsCount);
+      await closeConnection (page)
       if(typeof commentsCount === 'number' && commentsCount >= 0 ){
         resolve(+commentsCount)
       }else{
@@ -263,7 +266,7 @@ async function getCommentsCount(reviewURL){
     })
     .catch(async err => {
       mainWindow.webContents.send('scrapeError', 'Connection failed.\n');
-      // await closeConnection (page)
+      await closeConnection (page)
       reject(`Connection failed for ${reviewURL}`)
     })  
   })

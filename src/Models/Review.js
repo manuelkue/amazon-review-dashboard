@@ -82,7 +82,7 @@ export class Review {
 
     saveToHistoryIfUpdated(review, reviewsAlreadyReviewObjects){
         if(this.showUpdatedParams(review, reviewsAlreadyReviewObjects)){
-            review.updatedParams = this.showUpdatedParams(review)
+            review.updatedParams = this.showUpdatedParams(review, reviewsAlreadyReviewObjects)
             let historyItem = {syncTimestamp : methods.cloneElement(+this.syncTimestamp)}
             review.updatedParams.forEach(param => {
                 historyItem[param] = methods.cloneElement(this[param])
