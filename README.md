@@ -27,6 +27,8 @@ With terminal navigate into the downloaded folder and execute
 npm i
 ```
 That will install all dependencies that are required.<br>
+(Takes some time as it depends on a version of Chromium that has to be downloaded first)
+
 Now run
 ```
 npm start
