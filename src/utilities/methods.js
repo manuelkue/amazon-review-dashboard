@@ -102,14 +102,14 @@ export const methods = {
             ...r,
             syncTimestamp: syncTimestamp
           }
-          console.log('review as ReviewObject after commentsupdate :', r);
         }
 
         if (savedReviews.map(rev => rev.externalId).includes(r.externalId)) {
           try{
+            console.log('found in savedReviews :', savedReviews.find(rev => rev.externalId === r.externalId));
             savedReviews
               .find(rev => rev.externalId === r.externalId)
-              .saveToHistoryIfUpdated(r);
+              .saveToHistoryIfUpdated(r, reviewsAlreadyReviewObjects);
           }
           catch (err){
             console.log("Error at review", savedReviews.find(rev => rev.externalId === r.externalId));

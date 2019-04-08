@@ -172,7 +172,6 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   })
 
 
-  console.log('page :', page);
   await hideAutomatedScraping(page);
   await page.goto(userProfileURL)
   .then(async () => {
@@ -254,9 +253,9 @@ async function getCommentsCount(reviewURL){
 
     await page.goto(reviewURL)
     .then(async () => {
-      commentsCount = await page.$eval('span.review-comment-total', el => el.innerText)
+      commentsCount = await page.$eval('span.review-comment-total', el => +el.innerText)
         .catch(() => console.error('$eval count not successfull'))
-      await page.close();
+      await closeConnection (page)
       if(typeof commentsCount === 'number' && commentsCount >= 0 ){
         resolve(+commentsCount)
       }else{
@@ -265,7 +264,7 @@ async function getCommentsCount(reviewURL){
     })
     .catch(async err => {
       mainWindow.webContents.send('scrapeError', 'Connection failed.\n');
-      closeConnection(page);
+      await closeConnection (page)
       reject(`Connection failed for ${reviewURL}`)
     })  
   })

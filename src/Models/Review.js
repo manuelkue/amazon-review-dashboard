@@ -61,10 +61,8 @@ export class Review {
     }
     
     //Check whether a review with the same externalId has been updated, return all updated Params
-    showUpdatedParams(review){
+    showUpdatedParams(review, reviewsAlreadyReviewObjects){
         let updatedParams = []
-        console.log('review OLD :', this);
-        console.log('review NEW :', review);
         if(this.externalId === review.externalId && +this.syncTimestamp < +review.syncTimestamp){
             this.productTitle !== review.productTitle && updatedParams.push('productTitle')
             this.productMissing !== review.productMissing && updatedParams.push('productMissing')
@@ -72,7 +70,7 @@ export class Review {
             this.reviewText !== review.reviewText && updatedParams.push('reviewText')
             this.userRating !== review.userRating && updatedParams.push('userRating')
             this.helpfulVotes !== review.helpfulVotes && updatedParams.push('helpfulVotes')
-            +this.comments !== +review.comments && updatedParams.push('comments')
+            this.comments !== review.comments && reviewsAlreadyReviewObjects && updatedParams.push('comments')
         }
         if(updatedParams.length) {
             console.log("updatedParams", updatedParams)
@@ -82,8 +80,8 @@ export class Review {
         }
     }
 
-    saveToHistoryIfUpdated(review){
-        if(this.showUpdatedParams(review)){
+    saveToHistoryIfUpdated(review, reviewsAlreadyReviewObjects){
+        if(this.showUpdatedParams(review, reviewsAlreadyReviewObjects)){
             review.updatedParams = this.showUpdatedParams(review)
             let historyItem = {syncTimestamp : methods.cloneElement(+this.syncTimestamp)}
             review.updatedParams.forEach(param => {
