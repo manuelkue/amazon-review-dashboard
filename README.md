@@ -31,8 +31,9 @@ Now run
 ```
 npm start
 ```
-That will start the application locally.  You can start electron now and view the application:
+That will start the application locally.
 
+In a second terminal instance / window you can start electron now and view the application:
 ```
 npm run electron
 ```
