@@ -21,7 +21,7 @@ const storage = new Storage({
 
 //Create browser globally to reference it in Electron window onReady.
 let browser;
-const headlessMode = false;
+const headlessMode = true;
 
 ipcMain.on('startCrawl', async (event, startCrawl) => {
   console.log("\n\ncrawling from", startCrawl.url, "\n")
@@ -34,8 +34,8 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
 
   //Array with objects of {reviewId, commentsCount}
   let commentsCounts = [];
-  const start = async () => {
-    const currentReviewIds = reviewIds.filter(reviewId => !commentsCounts.map(count => count.reviewId).includes(reviewId)).slice(0, 10)
+  const crawlCommentsInterval = async () => {
+    const currentReviewIds = reviewIds.filter(reviewId => !commentsCounts.map(count => count.reviewId).includes(reviewId)).slice(0, 15)
     await Promise.all(currentReviewIds.map(reviewId => {
       return new Promise((resolve, reject) => {
         getCommentsCount(`https://${new URL(userProfileURL).hostname}/gp/customer-reviews/${reviewId}`)
@@ -49,7 +49,9 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
     }))
     .then(results => {
       console.log(`Count for ${currentReviewIds.length} reviews finished successfull`)
-      if(commentsCounts.length !== reviewIds.length) start()
+      if(commentsCounts.length !== reviewIds.length) {
+        crawlCommentsInterval()
+      }
     })
     .catch(err => {
       console.info(err);
