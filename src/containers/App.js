@@ -115,6 +115,7 @@ export default class App extends Component {
               }, () => {
                 this.saveScrapeIncompleteData(methods.fetchURLData(userProfileURL).id, newReviews[newReviews.length-1].externalId, +new Date().getTime());
                 this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString(this.state.config.language)}`);
+                this.crawlCommentsCounts(userProfileURL, newReviews)
               });
             })
             .catch(err => console.error(err));
@@ -136,7 +137,7 @@ export default class App extends Component {
                 () => {
                   this.saveScrapeIncompleteData(methods.fetchURLData(userProfileURL).id, '', 0)
                   this.newToast('success', `Reviews loaded: ${reviewsScraped.length.toLocaleString(this.state.config.language)}`)
-                  ipcRenderer.send("crawlComments", {userProfileURL, reviewIds: reviewsScraped.map(review => review.externalId)});
+                  this.crawlCommentsCounts(userProfileURL, reviewsScraped)
                 }
               );
             })
@@ -518,6 +519,10 @@ export default class App extends Component {
     }, () => {
       userStorage.set("users", users)
     })
+  }
+
+  crawlCommentsCounts(userProfileURL = this.state.config.fetchURL, reviewsToCrawlCommentsFrom = this.state.reviews.filter(review => this.state.config.fetchURL.includes(review.userId))){
+    ipcRenderer.send("crawlComments", {userProfileURL, reviewIds: reviewsToCrawlCommentsFrom.map(review => review.externalId)});
   }
 
   async newToast(type, message, duration = this.state.config.defaultToastDuration){

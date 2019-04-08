@@ -61,7 +61,7 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
     mainWindow.webContents.send('commentsCrawled', commentsCounts)
     console.log('commentsCrawled after :', new Date().getTime() - commentsCrawlStartTime, 'ms');
   }
-  start()
+  crawlCommentsInterval()
 })
 
 
