@@ -34,6 +34,7 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
 
   //Array with objects of {reviewId, commentsCount}
   let commentsCounts = [];
+  let finishedWithErrors = false;
   const crawlCommentsInterval = async () => {
     const currentReviewIds = reviewIds.filter(reviewId => !commentsCounts.map(count => count.reviewId).includes(reviewId)).slice(0, 15)
     await Promise.all(currentReviewIds.map(reviewId => {
@@ -56,10 +57,12 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
     .catch(err => {
       console.info(err);
       console.log(`Count for reviews finished with ${commentsCounts.length} of ${reviewIds.length}`);
+      finishedWithErrors = true;
     })
-
     mainWindow.webContents.send('commentsCrawled', commentsCounts)
-    console.log('commentsCrawled after :', new Date().getTime() - commentsCrawlStartTime, 'ms');
+    if(commentsCounts.length === reviewIds.length || finishedWithErrors){
+      console.log('commentsCrawled after :', new Date().getTime() - commentsCrawlStartTime, 'ms');
+    }
   }
   crawlCommentsInterval()
 })
@@ -101,7 +104,6 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
         helpfulVotes = +json.helpfulVotes.helpfulVotesData.count.replace(/\D/g,'')
         reviewsCount = +json.reviews.reviewsCountData.count.replace(/\D/g,'')
         if(name && rank) mainWindow.webContents.send('profileScraped', {userProfileURL, name, rank, helpfulVotes, reviewsCount})
-        //@TODO: Convert to promises -> Promise.all -> webContents.send
       })
       .catch(err => {
         console.log('gamificationError')

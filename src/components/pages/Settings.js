@@ -1,6 +1,6 @@
 import React from "react"
 
-export const Settings = ({config, status, settingsFunctions})  => {
+export const Settings = ({config, status, settingsFunctions, crawlCommentsCounts})  => {
 
     const availableLanguages = config.languagesAvailable
         .map(language => 
@@ -25,6 +25,12 @@ export const Settings = ({config, status, settingsFunctions})  => {
             </div>
             <div className="languagesWrapper">
                 {availableLanguages}
+            </div>
+            <div className = "inputHeading">
+                Manual Comments Crawl
+            </div>
+            <div className="languagesWrapper">
+                <div className="button" onClick={() => crawlCommentsCounts()}>Start Crawl of all reviews</div>
             </div>
         </div>
     )
