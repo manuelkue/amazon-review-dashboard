@@ -27,12 +27,15 @@ With terminal navigate into the downloaded folder and execute
 npm i
 ```
 That will install all dependencies that are required.<br>
+(Takes some time as it depends on a version of Chromium that has to be downloaded first)
+
 Now run
 ```
 npm start
 ```
-That will start the application locally.  You can start electron now and view the application:
+That will start the application locally.
 
+In a second terminal instance / window you can start electron now and view the application:
 ```
 npm run electron
 ```
