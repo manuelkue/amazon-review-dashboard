@@ -61,7 +61,7 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
     })
     mainWindow.webContents.send('commentsCrawled', commentsCounts)
     if(commentsCounts.length === reviewIds.length || finishedWithErrors){
-      console.log('commentsCrawled after :', new Date().getTime() - commentsCrawlStartTime, 'ms');
+      console.log('\n##########\ncommentsCrawled after :', new Date().getTime() - commentsCrawlStartTime, 'ms\n##########');
     }
   }
   crawlCommentsInterval()
@@ -125,7 +125,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   
           async function recursiveJsonCrawl(responseObj){
             //@TODO: If no reviews available, fail gracefully
-  
+
             let responseTimout = setTimeout(() => {
               mainWindow.webContents.send('reviewsScrapedInterrupted', {newReviews: reviews, userProfileURL})
               console.log("\n\Timeout at responseObj:\n\n", responseObj);
@@ -162,6 +162,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   
               clearTimeout(responseTimout);
               recursiveJsonCrawl(jsonObj)
+              
             }
           }
         }else{
@@ -303,13 +304,6 @@ async function hideAutomatedScraping(page){
       ...window.navigator.chrome,
       runtime: {}
     };
-    
-    const originalQuery = window.navigator.permissions.query;
-    return window.navigator.permissions.query = (parameters) => (
-      parameters.name === 'notifications' ?
-        Promise.resolve({ state: Notification.permission }) :
-        originalQuery(parameters)
-    );
   
     Object.defineProperty(navigator, 'plugins', {
       // This just needs to have `length > 0` for the current test,
@@ -320,6 +314,13 @@ async function hideAutomatedScraping(page){
     Object.defineProperty(navigator, 'languages', {
       get: () => ['en-US', 'en'],
     });
+    
+    const originalQuery = window.navigator.permissions.query;
+    return window.navigator.permissions.query = (parameters) => (
+      parameters.name === 'notifications' ?
+        Promise.resolve({ state: Notification.permission }) :
+        originalQuery(parameters)
+    );
   });
 }
 
