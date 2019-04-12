@@ -36,35 +36,6 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
         }
     }
 
-    //Stick reviewsHeader to top and change styling
-    let reviewsHeaderElement;
-    let reviewsHeaderObserver;
-    useEffect(() => {
-        reviewsHeaderObserver = new IntersectionObserver(
-            entries => {
-                //Check if intersection is coming from top / bottom
-                if(entries[0].boundingClientRect.height == entries[0].intersectionRect.height){
-                    reviewsHeaderElement.classList.remove("hovering");
-                    document.querySelector(".toTopButton").classList.add("invisible");
-                    setLoadedReviewsCount(230);
-                }else{
-                    reviewsHeaderElement.classList.add("hovering");
-                    document.querySelector(".toTopButton").classList.remove("invisible");
-                }
-              },
-              {threshold: 1}
-        )
-        setTimeout(() => {
-            reviewsHeaderElement = document.querySelector(".reviewItem.reviewsHeader")
-            reviewsHeaderObserver.observe(document.querySelector(".sentinel"))
-        }, 100);
-
-        return(() => {
-            reviewsHeaderObserver.disconnect();
-            console.log("oberserver disconnected");
-        })
-    }, [])
-
     const handleFilterTermInput = (event) => {
         setFilterTerm(event.target.value.toLowerCase())
         setShowMoreReviewsBlocked(true);
@@ -103,7 +74,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
 
         return (
             <div className="reviews-list">
-                <ToTopButton/>
+                <ToTopButton arrivingAtTopAction={() => setLoadedReviewsCount(230)} itemToReceiveNewClassQuerySelector = ".reviewItem.reviewsHeader"/>
                 <div className="filterWrapper">
                     <h1 className="truncateString">Reviews{filterTerm ? ": " + filteredReviews.length : ''}</h1>
                     <input
