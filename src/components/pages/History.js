@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { HistoryItem } from "../HistoryItem";
+import { HistoryItem2 } from "../HistoryItem2";
 import { ProgressBar } from "../progressBar";
 import { ToTopButton } from "../ToTopButton";
 import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
@@ -35,7 +36,7 @@ export const History = ({config, status, reviews}) => {
             loadedReviews.filter(review => config.fetchURL.includes(review.userId) && review.reviewHistory.length)
             .slice(0, loadedHistoryItemsCount)
             .map(review => 
-                <HistoryItem key={review.externalId} config={config} review={review} />
+                <HistoryItem2 key={review.externalId} config={config} review={review} />
             )
             
         return (
@@ -49,6 +50,7 @@ export const History = ({config, status, reviews}) => {
                     <div className="reviewItem review-notification reviewItemsWrapper"><span>No reviews found</span></div>
                 }
                 <div className="historyItemWrapper">
+                    <HistoryItem config={config} date={1548626828185} />
                     {historyComponents}
                 </div>
                 {!!historyComponents.length && 
