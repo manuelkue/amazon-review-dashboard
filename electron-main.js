@@ -11,7 +11,7 @@ let isCrawlingComments;
 const storage = new Storage({
   configName: 'user-preferences',
   defaults: {
-    windowBounds: { width: 1800, height: 1000 }
+    windowBounds: { width: 1800, height: 1000, x: 0, y: 0 }
   }
 });
 
@@ -332,15 +332,35 @@ async function hideAutomatedScraping(page){
 // Initialisierung fertig ist und Browserfenster erschaffen kann.
 // Einige APIs können nur nach dem Auftreten dieses Events genutzt werden.
 app.on('ready', async ()=>{
-  let { width, height } = storage.get('windowBounds');
-  mainWindow = new BrowserWindow({ width, height })
+  let { width, height, x, y } = storage.get('windowBounds');
+  mainWindow = new BrowserWindow({
+    title: 'Amazon Review Dashboard',
+    width,
+    height,
+    x,
+    y,
+    backgroundColor: '#f2f2f2'
+  })
 
   browser = await puppeteer.launch({ headless: headlessMode })
+  
+  mainWindow.on('resize', () => {
+    savePosAndSize();
+  });
 
-  // mainWindow.on('resize', () => {
-  //   let { width, height } = mainWindow.getBounds();
-  //   storage.set('windowBounds', { width, height });
-  // });
+  mainWindow.on('move', () => {
+    savePosAndSize();
+  });
+
+  //Don't want to save bounds every refresh frame -> save disk bandwidth
+  let resizeTimeout;
+  const savePosAndSize = () => {
+    let { width, height, x, y } = mainWindow.getBounds();
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      storage.set('windowBounds', { width, height, x, y });
+    }, 300);
+  }
   
   mainWindow.on('closed', async () => {
     // Dereferenzieren des Fensterobjekts, normalerweise würden Sie Fenster
