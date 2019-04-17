@@ -28,9 +28,25 @@ export const History = ({config, status, reviews}) => {
     }
 
     if(methods.fetchURLData(config.fetchURL)){
-        let loadedReviews = reviews;
-        //Sort by last syncTimestamp
+        let loadedReviews = [...reviews];
+        //Sort by last date, then syncTimestamp
+        methods.sortObjectArray(loadedReviews, 'date', false)
         methods.sortObjectArray(loadedReviews, 'syncTimestamp', false)
+
+
+
+
+        // Mapping / Grouping all reviews due to their syncTimestamp
+        let allSyncTimestamps = [];
+        loadedReviews.forEach(review => {
+            allSyncTimestamps = (allSyncTimestamps.includes(0 + review.syncTimestamp) ? [...allSyncTimestamps] : [...allSyncTimestamps, (0 + review.syncTimestamp)])
+        })
+        console.log('allSyncTimestamps :', allSyncTimestamps);
+
+
+
+
+
 
         const historyComponents =
             loadedReviews.filter(review => config.fetchURL.includes(review.userId) && review.reviewHistory.length)

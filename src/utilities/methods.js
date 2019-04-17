@@ -61,7 +61,16 @@ export const methods = {
 
   arr2ReviewClassArr(reviewObjArray){
     let reviewObjects = []
-    reviewObjArray.forEach(review => reviewObjects.push(Object.assign(new Review({}), review)))
+    // @TODO: Comments can be removed, if function is no longer needed:
+    // To remove all single syncTimestamps from older times when each review got its own syncTimestamp while syncing, following function smoothens available timestamps
+    // After doing this the reviews have to be saved one time (eg update reviews partially) and alle smoothed timestamps are saved to disk as well.
+    // const collectedTimestamps = reviewObjArray.map(review2 => review2.syncTimestamp);
+    reviewObjArray.forEach(review => {
+      // if(collectedTimestamps.some(timestamp => (review.syncTimestamp >= (timestamp - 60000)) && (review.syncTimestamp <= (timestamp + 60000)))){
+      //   review.syncTimestamp = collectedTimestamps.find(timestamp => (review.syncTimestamp >= (timestamp - 60000)) && (review.syncTimestamp <= (timestamp + 60000)));
+      // }
+      reviewObjects.push(Object.assign(new Review({}), review))
+    })
     return reviewObjects;
   },
 
