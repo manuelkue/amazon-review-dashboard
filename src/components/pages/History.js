@@ -37,10 +37,7 @@ export const History = ({config, status, reviews}) => {
 
 
         // Mapping / Grouping all reviews due to their syncTimestamp
-        let allSyncTimestamps = [];
-        loadedReviews.forEach(review => {
-            allSyncTimestamps = (allSyncTimestamps.includes(0 + review.syncTimestamp) ? [...allSyncTimestamps] : [...allSyncTimestamps, (0 + review.syncTimestamp)])
-        })
+        let allSyncTimestamps = [...new Set(loadedReviews.map(review => review.syncTimestamp))];
         console.log('allSyncTimestamps :', allSyncTimestamps);
 
 
