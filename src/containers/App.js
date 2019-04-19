@@ -213,6 +213,7 @@ export default class App extends Component {
 
   render() {
     //@TODO: add statistics view (Time scale when you publish most often, time scale over the last year, ARAT stats?) Take icon from reviewers place, change that to Siegertreppchen
+    const userReviews = [...this.state.reviews.filter(review => this.state.config.fetchURL.includes(review.userId))]
     return (
       <Router>
         <div className="App">
@@ -244,11 +245,11 @@ export default class App extends Component {
           </div>
           <div className="main">
             <Switch>
-              <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={this.state.reviews} />} />
-              <Route path="/reviews" render={() => <ReviewsList reviews={this.state.reviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
+              <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={userReviews} />} />
+              <Route path="/reviews" render={() => <ReviewsList reviews={userReviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
               <Route path="/users" render={() => <Users config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
               <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} settingsFunctions={this.settingsFunctions} crawlCommentsCounts={this.crawlCommentsCounts.bind(this)} /> } />
-              <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={this.state.reviews} users={this.state.users} /> } />
+              <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={userReviews} users={this.state.users} /> } />
             </Switch>
           </div>
         </div>

@@ -55,8 +55,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
     }
 
     if(methods.fetchURLData(config.fetchURL)){
-        let filteredReviews = [...reviews.filter(review => config.fetchURL.includes(review.userId))]
-            .filter(review => {
+        let filteredReviews = [...reviews].filter(review => {
                 if(filterTerm === "") return true;
                 if(
                     (review.productTitle.toLowerCase().includes(filterTerm) && filterOptions.filterByProduct)
@@ -66,7 +65,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
                 ) return true
                 return false;
             })
-        methods.sortObjectArray(filteredReviews, config.sortReviewsBy, config.sortReviewsAscending)
+        methods.sortArray(filteredReviews, config.sortReviewsBy, config.sortReviewsAscending)
         const reviewsComponents = [...filteredReviews].slice(0, loadedReviewsCount)
             .map(review => 
                 <ReviewItem key={review.externalId} config = {config} review={review} reviewFunctions={reviewFunctions} />

@@ -10,7 +10,7 @@ export const Syncarea = ({user, config, status, startCrawlClickHandler}) => {
 
     if (user){
         let userHistory = user.userHistory;
-        methods.sortObjectArray(userHistory, 'syncTimestamp', false)
+        methods.sortArray(userHistory, 'syncTimestamp', false)
 
         if(user.updatedParams.length){
             const lastSyncUpdateTimestamp = new Date(+userHistory[0].syncTimestamp)

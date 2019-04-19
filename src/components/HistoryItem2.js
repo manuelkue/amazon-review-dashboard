@@ -8,7 +8,7 @@ import { methods } from "../utilities/methods";
 export const HistoryItem2 = ({config, review}) => {
 
     let reviewHistory = review.reviewHistory;
-    methods.sortObjectArray(reviewHistory, 'syncTimestamp', false);
+    methods.sortArray(reviewHistory, 'syncTimestamp', false);
 
     const localeDateOptions = {year: '2-digit', month: '2-digit', day: '2-digit' };
 

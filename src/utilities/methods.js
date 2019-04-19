@@ -9,15 +9,27 @@ export const methods = {
     return Math.round(value * multiplier) / multiplier;
   },
 
-  sortObjectArray(array, sortForProperty, ascending = true) {
-    //sortForProperty: string (defines by which object property should be sorted)
-    if(sortForProperty){
-      array.sort((a, b) => {
-        const direction = ascending ? 1 : -1;
-        return a[sortForProperty] > b[sortForProperty] ? direction : (a[sortForProperty] < b[sortForProperty] ? direction * -1 : 0);
-      });
+  sortArray(array, sortForProperty = null, ascending = true) {
+    // Function that can sort either an array of strings/numbers or an array of objects by one of the objects' properties
+    // Directly modifies the array -> does not create a new array
+
+    // sortForProperty: string (defines by which object property should be sorted)
+    // ascending: boolean (defines in which order should be sorted)
+
+    const direction = ascending ? 1 : -1;
+
+    if(sortForProperty && array.every(item => typeof item === 'object')){
+      if(array.every(item => item.hasOwnProperty(sortForProperty))){
+        array.sort((a, b) => {
+          return a[sortForProperty] > b[sortForProperty] ? direction : (a[sortForProperty] < b[sortForProperty] ? direction * -1 : 0);
+        });
+      }else{
+        console.error('Specified property not found in objects Array. Returned in current sort order')
+      }
     }else{
-      console.log('No sort property string specified')
+      array.sort((a, b) => {
+        return a > b ? direction : (a < b ? direction * -1 : 0);
+      });
     }
     return array;
   },

@@ -25,6 +25,9 @@ export const HistoryItem = ({config, date, updatedReviews}) => {
     return(
         <div className='historyItem card'>
             <div>Updated: {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}</div>
+            <div>
+                {updatedReviews.map(review => <div key={review.externalId}>{review.externalId}: {review.updatedParams}</div>)}
+            </div>
         </div>
     )
 }
