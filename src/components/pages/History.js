@@ -37,8 +37,8 @@ export const History = ({config, status, reviews}) => {
 
 
         // Mapping / Grouping all reviews due to their syncTimestamp
+        // @TODO: Add timestamps of reviewUpdates in reviewHistory, too. Sometimes every review.syncTimestamp is not every syncTimestamp
         const allSyncTimestamps = [...new Set(loadedReviews.map(review => review.syncTimestamp))];
-        // console.log('allSyncTimestamps :', allSyncTimestamps);
 
         const historyComponents2 = allSyncTimestamps.map(timestamp => {
             const updatedReviewsOnTimestamp =

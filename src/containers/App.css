@@ -465,16 +465,32 @@ input:hover, input:focus{
 
 .historyItemWrapper{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(1fr));
+  grid-template-columns: repeat(auto-fil, minmax(1fr));
   gap: var(--spacing-m);
 }
 
-.historyItem{
-  background: var(--color-white);
+.historySubItem{
+  padding: var(--spacing-l) var(--spacing-m);
+  margin-top:1px;
 }
 
-.historySubItem{
-  margin-top: var(--spacing-m)
+.paramUpdateWrapper{
+  display: flex;
+  margin-top: var(--spacing-s);
+}
+
+.paramUpdate{
+  display: flex;
+  padding: var(--spacing-s) var(--spacing-m);
+  margin-right: var(--spacing-s);
+  color: var(--color-text-light);
+  border-radius: var(--border-radius-max);
+  background: var(--color-primary);
+}
+
+.paramUpdate .material-icons{
+  margin-right: var(--spacing-s);
+  font-size: 20px;
 }
 
 .reviews-list{

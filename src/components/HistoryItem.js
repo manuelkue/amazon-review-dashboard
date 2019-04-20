@@ -23,10 +23,36 @@ export const HistoryItem = ({config, date, updatedReviews}) => {
     // })
 
     return(
-        <div className='historyItem card'>
-            <div>Updated: {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}</div>
+        <div className='reviewItemsWrapper'>
+            <div className="historySubItem">
+                Updated: {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
+            </div>
             <div>
-                {updatedReviews.map(review => <div key={review.externalId}>{review.externalId}: {review.updatedParams}</div>)}
+                {updatedReviews.map(review => 
+                    <div key={review.externalId} className="historySubItem selectable">
+                        <div className="truncateString columnProductTitle">
+                            {methods.getProductTitle(review)}
+                        </div>
+                        <div className="paramUpdateWrapper">
+                            {review.updatedParams.map(param => {
+                                const updateDifference = review[param] - review.reviewHistory[0][param]
+                                return (
+                                    <div className="paramUpdate" key={param}>
+                                        {param}
+                                        <i className="material-icons">
+                                            {param === 'helpfulVotes'? 'thumb_up' : ''}
+                                            {param === 'reviewsCount'? 'assignment' : ''}
+                                            {param === 'comments'? 'comment' : ''}
+                                        </i>
+                                        {(updateDifference > 0 ? '+':'')}
+                                        {updateDifference}
+                                    </div>
+                                )
+                            }
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )
