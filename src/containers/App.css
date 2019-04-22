@@ -489,8 +489,11 @@ input:hover, input:focus{
 }
 
 .paramUpdate .material-icons{
-  margin-right: var(--spacing-s);
   font-size: 20px;
+}
+
+.paramUpdate .updateDifference{
+  margin-left: var(--spacing-s);
 }
 
 .reviews-list{

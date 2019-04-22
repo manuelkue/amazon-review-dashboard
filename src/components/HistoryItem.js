@@ -1,26 +1,34 @@
 import React, {Component} from "react"
 import { methods } from "../utilities/methods";
+import { UpdatedParam } from "./UpdatedParam";
 
 // @TODO zu functional component umbauen, wenn selected-state von über-Komponente kommt bzw. im Reviews-Array integriert wurde
 
 // @TODO deleted reviews are shown crossed out
 
-export const HistoryItem = ({config, date, updatedReviews}) => {
+export const HistoryItem = ({config, date, updatedReviews, reviewFunctions}) => {
 
     const localeDateOptions = {year: '2-digit', month: '2-digit', day: '2-digit' };
 
-    // let itemHistory = reviewHistory.map(historySubItem => {
-    //     for (const prop in historySubItem){
-    //         if(prop != "syncTimestamp"){
-    //             return(
-    //                 <div key={historySubItem.syncTimestamp} className="historySubItem card selectable">
-    //                     <b>{prop}</b> (Fetched: {new Date(historySubItem.syncTimestamp).toLocaleDateString(config.language, localeDateOptions)})<br/>
-    //                     old: {''+historySubItem[prop]}, new: {''+review[prop]}
-    //                 </div>
-    //             )
-    //         }
-    //     }
-    // })
+    const updatedReviewsComponents = updatedReviews.map(review => 
+            <div key={review.externalId} className="historySubItem selectable" onClick={() => reviewFunctions.idSelected(review.externalId)}>
+                <div className="truncateString columnProductTitle">
+                    {methods.getProductTitle(review)}
+                </div>
+                <div className="paramUpdateWrapper">
+                    {review.updatedParams.length ? 
+                        review.updatedParams.map(param => {
+                        const updateDifference = review[param] - review.reviewHistory[0][param]
+                        return (
+                            <UpdatedParam key={param} param={param} updateDifference={updateDifference} />
+                        )
+                    }
+                    ) :
+                        <UpdatedParam key={'newReview'} param={'newReview'} updateDifference={1} />
+                    }
+                </div>
+            </div>
+        )
 
     return(
         <div className='reviewItemsWrapper'>
@@ -28,31 +36,7 @@ export const HistoryItem = ({config, date, updatedReviews}) => {
                 Updated: {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
             </div>
             <div>
-                {updatedReviews.map(review => 
-                    <div key={review.externalId} className="historySubItem selectable">
-                        <div className="truncateString columnProductTitle">
-                            {methods.getProductTitle(review)}
-                        </div>
-                        <div className="paramUpdateWrapper">
-                            {review.updatedParams.map(param => {
-                                const updateDifference = review[param] - review.reviewHistory[0][param]
-                                return (
-                                    <div className="paramUpdate" key={param}>
-                                        {param}
-                                        <i className="material-icons">
-                                            {param === 'helpfulVotes'? 'thumb_up' : ''}
-                                            {param === 'reviewsCount'? 'assignment' : ''}
-                                            {param === 'comments'? 'comment' : ''}
-                                        </i>
-                                        {(updateDifference > 0 ? '+':'')}
-                                        {updateDifference}
-                                    </div>
-                                )
-                            }
-                            )}
-                        </div>
-                    </div>
-                )}
+                {updatedReviewsComponents}
             </div>
         </div>
     )

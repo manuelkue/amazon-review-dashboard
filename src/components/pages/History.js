@@ -7,7 +7,7 @@ import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
 
 import {methods} from "../../utilities/methods";
 
-export const History = ({config, status, reviews}) => {
+export const History = ({config, status, reviews, reviewFunctions}) => {
 
     // limit shown number at the start of the component
     const [loadedHistoryItemsCount, setLoadedHistoryItemsCount] = useState(10)
@@ -52,7 +52,7 @@ export const History = ({config, status, reviews}) => {
                         mappedReview.reviewHistory = mappedReview.reviewHistory.filter(reviewUpdate => reviewUpdate.syncTimestamp < timestamp)
                         return mappedReview
                     })
-            return <HistoryItem key={timestamp} config={config} date={timestamp} updatedReviews={updatedReviewsOnTimestamp} />
+            return <HistoryItem key={timestamp} config={config} date={timestamp} updatedReviews={updatedReviewsOnTimestamp} reviewFunctions = {reviewFunctions}/>
         })
 
 

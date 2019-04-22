@@ -245,7 +245,7 @@ export default class App extends Component {
           </div>
           <div className="main">
             <Switch>
-              <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={userReviews} />} />
+              <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={userReviews} reviewFunctions={this.reviewFunctions} />} />
               <Route path="/reviews" render={() => <ReviewsList reviews={userReviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
               <Route path="/users" render={() => <Users config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
               <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} settingsFunctions={this.settingsFunctions} crawlCommentsCounts={this.crawlCommentsCounts.bind(this)} /> } />
@@ -332,9 +332,6 @@ export default class App extends Component {
       })
     },
 
-    idSelected : (reviewId) => {
-      console.log(reviewId)
-    },
     reviewSelected : (review) => {
       if(!review.selected){
         console.log("opened modal of review");
@@ -347,7 +344,7 @@ export default class App extends Component {
     },
     idSelected: reviewID => {
       console.log('reviewID selected:', reviewID);
-      shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewID);
+      shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewID + '/?tag=reviewdashboard-21');
     }
   }
 
