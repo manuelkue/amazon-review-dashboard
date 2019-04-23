@@ -7,7 +7,8 @@ export const UpdatedParam = ({param, updateDifference}) => {
         <div className="paramUpdate" key={param}>
             <i className="material-icons">
                 {param === 'helpfulVotes'? 'thumb_up' : ''}
-                {param === 'newReview'? 'assignment' : ''}
+                {param === 'newReview'? 'fiber_new assignment' : ''}
+                {param === 'reviewText'? 'assignment edit' : ''}
                 {param === 'comments'? 'comment' : ''}
                 {param === 'productMissing' && !(updateDifference < 0) ? 'delete' : ''}
                 {param === 'productMissing' && updateDifference < 0 ? 'undo delete' : ''}
