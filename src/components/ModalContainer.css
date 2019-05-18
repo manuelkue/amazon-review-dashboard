@@ -1,6 +1,6 @@
 @import url("../containers/App.css");
 
-.modal-container{
+#modal-container{
   position: fixed;
   top: 0;
   left: 0;
@@ -61,4 +61,8 @@
 .menu-action:hover{
   background: var(--color-light);
   transition: all 0.3s;
+}
+
+.modal-content{
+  overflow-y: auto;
 }

@@ -11,6 +11,7 @@ import { Statistics } from "../components/pages/Statistics";
 import { methods } from "../utilities/methods";
 import { reviewStorage, userStorage, configStorage, logStorage } from "../utilities/Storage";
 import { ModalContainer } from "../components/ModalContainer";
+import { ModalReview } from "../components/ModalReview";
 
 //Electron connected functions
 const { ipcRenderer, shell } = window.require("electron");
@@ -353,19 +354,21 @@ export default class App extends Component {
       })
     },
 
-    reviewSelected : (review) => {
-      if(!review.selected){
-        this.addModal(review.reviewTitle, review.reviewText)
+    reviewSelected : (event) => {
+      event.persist()
+      const reviewId = methods.findFirstIdOfTarget(event.target)
+      const review = this.state.reviews.find(review => review.externalId === reviewId)
+      
+      if(event.target.className.split(" ").includes('externalLink')){
+        shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewId + '/?tag=reviewdashboard-21');
+      }else if(!review.selected){
+        this.addModal(review.productTitle, <ModalReview review={review}/>)
         console.log("selected review:", review)
       }
       this.setState({
         reviews: [...this.state.reviews].map(r => r.externalId === review.externalId? {...r, selected: !r.selected} : {...r, selected: false})
       })
 
-    },
-    idSelected: reviewID => {
-      console.log('reviewID selected:', reviewID);
-      shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewID + '/?tag=reviewdashboard-21');
     }
   }
 
@@ -614,11 +617,16 @@ export default class App extends Component {
     }
   }
 
-  async closeModal(id){
+  closeModal = async (event) => {
+    event.persist()
+    const {id} = event.target
+
+    if(id.length === 0) return
+
     await this.setState({
       status:{
         ...this.state.status,
-        modals: [...this.state.status.modals].filter(m => m.id !== id)
+        modals: id === 'modal-container' ? [] : [...this.state.status.modals].filter(m => m.id !== +id)
       }
     })
   }

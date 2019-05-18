@@ -3,12 +3,15 @@ import "./ModalContainer.css";
 
 export const ModalContainer = ({modals, closeModal}) => {
 
+    let modalCount = 0
+
     useEffect(() => {
-        console.log('modal added / removed')
+        console.log('Modal', modalCount < modals.length ? 'added' : 'removed')
+        modalCount = modals.length
     }, [modals])
 
     const modalComponents = [...modals].map(modal => 
-        <ModalItem modal={modal} closeModal={closeModal} key={modal.id} />
+        <ModalItem modal={modal} key={modal.id} />
     )
 
     const modalContainerStyle={
@@ -16,22 +19,24 @@ export const ModalContainer = ({modals, closeModal}) => {
     }
 
     return(
-        <div className="modal-container" style={modalContainerStyle}>
+        <div id="modal-container" style={modalContainerStyle} onClick={(event) => closeModal(event)}>
             {modalComponents}
         </div>
     )
 }
 
-const ModalItem = ({modal, closeModal}) => {
+const ModalItem = ({modal}) => {
+
+    console.log('modal :', modal);
 
     return(
         <div className="modal">
             <div className="modal-header">
-                <div className="modal-header-title">
+                <div className="modal-header-title truncateString">
                     {modal.title}
                 </div>
                 <div className="modal-header-menu">
-                    <div onClick={() => closeModal(modal.id)} className="menu-action material-icons">close</div>
+                    <div id={modal.id} className="menu-action close material-icons">close</div>
                 </div>
             </div>
             <div className="modal-content">

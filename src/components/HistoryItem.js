@@ -11,9 +11,10 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions}) => 
     const localeDateOptions = {year: '2-digit', month: '2-digit', day: '2-digit' };
 
     const updatedReviewsComponents = updatedReviews.map(review => 
-            <div key={review.externalId} className="historySubItem selectable" onClick={() => reviewFunctions.idSelected(review.externalId)}>
-                <div className="truncateString columnProductTitle">
-                    {methods.getProductTitle(review)}
+            <div key={review.externalId} className={"historySubItem" + (review.selected? ' selected':' selectable')} id={review.externalId} onClick={event => reviewFunctions.reviewSelected(event)}>
+                <div className="historyItemHeader">
+                    <div className="material-icons externalLink">open_in_new</div>
+                    <span className="truncateString">{methods.getProductTitle(review)}</span>
                 </div>
                 <div className="paramUpdateWrapper">
                     {review.updatedParams.length ? 

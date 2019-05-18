@@ -71,6 +71,14 @@ export const methods = {
     }
   },
 
+  findFirstIdOfTarget(target){
+    // Method that searches recursively for a parent element that has an id.
+    // Used for onClick-methods that need an id
+    if (target && target.id && target.id.length !== 0) return target.id
+    if (!target.parentElement) return ''
+    return this.findFirstIdOfTarget(target.parentElement)
+  },
+
   arr2ReviewClassArr(reviewObjArray){
     let reviewObjects = []
     // @TODO: Comments can be removed, if function is no longer needed:

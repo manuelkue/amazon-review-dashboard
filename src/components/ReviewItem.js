@@ -26,8 +26,8 @@ export const ReviewItem = ({config, review, reviewFunctions}) => {
     
         //@TODO: selected umsetzen. Links to Amazon Seite / Produkt. Öffnet Review Details. Fehler beheben (am MacBook kam einer)
         return(
-            <div className={'reviewItem' + (selected? ' selected':' selectable')} onClick={() => reviewFunctions.reviewSelected(review)}>
-                <div className="material-icons columnLinkToReview externalLink" onClick={() => reviewFunctions.idSelected(externalId)}>open_in_new</div>
+            <div className={'reviewItem' + (selected? ' selected':' selectable')} id={externalId} onClick={(event) => reviewFunctions.reviewSelected(event)}>
+                <div className="material-icons columnLinkToReview externalLink">open_in_new</div>
                 <div className="truncateString columnProductTitle">{methods.getProductTitle(review)}</div>
                 <div className="truncateString columnReviewTitle">{reviewTitle}</div>
                 <div className="truncateString columnAverageRating">{(+averageRating).toLocaleString(config.language)}</div>
