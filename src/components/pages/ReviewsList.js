@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from "react"
 import ReviewItem from "../ReviewItem";
 
-import {methods} from "../../utilities/methods";
+import { methods } from "../../utilities/methods";
 import { ProgressBar } from "../progressBar";
 import { ToTopButton } from "../ToTopButton";
 import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";

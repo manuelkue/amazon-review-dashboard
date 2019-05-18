@@ -10,6 +10,7 @@ import { Settings } from "../components/pages/Settings";
 import { Statistics } from "../components/pages/Statistics";
 import { methods } from "../utilities/methods";
 import { reviewStorage, userStorage, configStorage, logStorage } from "../utilities/Storage";
+import { ModalContainer } from "../components/ModalContainer";
 
 //Electron connected functions
 const { ipcRenderer, shell } = window.require("electron");
@@ -46,7 +47,8 @@ export default class App extends Component {
         isScrapingProfile: false,
         isScrapingContinued: false,
         appInitStarted: false,
-        toasts: []
+        toasts: [],
+        modals: []
       },
       users: [],
       reviews: []
@@ -252,6 +254,7 @@ export default class App extends Component {
               <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={userReviews} users={this.state.users} /> } />
             </Switch>
           </div>
+          <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal} />
         </div>
       </Router>
     );
@@ -263,6 +266,24 @@ export default class App extends Component {
       this.state.config.maxReviewNumberOnPartScrape && this.validatePartialCrawlNumber(this.state.config.maxReviewNumberOnPartScrape);
     });
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //@TODO: Implement autorefresh of profile at App-start / profile-URL change
   //Handler can crawl full (maxReviewNumber = null), partially (maxReviewNumber != null), only profileStats and can begin at/after a specific review = externalId
@@ -334,7 +355,7 @@ export default class App extends Component {
 
     reviewSelected : (review) => {
       if(!review.selected){
-        console.log("opened modal of review");
+        this.addModal(review.reviewTitle, review.reviewText)
         console.log("selected review:", review)
       }
       this.setState({
@@ -569,5 +590,37 @@ export default class App extends Component {
         })
       }, 500)
     }
+  }
+
+  async addModal(title, content){
+    const maxId = Math.max(...(this.state.status.modals.map(modal => modal.id)), -1)
+    if(title && content){
+      await this.setState({
+        status:{
+          ...this.state.status,
+          modals:[
+            {
+              id: maxId + 1,
+              title: title,
+              content: content
+            },
+              ...this.state.status.modals
+            ]
+          }
+        }
+      )
+    }else{
+      console.error('Modal: Title or Content invalid');
+    }
+  }
+
+  async closeModal(id){
+    console.log('id:', id);
+    await this.setState({
+      status:{
+        ...this.state.status,
+        modals: [...this.state.status.modals].filter(m => m.id !== id)
+      }
+    })
   }
 }
