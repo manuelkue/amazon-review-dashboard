@@ -254,7 +254,7 @@ export default class App extends Component {
               <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={userReviews} users={this.state.users} /> } />
             </Switch>
           </div>
-          <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal} />
+          <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
         </div>
       </Router>
     );
@@ -615,7 +615,6 @@ export default class App extends Component {
   }
 
   async closeModal(id){
-    console.log('id:', id);
     await this.setState({
       status:{
         ...this.state.status,
