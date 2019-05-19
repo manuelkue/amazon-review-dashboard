@@ -26,7 +26,7 @@
   display: flex;
   flex-direction: column;
   margin: auto;
-  background: var(--color-white);
+  background: var(--color-light);
   box-shadow: var(--shadow2);
   border-radius: var(--border-radius-l);
   padding: var(--spacing-m);
@@ -39,6 +39,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-m);
+  height: 60px;
 }
 
 .modal-header-title{
@@ -59,7 +60,7 @@
 }
 
 .menu-action:hover{
-  background: var(--color-light);
+  background: var(--color-light2);
   transition: all 0.3s;
 }
 

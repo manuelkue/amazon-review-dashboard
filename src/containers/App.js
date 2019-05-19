@@ -362,7 +362,7 @@ export default class App extends Component {
       if(event.target.className.split(" ").includes('externalLink')){
         shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewId + '/?tag=reviewdashboard-21');
       }else if(!review.selected){
-        this.addModal(review.productTitle, <ModalReview review={review}/>)
+        this.addModal(methods.getProductTitle(review), <ModalReview review={review}/>)
         console.log("selected review:", review)
       }
       this.setState({
