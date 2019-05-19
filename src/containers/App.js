@@ -362,7 +362,7 @@ export default class App extends Component {
       if(event.target.className.split(" ").includes('externalLink')){
         shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewId + '/?tag=reviewdashboard-21');
       }else if(!review.selected){
-        this.addModal(methods.getProductTitle(review), <ModalReview review={review}/>)
+        this.addModal(methods.getProductTitle(review), <ModalReview review={review} copyToClipboard={this.copyToClipboard.bind(this)}/>)
         console.log("selected review:", review)
       }
       this.setState({
@@ -629,5 +629,10 @@ export default class App extends Component {
         modals: id === 'modal-container' ? [] : [...this.state.status.modals].filter(m => m.id !== +id)
       }
     })
+  }
+
+  copyToClipboard(string){
+    methods.copyToClipboard(string)
+    this.newToast('notification', `Copied: ${string}`)
   }
 }

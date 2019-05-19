@@ -12,29 +12,33 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions}) => 
 
     const updatedReviewsComponents = updatedReviews.map(review => 
             <div key={review.externalId} className={"historySubItem" + (review.selected? ' selected':' selectable')} id={review.externalId} onClick={event => reviewFunctions.reviewSelected(event)}>
-                <div className="historyItemHeader">
+                <div className="linkToReview">
                     <div className="material-icons externalLink">open_in_new</div>
-                    <span className="truncateString">{methods.getProductTitle(review)}</span>
                 </div>
-                <div className="paramUpdateWrapper">
-                    {review.updatedParams.length ? 
-                        review.updatedParams.map(param => {
-                        const updateDifference = review[param] - review.reviewHistory[0][param]
-                        return (
-                            <UpdatedParam key={param} param={param} updateDifference={updateDifference} />
-                        )
-                    }
-                    ) :
-                        <UpdatedParam key={'newReview'} param={'newReview'} updateDifference={1} />
-                    }
+                <div className="historyItemContent">
+                    <div className="historyItemHeader">
+                        <span className="truncateString">{methods.getProductTitle(review)}</span>
+                    </div>
+                    <div className="paramUpdateWrapper">
+                        {review.updatedParams.length ? 
+                            review.updatedParams.map(param => {
+                            const updateDifference = review[param] - review.reviewHistory[0][param]
+                            return (
+                                <UpdatedParam key={param} param={param} updateDifference={updateDifference} />
+                            )
+                        }
+                        ) :
+                            <UpdatedParam key={'newReview'} param={'newReview'} updateDifference={1} />
+                        }
+                    </div>
                 </div>
             </div>
         )
 
     return(
         <div className='reviewItemsWrapper'>
-            <div className="historySubItem">
-                Updated: {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
+            <div className="historyItemsHeader">
+                {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
             </div>
             <div>
                 {updatedReviewsComponents}

@@ -209,5 +209,25 @@ export const methods = {
         formerProductTitle = <span className="productDeleted">{review.reviewHistory.find(historyItem => historyItem.productTitle).productTitle}</span>
     }
     return review.productTitle || formerProductTitle;
+  },
+
+  copyToClipboard(string) {
+    const el = document.createElement('textarea');
+    el.value = string;
+    el.setAttribute('readonly', ''); // Make it readonly to be tamper-proof
+    el.style.position = 'absolute';                 
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    const selected =            
+      document.getSelection().rangeCount > 0 // Check if there is any content selected previously
+        ? document.getSelection().getRangeAt(0)
+        : false;
+    el.select();
+    document.execCommand('copy'); // Copy - only works as a result of a user action (e.g. click events)
+    document.body.removeChild(el);
+    if (selected) {
+      document.getSelection().removeAllRanges(); // Unselect everything on the HTML document
+      document.getSelection().addRange(selected); // Restore the original selection
+    }
   }
 };

@@ -34,7 +34,6 @@
   font-feature-settings: 'liga';
 }
 
-
 :root{
   
   --border-width: 2px;
@@ -486,9 +485,29 @@ input:hover, input:focus{
   gap: var(--spacing-m);
 }
 
-.historySubItem{
+.historyItemsHeader{
+  display: flex;
+  background: var(--color-lighter);
   padding: var(--spacing-l) var(--spacing-m);
-  margin-top:1px;
+}
+
+.historySubItem{
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-l) var(--spacing-m);
+  margin-top: 1px;
+}
+
+.linkToReview{
+  display: flex;
+  align-items: center;
+  padding-right: var(--spacing-m);
+}
+
+.historyItemContent{
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .historyItemHeader{
@@ -561,6 +580,10 @@ input:hover, input:focus{
   align-items: center;
 }
 
+.columnHelpfulVotes{
+  min-width: 50px;
+}
+
 .selected{
   background: var(--color-primary);
   color: var(--color-light);
@@ -622,9 +645,7 @@ input:hover, input:focus{
   content: 'keyboard_arrow_down';
   animation: slidedown 0.2s;
 }
-.externalLink{
-  margin-right: var(--spacing-m);
-}
+
 .externalLink:hover{
   color: var(--color-secondary);
   cursor: pointer;

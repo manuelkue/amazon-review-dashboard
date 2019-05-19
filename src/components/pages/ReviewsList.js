@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react"
+import React, { useState } from "react"
 import ReviewItem from "../ReviewItem";
 
 import { methods } from "../../utilities/methods";
@@ -31,7 +31,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
         if(showMoreReviewsBlocked){
             console.log("Loading of more reviews blocked while searching");
         }else{
-            setLoadedReviewsCount(loadedReviewsCount + 200)
+            setLoadedReviewsCount(loadedReviewsCount + 100)
             console.log("More Reviews loaded");
         }
     }

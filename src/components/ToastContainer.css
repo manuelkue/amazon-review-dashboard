@@ -9,6 +9,7 @@
 }
 
 .toast{
+  z-index: 5;
   display: flex;
   border-radius: 20px;
   margin-top: var(--spacing-m);
