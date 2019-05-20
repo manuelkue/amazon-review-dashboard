@@ -21,7 +21,7 @@ const storage = new Storage({
 
 //Create browser globally to reference it in Electron window onReady.
 let browser;
-const headlessMode = false;
+const headlessMode = true;
 
 ipcMain.on('startCrawl', async (event, startCrawl) => {
   console.log("\n\ncrawling from", startCrawl.url, "\n")
