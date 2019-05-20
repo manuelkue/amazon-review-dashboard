@@ -36,7 +36,7 @@
 }
 
 :root{
-  
+
   --border-width: 2px;
   --controls-container-width: 50px;
 
@@ -124,6 +124,10 @@ width: 16px;
 
 body{
   background: var(--color-light);
+}
+
+.App{
+  animation: slidedown .5s ease-in-out;
 }
 
 .sentinel{

@@ -48,6 +48,7 @@ export default class App extends Component {
         isScrapingProfile: false,
         isScrapingContinued: false,
         appInitStarted: false,
+        appInitFinished: false,
         toasts: [],
         modals: []
       },
@@ -219,46 +220,48 @@ export default class App extends Component {
     const userReviews = [...this.state.reviews.filter(review => this.state.config.fetchURL.includes(review.userId))]
     return (
       <Router>
-        <div className="App">
-          <Sidebar
-            user={this.state.users.find(user =>
-              this.state.config.fetchURL.includes(user.id)
-            )}
-            config={this.state.config}
-            status={this.state.status}
-            startCrawlClickHandler={this.startCrawlClickHandler.bind(this)}
-            dismissToast={this.dismissToast.bind(this)}
-          />
-          <div className="nav">
-            <NavLink exact to="/" className="link" activeClassName="selected">
-              <i className="material-icons">history</i>
-            </NavLink>
-            <NavLink to="/reviews" className="link" activeClassName="selected">
-              <i className="material-icons">list</i>
-            </NavLink>
-            <NavLink to="/statistics" className="link" activeClassName="selected">
-              <i className="material-icons">equalizer</i>
-            </NavLink>
-            <NavLink to="/users" className="link" activeClassName="selected">
-              <i className="material-icons">face</i>
-            </NavLink>
-            <NavLink to="/settings" className="link" activeClassName="selected">
-              <i className="material-icons">settings</i>
-            </NavLink>
+        {this.state.status.appInitFinished &&
+          <div className="App">
+            <Sidebar
+              user={this.state.users.find(user =>
+                this.state.config.fetchURL.includes(user.id)
+              )}
+              config={this.state.config}
+              status={this.state.status}
+              startCrawlClickHandler={this.startCrawlClickHandler.bind(this)}
+              dismissToast={this.dismissToast.bind(this)}
+            />
+            <div className="nav">
+              <NavLink exact to="/" className="link" activeClassName="selected">
+                <i className="material-icons">history</i>
+              </NavLink>
+              <NavLink to="/reviews" className="link" activeClassName="selected">
+                <i className="material-icons">list</i>
+              </NavLink>
+              <NavLink to="/statistics" className="link" activeClassName="selected">
+                <i className="material-icons">equalizer</i>
+              </NavLink>
+              <NavLink to="/users" className="link" activeClassName="selected">
+                <i className="material-icons">face</i>
+              </NavLink>
+              <NavLink to="/settings" className="link" activeClassName="selected">
+                <i className="material-icons">settings</i>
+              </NavLink>
+            </div>
+            <div className="main">
+              <Switch>
+                <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={userReviews} reviewFunctions={this.reviewFunctions} />} />
+                <Route path="/reviews" render={() => <ReviewsList reviews={userReviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
+                <Route path="/users" render={() => <Users config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
+                <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} settingsFunctions={this.settingsFunctions} crawlCommentsCounts={this.crawlCommentsCounts.bind(this)} /> } />
+                <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={userReviews} users={this.state.users} /> } />
+              </Switch>
+            </div>
+            { this.state.status.modals.length?
+                <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
+              : null }
           </div>
-          <div className="main">
-            <Switch>
-              <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={userReviews} reviewFunctions={this.reviewFunctions} />} />
-              <Route path="/reviews" render={() => <ReviewsList reviews={userReviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
-              <Route path="/users" render={() => <Users config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
-              <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} settingsFunctions={this.settingsFunctions} crawlCommentsCounts={this.crawlCommentsCounts.bind(this)} /> } />
-              <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={userReviews} users={this.state.users} /> } />
-            </Switch>
-          </div>
-          { this.state.status.modals.length?
-              <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
-            : null }
-        </div>
+        }
       </Router>
     );
   }
@@ -526,7 +529,14 @@ export default class App extends Component {
           console.log("Trying to read file: No users safed to disk so far\n",err)
         );
 
-      console.log("AppInit end");
+      setTimeout(() => {
+        this.setState({
+          status: {
+            ...this.state.status,
+            appInitFinished: true
+          }
+        }, () => console.log("AppInitFinished"));
+      }, 300);
     } else {
       console.log("AppInit already started");
     }
@@ -605,12 +615,12 @@ export default class App extends Component {
         status:{
           ...this.state.status,
           modals:[
+            ...this.state.status.modals,
             {
               id: maxId + 1,
               title: title,
               content: content
-            },
-              ...this.state.status.modals
+            }
             ]
           }
         }
