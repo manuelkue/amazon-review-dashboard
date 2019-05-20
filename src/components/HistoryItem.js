@@ -6,12 +6,19 @@ import { UpdatedParam } from "./UpdatedParam";
 
 // @TODO deleted reviews are shown crossed out
 
-export const HistoryItem = ({config, date, updatedReviews, reviewFunctions}) => {
+export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, maxHistorySubItemsCount}) => {
+
+    console.log('maxHistorySubItemsCount :', maxHistorySubItemsCount)
 
     const localeDateOptions = {year: '2-digit', month: '2-digit', day: '2-digit' };
 
-    const updatedReviewsComponents = updatedReviews.map(review => 
-            <div key={review.externalId} className={"historySubItem" + (review.selected? ' selected':' selectable')} id={review.externalId} onClick={event => reviewFunctions.reviewSelected(event)}>
+    const updatedReviewsComponents = updatedReviews.map(review =>
+            <div
+                key={review.externalId}
+                className={"historySubItem" + (review.selected? ' selected':' selectable')}
+                id={review.externalId}
+                onClick={event => reviewFunctions.reviewSelected(event)}
+            >
                 <div className="linkToReview">
                     <div className="material-icons externalLink">open_in_new</div>
                 </div>
@@ -20,7 +27,7 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions}) => 
                         <span className="truncateString">{methods.getProductTitle(review)}</span>
                     </div>
                     <div className="paramUpdateWrapper">
-                        {review.updatedParams.length ? 
+                        {review.updatedParams.length ?
                             review.updatedParams.map(param => {
                             const updateDifference = review[param] - review.reviewHistory[0][param]
                             return (
@@ -33,9 +40,9 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions}) => 
                     </div>
                 </div>
             </div>
-        )
+        ).slice(0, maxHistorySubItemsCount)
 
-    return(
+    return(updatedReviewsComponents.length?
         <div className='reviewItemsWrapper'>
             <div className="historyItemsHeader">
                 {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
@@ -44,5 +51,6 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions}) => 
                 {updatedReviewsComponents}
             </div>
         </div>
+        : null
     )
 }

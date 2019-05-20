@@ -9,20 +9,25 @@ import {methods} from "../../utilities/methods";
 export const History = ({config, status, reviews, reviewFunctions}) => {
 
     // limit shown number at the start of the component
-    const [loadedHistoryItemsCount, setLoadedHistoryItemsCount] = useState(10)
+    const [maxHistorySubItemsCount, setMaxHistorySubItemsCount] = useState(10)
     const [showMoreHistoryItemsBlocked, setShowMoreHistoryItemsBlocked] = useState(false)
+
+    let alreadyLoadedHistorySubItems = 0;
 
     useEffect(() => {
         showMoreHistoryItems()
     }, [])
+
+    useEffect(() => {
+        console.log("More HistoryItems loaded, now:", maxHistorySubItemsCount);
+    }, [maxHistorySubItemsCount])
 
     const showMoreHistoryItems = () => {
         // Increase the number of displayed reviews to higher amount.
         if(showMoreHistoryItemsBlocked){
             console.log("Loading of more HistoryItems blocked while searching");
         }else{
-            setLoadedHistoryItemsCount(loadedHistoryItemsCount + 30)
-            console.log("More HistoryItems loaded");
+            setMaxHistorySubItemsCount(maxHistorySubItemsCount + 30)
         }
     }
 
@@ -46,23 +51,33 @@ export const History = ({config, status, reviews, reviewFunctions}) => {
                     .map(review => {
                         // reviewHistoryElement is mapped to reviewItem -> you get the review like it was at the syncTimestamp
                         // reviewHistoryItems that are newer or the same as the selected timestamp are removed so you can compare the updatedReview to it's former state
-                        if (review.syncTimestamp === timestamp) return review
+                        if (review.syncTimestamp === timestamp){
+                            return review
+                        }
                         const mappedReview = {...review, ...review.reviewHistory.find(reviewUpdate => reviewUpdate.syncTimestamp === timestamp)}
                         mappedReview.reviewHistory = mappedReview.reviewHistory.filter(reviewUpdate => reviewUpdate.syncTimestamp < timestamp)
                         return mappedReview
                     })
-            return <HistoryItem key={timestamp} config={config} date={timestamp} updatedReviews={updatedReviewsOnTimestamp} reviewFunctions = {reviewFunctions}/>
+            alreadyLoadedHistorySubItems += updatedReviewsOnTimestamp.length
+            console.log('alreadyLoadedHistorySubItems :', alreadyLoadedHistorySubItems)
+            return <HistoryItem
+                        key = {timestamp}
+                        config = {config}
+                        date = {timestamp}
+                        updatedReviews = {updatedReviewsOnTimestamp}
+                        reviewFunctions = {reviewFunctions}
+                        maxHistorySubItemsCount = {maxHistorySubItemsCount - alreadyLoadedHistorySubItems}
+                    />
         })
 
 
         return (
             <div className="history">
-                <ToTopButton arrivingAtTopAction={() => setLoadedHistoryItemsCount(40)}/>
+                <ToTopButton arrivingAtTopAction={() => setMaxHistorySubItemsCount(40)}/>
                 <h1>History</h1>
                 <ProgressBar progress={status.scrapeProgress}></ProgressBar>
                 <div className="sentinel"></div>
                 {!historyComponents.length &&
-
                     <div className="reviewItem review-notification reviewItemsWrapper"><span>No reviews found</span></div>
                 }
                 <div className="historyItemWrapper">
