@@ -255,7 +255,9 @@ export default class App extends Component {
               <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={userReviews} users={this.state.users} /> } />
             </Switch>
           </div>
-          <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
+          { this.state.status.modals.length?
+              <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
+            : null }
         </div>
       </Router>
     );
@@ -354,7 +356,7 @@ export default class App extends Component {
       })
     },
 
-    reviewSelected : (event) => {
+    reviewSelected : async (event) => {
       event.persist()
       const reviewId = methods.findFirstIdOfTarget(event.target)
       const review = this.state.reviews.find(review => review.externalId === reviewId)
@@ -362,7 +364,7 @@ export default class App extends Component {
       if(event.target.className.split(" ").includes('externalLink')){
         shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewId + '/?tag=reviewdashboard-21');
       }else if(!review.selected){
-        this.addModal(methods.getProductTitle(review), <ModalReview review={review} copyToClipboard={this.copyToClipboard.bind(this)}/>)
+        await this.addModal(methods.getProductTitle(review), <ModalReview review={review} copyToClipboard={this.copyToClipboard.bind(this)}/>)
         console.log("selected review:", review)
       }
       this.setState({
@@ -596,6 +598,7 @@ export default class App extends Component {
   }
 
   async addModal(title, content){
+    // Content can be another component or just normal text / jsx
     const maxId = Math.max(...(this.state.status.modals.map(modal => modal.id)), -1)
     if(title && content){
       await this.setState({
@@ -631,8 +634,9 @@ export default class App extends Component {
     })
   }
 
-  copyToClipboard(string){
+  async copyToClipboard(string){
     methods.copyToClipboard(string)
-    this.newToast('notification', `Copied: ${string}`, 2000)
+    await this.newToast('notification', `Copied: ${string}`, 2000)
+    await this.addModal('Copied', string)
   }
 }

@@ -2,6 +2,8 @@ import React, { useEffect } from "react"
 import "./ModalContainer.css";
 
 export const ModalContainer = ({modals, closeModal}) => {
+    // Gets all modals via state. On modal contains id, title & content
+    // Modal / its content are created via the addModal-function in App.js
 
     let modalCount = 0
 
@@ -10,7 +12,7 @@ export const ModalContainer = ({modals, closeModal}) => {
         modalCount = modals.length
     }, [modals])
 
-    const modalComponents = [...modals].map(modal => 
+    const modalComponents = [...modals].map(modal =>
         <ModalItem modal={modal} key={modal.id} />
     )
 
