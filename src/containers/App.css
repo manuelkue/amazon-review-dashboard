@@ -14,7 +14,8 @@
   font-weight: normal;
   font-style: normal;
   font-size: 24px;  /* Preferred icon size */
-  display: inline-block;
+  display: flex;
+  align-items: center;
   line-height: 1;
   text-transform: none;
   letter-spacing: normal;
@@ -526,6 +527,10 @@ input:hover, input:focus{
   color: var(--color-text-light);
   border-radius: var(--border-radius-max);
   background: var(--color-primary);
+}
+
+.selected .paramUpdate{
+  box-shadow: 0 0 0 2px var(--color-light) inset;
 }
 
 .paramUpdate .material-icons{

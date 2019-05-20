@@ -40,7 +40,7 @@ export const History = ({config, status, reviews, reviewFunctions}) => {
         // @TODO: Add timestamps of reviewUpdates in reviewHistory, too. Sometimes every review.syncTimestamp is not every syncTimestamp
         const allSyncTimestamps = [...new Set(loadedReviews.map(review => review.syncTimestamp))];
 
-        const historyComponents2 = allSyncTimestamps.map(timestamp => {
+        const historyComponents = allSyncTimestamps.map(timestamp => {
             const updatedReviewsOnTimestamp =
                 loadedReviews
                     .filter(review => review.syncTimestamp === timestamp || review.reviewHistory.some(reviewUpdate => reviewUpdate.syncTimestamp === timestamp))
@@ -59,13 +59,13 @@ export const History = ({config, status, reviews, reviewFunctions}) => {
 
 
 
-
-        const historyComponents =
-            loadedReviews.filter(review => review.reviewHistory.length)
-            .slice(0, loadedHistoryItemsCount)
-            .map(review => 
-                <HistoryItem2 key={review.externalId} config={config} review={review} />
-            )
+        // @TODO: old method to fetch history items, no longer needed
+        // const historyComponents =
+        //     loadedReviews.filter(review => review.reviewHistory.length)
+        //     .slice(0, loadedHistoryItemsCount)
+        //     .map(review => 
+        //         <HistoryItem2 key={review.externalId} config={config} review={review} />
+        //     )
             
         return (
             <div className="history">
@@ -78,7 +78,6 @@ export const History = ({config, status, reviews, reviewFunctions}) => {
                     <div className="reviewItem review-notification reviewItemsWrapper"><span>No reviews found</span></div>
                 }
                 <div className="historyItemWrapper">
-                    {historyComponents2}
                     {historyComponents}
                 </div>
                 {!!historyComponents.length && 
