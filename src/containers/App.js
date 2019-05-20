@@ -343,8 +343,8 @@ export default class App extends Component {
           sort = initialValues.sortReviewsBy;
         }
         else asc = !this.state.config.sortReviewsAscending;
-      }      
-      
+      }
+
       this.setState({
         config : {
           ...this.state.config,
@@ -358,7 +358,7 @@ export default class App extends Component {
       event.persist()
       const reviewId = methods.findFirstIdOfTarget(event.target)
       const review = this.state.reviews.find(review => review.externalId === reviewId)
-      
+
       if(event.target.className.split(" ").includes('externalLink')){
         shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewId + '/?tag=reviewdashboard-21');
       }else if(!review.selected){
@@ -436,7 +436,7 @@ export default class App extends Component {
         }
       );
     },
-  
+
     saveNewPartialCrawlNumber : async event => {
       const crawlNumber = +event.target.value;
       await this.validatePartialCrawlNumber(crawlNumber);
@@ -633,6 +633,6 @@ export default class App extends Component {
 
   copyToClipboard(string){
     methods.copyToClipboard(string)
-    this.newToast('notification', `Copied: ${string}`)
+    this.newToast('notification', `Copied: ${string}`, 2000)
   }
 }

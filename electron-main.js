@@ -92,9 +92,9 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
       }
   });
 
-  
-  let helpfulVotes, reviewsCount, name, rank 
-  
+
+  let helpfulVotes, reviewsCount, name, rank
+
   page.on('response', response => {
 
     //reading xhr-json-responses (userStats)
@@ -120,9 +120,9 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
           const jsonPage = await browser.newPage();
           //Timeout if Amazon blocks, then cancel Crawl
           const timeoutForResponse = 10000;
-  
+
           recursiveJsonCrawl(responseObj);
-  
+
           async function recursiveJsonCrawl(responseObj){
             //@TODO: If no reviews available, fail gracefully
 
@@ -131,11 +131,11 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
               console.log("\n\Timeout at responseObj:\n\n", responseObj);
               interruptedByAmazon('TIMEOUT after ',timeoutForResponse,'ms while crawling', jsonPage)
             }, timeoutForResponse)
-  
+
             reviews.push(...responseObj['contributions']);
             console.log("reviewsCount", reviews.length);
             mainWindow.webContents.send('reviewsScrapedSoFar', reviews.length)
-            
+
             if(!responseObj.nextPageToken || (!isFullScrape && reviews.length >= maxReviewNumber)){
               console.log("\n#############\nScrapeComplete");
               console.log("Total time of crawling", new Date().getTime() - scrapeStartTime, "ms")
@@ -143,7 +143,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
               isCrawlingReviews = false;
               mainWindow.webContents.send('reviewsScraped', {reviewsScraped: reviews, userProfileURL})
               mainWindow.webContents.send('scrapeComplete', new Date().getTime() - scrapeStartTime)
-              
+
               clearTimeout(responseTimout);
               await closeConnection (jsonPage)
             }else{
@@ -152,17 +152,17 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
               // Reset start after review, so it doesn't get used everytime
               startAfterReview = null;
               console.log("\nnextURL should be\n\n", jsonURL, "\n\n\n")
-  
+
               await hideAutomatedScraping(jsonPage);
               await jsonPage.goto(jsonURL);
-              const content = await jsonPage.content(); 
+              const content = await jsonPage.content();
               jsonObj = await jsonPage.evaluate(() =>  {
-                  return JSON.parse(document.querySelector("body").innerText); 
-              }); 
-  
+                  return JSON.parse(document.querySelector("body").innerText);
+              });
+
               clearTimeout(responseTimout);
               recursiveJsonCrawl(jsonObj)
-              
+
             }
           }
         }else{
@@ -186,9 +186,9 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   .then(async () => {
     name = await page.$eval('.name-container span', el => el.innerText)
       .catch(() => console.error('$eval name not successfull'))
-    
+
     rank = await page.$eval('div.deck-container .desktop .a-row .a-section .a-section .a-row .a-column .a-row span.a-size-base', el => el.innerText.replace(/\D/g,''))
-      .catch(async () => 
+      .catch(async () =>
         page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
           .catch(() => console.error('$eval rank not successfull'))
       )
@@ -196,7 +196,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
 
     rank = rank || 0;
     if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {userProfileURL, name, rank, helpfulVotes, reviewsCount})
-  
+
   // If no completeCrawl crawling has to be deactivated here
   if (onlyProfile){
     isCrawlingReviews = false
@@ -226,7 +226,7 @@ function makeJsonURL(userProfileURL, responseObj, firstResponse, startAfterRevie
       'nextPageToken=' +
       encodeURIComponent(responseObj.nextPageToken) +
       firstResponse.url().split('nextPageToken=')[1]
-      
+
   return jsonURL;
 }
 
@@ -273,7 +273,7 @@ async function getCommentsCount(reviewURL){
       mainWindow.webContents.send('scrapeError', 'Connection failed.\n');
       await closeConnection (page)
       reject(`Connection failed for ${reviewURL}`)
-    })  
+    })
   })
 }
 
@@ -295,7 +295,7 @@ async function hideAutomatedScraping(page){
   const userAgent = 'Mozilla/5.0 (X11; Linux x86_64)' +
   'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36';
   await page.setUserAgent(userAgent);
-  
+
   await page.evaluateOnNewDocument(() => {
     Object.defineProperty(navigator, 'webdriver', {
       get: () => false,
@@ -304,17 +304,17 @@ async function hideAutomatedScraping(page){
       ...window.navigator.chrome,
       runtime: {}
     };
-  
+
     Object.defineProperty(navigator, 'plugins', {
       // This just needs to have `length > 0` for the current test,
       // but we could mock the plugins too if necessary.
       get: () => [1, 2, 3, 4, 5],
     });
-  
+
     Object.defineProperty(navigator, 'languages', {
       get: () => ['en-US', 'en'],
     });
-    
+
     const originalQuery = window.navigator.permissions.query;
     return window.navigator.permissions.query = (parameters) => (
       parameters.name === 'notifications' ?
@@ -343,7 +343,7 @@ app.on('ready', async ()=>{
   })
 
   browser = await puppeteer.launch({ headless: headlessMode })
-  
+
   mainWindow.on('resize', () => {
     savePosAndSize();
   });
@@ -361,10 +361,10 @@ app.on('ready', async ()=>{
       storage.set('windowBounds', { width, height, x, y });
     }, 300);
   }
-  
+
   mainWindow.on('closed', async () => {
     // Dereferenzieren des Fensterobjekts, normalerweise würden Sie Fenster
-    // in einem Array speichern, falls Ihre App mehrere Fenster unterstützt. 
+    // in einem Array speichern, falls Ihre App mehrere Fenster unterstützt.
     // Das ist der Zeitpunkt, an dem Sie das zugehörige Element löschen sollten.
     await browser.close();
     mainWindow = null
@@ -393,6 +393,6 @@ app.on('activate', () => {
   }
 })
 
-// In dieser Datei können Sie den Rest des App-spezifischen 
-// Hauptprozess-Codes einbinden. Sie können den Code auch 
+// In dieser Datei können Sie den Rest des App-spezifischen
+// Hauptprozess-Codes einbinden. Sie können den Code auch
 // auf mehrere Dateien aufteilen und diese hier einbinden.
