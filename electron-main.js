@@ -21,7 +21,7 @@ const storage = new Storage({
 
 //Create browser globally to reference it in Electron window onReady.
 let browser;
-const headlessMode = true;
+const headlessMode = false;
 
 ipcMain.on('startCrawl', async (event, startCrawl) => {
   console.log("\n\ncrawling from", startCrawl.url, "\n")
@@ -202,6 +202,9 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
     isCrawlingReviews = false
     mainWindow.webContents.send('scrapeComplete',  new Date().getTime() - scrapeStartTime)
     await closeConnection (page)
+  } else {
+    // @TODO: do we need this close connection here? check via headlessMode = false && if all is fetched correctly
+    await closeConnection(page);
   }
   console.log("First full load after", new Date().getTime() - scrapeStartTime, "ms")
   })
