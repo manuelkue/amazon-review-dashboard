@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { HistoryItem } from "../HistoryItem";
-import { HistoryItem2 } from "../HistoryItem2";
 import { ProgressBar } from "../progressBar";
 import { ToTopButton } from "../ToTopButton";
 import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
@@ -56,31 +55,20 @@ export const History = ({config, status, reviews, reviewFunctions}) => {
         })
 
 
-
-
-
-        // @TODO: old method to fetch history items, no longer needed
-        // const historyComponents =
-        //     loadedReviews.filter(review => review.reviewHistory.length)
-        //     .slice(0, loadedHistoryItemsCount)
-        //     .map(review => 
-        //         <HistoryItem2 key={review.externalId} config={config} review={review} />
-        //     )
-            
         return (
             <div className="history">
                 <ToTopButton arrivingAtTopAction={() => setLoadedHistoryItemsCount(40)}/>
                 <h1>History</h1>
                 <ProgressBar progress={status.scrapeProgress}></ProgressBar>
                 <div className="sentinel"></div>
-                {!historyComponents.length && 
+                {!historyComponents.length &&
 
                     <div className="reviewItem review-notification reviewItemsWrapper"><span>No reviews found</span></div>
                 }
                 <div className="historyItemWrapper">
                     {historyComponents}
                 </div>
-                {!!historyComponents.length && 
+                {!!historyComponents.length &&
                     <InfinitLoadingSentinel actionOnIntersecting={showMoreHistoryItems} distanceToBottom={200} />
                 }
             </div>
