@@ -14,7 +14,7 @@ import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
 
 //@TODO: integrate sort by clicking the header, sort for deleted as well
 
-export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
+const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
 
     // limit shown number at the start of the component
     const [loadedReviewsCount, setLoadedReviewsCount] = useState(30)
@@ -67,7 +67,7 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
             })
         methods.sortArray(filteredReviews, config.sortReviewsBy, config.sortReviewsAscending)
         const reviewsComponents = [...filteredReviews].slice(0, loadedReviewsCount)
-            .map(review => 
+            .map(review =>
                 <ReviewItem key={review.externalId} config = {config} review={review} reviewFunctions={reviewFunctions} />
             )
 
@@ -123,11 +123,11 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
                 </div>
                 <ProgressBar progress={status.scrapeProgress}/>
                 <div className="reviewItemsWrapper">
-                    {!reviewsComponents.length && 
+                    {!reviewsComponents.length &&
                         <div className="reviewItem review-notification"><span>No reviews found</span></div>
                     }
                     {reviewsComponents}
-                    {!!reviewsComponents.length && 
+                    {!!reviewsComponents.length &&
                         <InfinitLoadingSentinel actionOnIntersecting={showMoreReviews} distanceToBottom={50} />
                     }
                 </div>
@@ -143,3 +143,5 @@ export const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
     }
 
 }
+
+export default ReviewsList;

@@ -1,10 +1,10 @@
 import React from "react"
 import {UserCard} from '../UserCard'
 
-export const Users = ({config, status, users, selectUser, saveNewFetchURL, saveNewPartialCrawlNumber})  => {
+const Users = ({config, status, users, selectUser, saveNewFetchURL, saveNewPartialCrawlNumber})  => {
 
     //@TODO: Create component for user Details, be clickable to input profile-URL directly into Input
-    const usersComponents = users.map(user => 
+    const usersComponents = users.map(user =>
         <UserCard key={user.id} user={user} config={config} selectUser={selectUser}></UserCard>
     )
 
@@ -21,3 +21,5 @@ export const Users = ({config, status, users, selectUser, saveNewFetchURL, saveN
         </div>
     )
 }
+
+export default Users;

@@ -1,9 +1,9 @@
 import React from "react"
 
-export const Settings = ({config, status, settingsFunctions, crawlCommentsCounts})  => {
+const Settings = ({config, status, settingsFunctions, crawlCommentsCounts})  => {
 
     const availableLanguages = config.languagesAvailable
-        .map(language => 
+        .map(language =>
             <div className={"button" + (config.language === language.short ? ' selected' : '')} key={language.short} onClick={() => settingsFunctions.saveLanguage(language)}>{language.long}</div>
         )
 
@@ -35,3 +35,5 @@ export const Settings = ({config, status, settingsFunctions, crawlCommentsCounts
         </div>
     )
 }
+
+export default Settings;

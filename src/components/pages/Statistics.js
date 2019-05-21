@@ -1,6 +1,6 @@
 import React from "react"
 
-export const Statistics = ({config, status, reviews, users})  => {
+const Statistics = ({config, status, reviews, users})  => {
 
     return (
             <div className="history">
@@ -9,3 +9,5 @@ export const Statistics = ({config, status, reviews, users})  => {
             </div>
     )
 }
+
+export default Statistics;

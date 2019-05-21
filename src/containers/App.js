@@ -1,17 +1,19 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { Route, NavLink, Switch, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 
 import { Sidebar } from "../components/Sidebar";
-import { ReviewsList } from "../components/pages/ReviewsList";
-import { History } from "../components/pages/History";
-import { Users } from "../components/pages/Users";
-import { Settings } from "../components/pages/Settings";
-import { Statistics } from "../components/pages/Statistics";
 import { methods } from "../utilities/methods";
 import { reviewStorage, userStorage, configStorage, logStorage } from "../utilities/Storage";
 import { ModalContainer } from "../components/ModalContainer";
 import { ModalReview } from "../components/ModalReview";
+import { Loading } from "../components/Loading";
+
+const History = lazy(() => import('../components/pages/History'))
+const ReviewsList = lazy(() => import('../components/pages/ReviewsList'))
+const Users = lazy(() => import('../components/pages/Users'))
+const Settings = lazy(() => import('../components/pages/Settings'))
+const Statistics = lazy(() => import('../components/pages/Statistics'))
 
 //Electron connected functions
 const { ipcRenderer, shell } = window.require("electron");
@@ -250,11 +252,57 @@ export default class App extends Component {
             </div>
             <div className="main">
               <Switch>
-                <Route exact path="/" render={() => <History config={this.state.config} status={this.state.status} reviews={userReviews} reviewFunctions={this.reviewFunctions} />} />
-                <Route path="/reviews" render={() => <ReviewsList reviews={userReviews} config={this.state.config} status={this.state.status} reviewFunctions={this.reviewFunctions} /> } />
-                <Route path="/users" render={() => <Users config={this.state.config} status={this.state.status} users={this.state.users} selectUser={this.selectUser} saveNewFetchURL={this.saveNewFetchURL} /> } />
-                <Route path="/settings" render={() => <Settings config={this.state.config} status={this.state.status} settingsFunctions={this.settingsFunctions} crawlCommentsCounts={this.crawlCommentsCounts.bind(this)} /> } />
-                <Route path="/statistics" render={() => <Statistics config={this.state.config} status={this.state.status} reviews={userReviews} users={this.state.users} /> } />
+                <Route exact path="/" render={() =>
+                    <Suspense fallback={<Loading/>}>
+                      <History
+                        config={this.state.config}
+                        status={this.state.status}
+                        reviews={userReviews}
+                        reviewFunctions={this.reviewFunctions}
+                      />
+                    </Suspense>
+                  } />
+                <Route path="/reviews" render={() =>
+                    <Suspense fallback={<Loading/>}>
+                      <ReviewsList
+                        reviews={userReviews}
+                        config={this.state.config}
+                        status={this.state.status}
+                        reviewFunctions={this.reviewFunctions}
+                      />
+                    </Suspense>
+                  } />
+                <Route path="/users" render={() =>
+                    <Suspense fallback={<Loading/>}>
+                      <Users
+                        config={this.state.config}
+                        status={this.state.status}
+                        users={this.state.users}
+                        selectUser={this.selectUser}
+                        saveNewFetchURL={this.saveNewFetchURL}
+                      />
+                    </Suspense>
+                  } />
+                <Route path="/settings" render={() =>
+                    <Suspense fallback={<Loading/>}>
+                      <Settings
+                        config={this.state.config}
+                        status={this.state.status}
+                        settingsFunctions={this.settingsFunctions}
+                        crawlCommentsCounts={this.crawlCommentsCounts.bind(this)}
+                      />
+                    </Suspense>
+                  } />
+                <Route path="/statistics" render={() =>
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Statistics
+                        config={this.state.config}
+                        status={this.state.status}
+                        reviews={userReviews}
+                        users={this.state.users}
+                      />
+                    </Suspense>
+                  } />
               </Switch>
             </div>
             { this.state.status.modals.length?

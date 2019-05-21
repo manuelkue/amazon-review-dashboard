@@ -6,7 +6,7 @@ import { InfinitLoadingSentinel } from "../InfinitLoadingSentinel";
 
 import {methods} from "../../utilities/methods";
 
-export const History = ({config, status, reviews, reviewFunctions}) => {
+const History = ({config, status, reviews, reviewFunctions}) => {
 
     // limit shown number at the start of the component
     const [maxHistorySubItemsCount, setMaxHistorySubItemsCount] = useState(10)
@@ -97,3 +97,5 @@ export const History = ({config, status, reviews, reviewFunctions}) => {
         )
     }
 }
+
+export default History;
