@@ -73,7 +73,7 @@ const ReviewsList = ({reviews, config, status, reviewFunctions}) => {
 
         return (
             <div className="reviews-list">
-                <ToTopButton arrivingAtTopAction={() => setLoadedReviewsCount(230)} itemToReceiveNewClassQuerySelector = ".reviewItem.reviewsHeader"/>
+                <ToTopButton arrivingAtTopAction={() => setLoadedReviewsCount(100)} itemToReceiveNewClassQuerySelector = ".reviewItem.reviewsHeader"/>
                 <div className="filterWrapper">
                     <h1 className="truncateString">Reviews{filterTerm ? ": " + filteredReviews.length : ''}</h1>
                     <input

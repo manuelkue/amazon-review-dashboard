@@ -376,6 +376,14 @@ app.on('ready', async ()=>{
   //@TODO in production change to load file
   //mainWindow.loadFile('build/index.html')
   mainWindow.loadURL('http://localhost:3000/')
+  
+  // @TODO: DELETE before release
+  const path = require('path')
+  const os = require('os')
+
+  BrowserWindow.addDevToolsExtension(
+    path.join(os.homedir(), 'AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.6.0_0')
+  )
   mainWindow.webContents.openDevTools()
 })
 

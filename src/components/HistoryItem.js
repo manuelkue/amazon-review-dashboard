@@ -6,9 +6,7 @@ import { UpdatedParam } from "./UpdatedParam";
 
 // @TODO deleted reviews are shown crossed out
 
-export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, maxHistorySubItemsCount}) => {
-
-    console.log('maxHistorySubItemsCount :', maxHistorySubItemsCount)
+export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, yetToLoadHistorySubItemsCount}) => {
 
     const localeDateOptions = {year: '2-digit', month: '2-digit', day: '2-digit' };
 
@@ -40,7 +38,7 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, maxH
                     </div>
                 </div>
             </div>
-        ).slice(0, maxHistorySubItemsCount)
+        ).slice(0, yetToLoadHistorySubItemsCount - 1)
 
     return(updatedReviewsComponents.length?
         <div className='reviewItemsWrapper'>

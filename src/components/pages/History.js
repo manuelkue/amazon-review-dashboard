@@ -9,13 +9,13 @@ import {methods} from "../../utilities/methods";
 const History = ({config, status, reviews, reviewFunctions}) => {
 
     // limit shown number at the start of the component
-    const [maxHistorySubItemsCount, setMaxHistorySubItemsCount] = useState(10)
+    const [maxHistorySubItemsCount, setMaxHistorySubItemsCount] = useState(30)
     const [showMoreHistoryItemsBlocked, setShowMoreHistoryItemsBlocked] = useState(false)
 
     let alreadyLoadedHistorySubItems = 0;
 
     useEffect(() => {
-        showMoreHistoryItems()
+        // showMoreHistoryItems()
     }, [])
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const History = ({config, status, reviews, reviewFunctions}) => {
         // @TODO: Add timestamps of reviewUpdates in reviewHistory, too. Sometimes every review.syncTimestamp is not every syncTimestamp
         const allSyncTimestamps = [...new Set(loadedReviews.map(review => review.syncTimestamp))];
 
-        const historyComponents = allSyncTimestamps.map(timestamp => {
+        const historyComponents = allSyncTimestamps.map((timestamp, index) => {
             const updatedReviewsOnTimestamp =
                 loadedReviews
                     .filter(review => review.syncTimestamp === timestamp || review.reviewHistory.some(reviewUpdate => reviewUpdate.syncTimestamp === timestamp))
@@ -59,21 +59,24 @@ const History = ({config, status, reviews, reviewFunctions}) => {
                         return mappedReview
                     })
             alreadyLoadedHistorySubItems += updatedReviewsOnTimestamp.length
-            console.log('alreadyLoadedHistorySubItems :', alreadyLoadedHistorySubItems)
-            return <HistoryItem
-                        key = {timestamp}
-                        config = {config}
-                        date = {timestamp}
-                        updatedReviews = {updatedReviewsOnTimestamp}
-                        reviewFunctions = {reviewFunctions}
-                        maxHistorySubItemsCount = {maxHistorySubItemsCount - alreadyLoadedHistorySubItems}
-                    />
+            const yetToLoadHistorySubItemsCount = maxHistorySubItemsCount - alreadyLoadedHistorySubItems + updatedReviewsOnTimestamp.length
+
+            return yetToLoadHistorySubItemsCount > 0?
+                <HistoryItem
+                    key = {timestamp}
+                    config = {config}
+                    date = {timestamp}
+                    updatedReviews = {updatedReviewsOnTimestamp}
+                    reviewFunctions = {reviewFunctions}
+                    yetToLoadHistorySubItemsCount = {yetToLoadHistorySubItemsCount}
+                />
+                : null
         })
 
 
         return (
             <div className="history">
-                <ToTopButton arrivingAtTopAction={() => setMaxHistorySubItemsCount(40)}/>
+                <ToTopButton arrivingAtTopAction={() => setMaxHistorySubItemsCount(30)}/>
                 <h1>History</h1>
                 <ProgressBar progress={status.scrapeProgress}></ProgressBar>
                 <div className="sentinel"></div>
