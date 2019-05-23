@@ -30,7 +30,7 @@ export default function App(){
     maxReviewNumberOnPartScrape: 100,
     language: 'en',
     languagesAvailable: [{short: 'en', long:'English'}, {short: 'de', long:'Deutsch'}],
-    defaultToastDuration: 95000,
+    defaultToastDuration: 5000,
     maxToastsCountVisible : 9,
     saveMessageAfterDuration: 2000,
     sortReviewsBy: initialValues.sortReviewsBy,
@@ -49,18 +49,19 @@ export default function App(){
     isScrapingProfile: false,
     isScrapingContinued: false,
     appInitStarted: false,
-    appInitFinished: false,
-    toasts: [],
-    modals: []
+    appInitFinished: false
   })
+
+  const [modalsState, setModals] = useState([])
+  const [toastsState, setToasts] = useState([])
   const [usersState, setUsers] = useState([])
   const [reviewsState, setReviews] = useState([])
 
+  // Hook that behaves like 'Component mounted' - executed at the beginning
   useEffect(() => {
     initAppFromStorage().then(() => {
       configState.fetchURL && validateFetchURL(configState.fetchURL);
       configState.maxReviewNumberOnPartScrape && validatePartialCrawlNumber(configState.maxReviewNumberOnPartScrape);
-
 
 
       ipcRenderer.on("profileScraped", (event, profile) => {
@@ -190,6 +191,9 @@ export default function App(){
 
     });
   }, [])
+
+
+
 
 
 
@@ -443,68 +447,57 @@ export default function App(){
   }
 
   const newToast = async (type, message, duration = configState.defaultToastDuration) => {
-    const maxId = Math.max(...(statusState.toasts.map(toast => toast.id)), -1)
+    let maxId = 0
 
-    console.log(1)
-    console.log('statusState :', statusState.toasts)
-
-    await setStatus(prevStatus => {
-      console.log(2)
-      return {
-      ...prevStatus,
-      toasts:[
+    await setToasts(prevToasts => {
+      maxId = methods.maxIdOfObjArr(prevToasts)
+      return [
         {
           id: maxId + 1,
-          type: type,
-          message: message,
+          type,
+          message,
+          duration,
           dismissed: false
         },
-        ...prevStatus.toasts
+        ...prevToasts
         ]
-    }})
-    console.log(3)
-    console.log('statusState :', statusState.toasts)
+    })
     setTimeout(() => {
-      console.log(4)
+      console.log('dismiss Toast nr', methods.maxIdOfObjArr(toastsState) + 1);
       dismissToast(maxId + 1)
     }, duration);
     // Dismiss toasts if there are too many in the sidebar
-    let toastsCount = statusState.toasts.length;
+    let toastsCount = toastsState.length;
     for (let index = 0; index < toastsCount - configState.maxToastsCountVisible; index++) {
-      dismissToast(statusState.toasts[toastsCount - 1 - index].id);
+      dismissToast(toastsState[toastsCount - 1 - index].id);
     }
   }
 
   const dismissToast = async (id) => {
-    if(statusState.toasts.find(toast => toast.id === id)){
-      await setStatus(prevStatus => ({
-        ...prevStatus,
-        toasts: [...prevStatus.toasts].map(t => t.id === id? {...t, dismissed: true} : {...t, dismissed: false})
-      }))
+    console.log('dismissed Toast nr', id);
+    if(toastsState.find(toast => toast.id === id)){
+      await setToasts(prevToasts => [...prevToasts].map(t => t.id === id? {...t, dismissed: true} : {...t, dismissed: false})
+      )
       setTimeout(() => {
-        setStatus(prevStatus => ({
-          ...prevStatus,
-          toasts: [...prevStatus.toasts].filter(t => t.id !== id)
-        }))
+        setToasts(prevToasts => [...prevToasts].filter(t => t.id !== id)
+        )
       }, 500)
     }
   }
 
   const addModal = async (title, content) => {
     // Content can be another component or just normal text / jsx
-    const maxId = Math.max(...(statusState.modals.map(modal => modal.id)), -1)
     if(title && content){
-      await setStatus(prevStatus => ({
-        ...prevStatus,
-        modals:[
-          ...prevStatus.modals,
+      await setModals(prevModals =>
+        [
+          ...prevModals,
           {
-            id: maxId + 1,
-            title: title,
-            content: content
+            id: methods.maxIdOfObjArr(prevModals) + 1,
+            title,
+            content
           }
-          ]
-      }))
+        ]
+      )
     }else{
       console.error('Modal: Title or Content invalid');
     }
@@ -516,10 +509,7 @@ export default function App(){
 
     if(id.length === 0) return
 
-    await setStatus(prevStatus => ({
-      ...prevStatus,
-      modals: id === 'modal-container' ? [] : [...prevStatus.modals].filter(m => m.id !== +id)
-    }))
+    await setModals(prevModals => id === 'modal-container' ? [] : [...prevModals].filter(m => m.id !== +id))
   }
 
   const copyToClipboard = async (string) => {
@@ -553,10 +543,11 @@ export default function App(){
             user={usersState.find(user =>
               configState.fetchURL.includes(user.id)
             )}
-            config={configState}
-            status={statusState}
-            startCrawlClickHandler={startCrawlClickHandler.bind(this)}
-            dismissToast={dismissToast.bind(this)}
+            config = {configState}
+            status = {statusState}
+            startCrawlClickHandler = {startCrawlClickHandler.bind(this)}
+            toasts = {toastsState}
+            dismissToast = {dismissToast.bind(this)}
           />
           <div className="nav">
             <NavLink exact to="/" className="link" activeClassName="selected">
@@ -630,8 +621,8 @@ export default function App(){
                 } />
             </Switch>
           </div>
-          { statusState.modals.length?
-              <ModalContainer modals={statusState.modals} closeModal={closeModal.bind(this)} />
+          { modalsState.length?
+              <ModalContainer modals={modalsState} closeModal={closeModal.bind(this)} />
             : null }
         </div>
       }

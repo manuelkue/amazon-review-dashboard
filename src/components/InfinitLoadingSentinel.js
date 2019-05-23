@@ -1,7 +1,7 @@
 import React, {Component}  from "react"
 import { render } from "react-dom";
 
-// Tried to convert thi to a functional component with hooks but without "this" the actionOnIntersecting() doesn't fire
+//@TODO: Tried to convert thi to a functional component with hooks but without "this" the actionOnIntersecting() doesn't fire
 export class InfinitLoadingSentinel extends Component {
 
     observer;

@@ -33,7 +33,12 @@ export const methods = {
     }
     return array;
   },
-
+  // Finds the highest 'id', has to be a number. 'id' can be changed via 2nd param
+  // eg maxIdOfObjArr(toasts)
+  maxIdOfObjArr(objArray, param = 'id'){
+    return Math.max(...(objArray.map(obj => obj[param])), 0)
+  }
+  ,
   fetchURLData(fetchURL){
       if(fetchURL){
           try{
