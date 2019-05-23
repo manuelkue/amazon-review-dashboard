@@ -472,7 +472,7 @@ export default function App(){
 
   const newToast = async (type, message, duration = configState.defaultToastDuration) => {
     let maxId = 0
-
+    
     await setToasts(prevToasts => {
       maxId = methods.maxIdOfObjArr(prevToasts)
       return [
@@ -489,7 +489,6 @@ export default function App(){
   }
 
   const dismissToast = async (id) => {
-    console.log('dismissed Toast nr', id);
     if(toastsState.find(toast => toast.id === id)){
       await setToasts(prevToasts => [...prevToasts].map(t => t.id === id? {...t, dismissed: true} : {...t, dismissed: false})
       )
