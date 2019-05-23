@@ -200,6 +200,30 @@ export default function App(){
 
 
 
+  // Effects that have to be executed after state-changes. Formerly executed via callbacks
+
+    const [prevToastsCount, setPrevToastsCount] = useState(0)
+    useEffect(() => {
+      if(prevToastsCount < toastsState.length){
+        const newestToast = toastsState.find(toast => toast.id === methods.maxIdOfObjArr(toastsState))
+        setTimeout(() => {
+          dismissToast(newestToast.id)
+        }, newestToast.duration);
+
+        // Dismiss toasts if there are too many in the sidebar
+        let toastsCount = toastsState.length;
+        for (let index = 0; index < toastsCount - configState.maxToastsCountVisible; index++) {
+          dismissToast(toastsState[toastsCount - 1 - index].id);
+        }
+      }
+      setPrevToastsCount(toastsState.length)
+    }, [toastsState.length])
+
+
+
+
+
+
 
 
 
@@ -462,15 +486,6 @@ export default function App(){
         ...prevToasts
         ]
     })
-    setTimeout(() => {
-      console.log('dismiss Toast nr', methods.maxIdOfObjArr(toastsState) + 1);
-      dismissToast(maxId + 1)
-    }, duration);
-    // Dismiss toasts if there are too many in the sidebar
-    let toastsCount = toastsState.length;
-    for (let index = 0; index < toastsCount - configState.maxToastsCountVisible; index++) {
-      dismissToast(toastsState[toastsCount - 1 - index].id);
-    }
   }
 
   const dismissToast = async (id) => {
