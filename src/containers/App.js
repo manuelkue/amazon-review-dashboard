@@ -171,24 +171,26 @@ export default class App extends Component {
         return {...this.state.reviews.find(item => item.externalId === count.reviewId), comments: count.commentsCount}
       })
 
-      methods
-        .saveReviews(reviewsWithCommentCounts, this.state.reviews, this.state.config.fetchURL, true)
-        .then(() => {
-          reviewStorage
-            .get("reviews")
-            .then(reviews => {
-              this.setState(
-                {
-                  reviews: methods.arr2ReviewClassArr(reviews)
-                },
-                () => {
-                  this.newToast('success', `Comments loaded.`)
-                }
-              );
-            })
-            .catch(err => console.error(err));
-        })
-        .catch(err => console.error(err));
+      setTimeout(() => {
+        methods
+          .saveReviews(reviewsWithCommentCounts, this.state.reviews, this.state.config.fetchURL, true)
+          .then(() => {
+            reviewStorage
+              .get("reviews")
+              .then(reviews => {
+                this.setState(
+                  {
+                    reviews: methods.arr2ReviewClassArr(reviews)
+                  },
+                  () => {
+                    this.newToast('success', `Comments loaded.`)
+                  }
+                );
+              })
+              .catch(err => console.error(err));
+          })
+          .catch(err => console.error(err));
+      }, 0);
     });
     ipcRenderer.on("scrapeWarning", (event, message) => {
       this.newToast('warning', message)
@@ -584,7 +586,7 @@ export default class App extends Component {
             appInitFinished: true
           }
         }, () => console.log("AppInitFinished"));
-      }, 300);
+      }, 0);
     } else {
       console.log("AppInit already started");
     }
