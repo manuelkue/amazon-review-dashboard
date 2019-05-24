@@ -19,17 +19,18 @@
 
 .modal{
   z-index: 4;
+  box-sizing: border-box;
   min-width: 100px;
   min-height: 50px;
-  max-width: calc(100% - 2 * var(--spacing-xl));
-  max-height: calc(100% - 2 * var(--spacing-xl));
+  max-width: calc(100% - 4 * var(--spacing-xl));
+  max-height: calc(100% - 4 * var(--spacing-xl));
   display: flex;
   flex-direction: column;
   margin: var(--spacing-s) 0;
   background: var(--color-light);
   box-shadow: var(--shadow2);
   border-radius: var(--border-radius-l);
-  padding: var(--spacing-m);
+  padding: var(--spacing-l);
   opacity: 1;
   transition: all 0.3s;
   animation: slideup 0.2s ease-in-out;
@@ -40,11 +41,12 @@
   flex: 0 0 auto;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-m);
+  margin-bottom: var(--spacing-xl);
 }
 
 .modal-header-title{
   font-weight: bold;
+  font-size: 1.4em;
 }
 
 .modal-header-menu{

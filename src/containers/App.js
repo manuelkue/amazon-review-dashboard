@@ -36,7 +36,8 @@ export default class App extends Component {
         maxToastsCountVisible : 9,
         saveMessageAfterDuration: 2000,
         sortReviewsBy: initialValues.sortReviewsBy,
-        sortReviewsAscending: initialValues.sortReviewsAscending
+        sortReviewsAscending: initialValues.sortReviewsAscending,
+        localeDateOptions: {year: '2-digit', month: '2-digit', day: '2-digit' }
       },
       status:{
         fetchURLGetsValidated: "",
@@ -308,7 +309,7 @@ export default class App extends Component {
               </Switch>
             </div>
             { this.state.status.modals.length?
-                <ModalContainer modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
+                <ModalContainer config={this.state.config} modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
               : null }
           </div>
         }
@@ -417,7 +418,7 @@ export default class App extends Component {
       if(event.target.className.split(" ").includes('externalLink')){
         shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewId + '/?tag=reviewdashboard-21');
       }else if(!review.selected){
-        await this.addModal(methods.getProductTitle(review), <ModalReview review={review} copyToClipboard={this.copyToClipboard.bind(this)}/>)
+        await this.addModal(methods.getProductTitle(review), <ModalReview review={review} config={this.state.config} copyToClipboard={this.copyToClipboard.bind(this)}/>)
         console.log("selected review:", review)
       }
       this.setState({

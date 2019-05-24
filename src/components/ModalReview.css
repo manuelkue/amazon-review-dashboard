@@ -1,1 +1,19 @@
 @import url("../containers/App.css");
+
+.modalReview{
+    display: flex;
+    flex-direction: column;
+}
+
+.reviewSide{
+    display: flex;
+    justify-content: stretch;
+    flex-wrap: wrap;
+}
+
+.card{
+    background: var(--color-white);
+    margin:var(--spacing-s);
+    flex-direction: column;
+    flex-grow: 1;
+}

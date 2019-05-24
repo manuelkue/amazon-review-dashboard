@@ -1,7 +1,7 @@
-import React, { useEffect, memo } from "react"
+import React, { useEffect, memo, cloneElement } from "react"
 import "./ModalContainer.css";
 
-export const ModalContainer = ({modals, closeModal}) => {
+export const ModalContainer = ({config, modals, closeModal}) => {
     // Gets all modals via state. On modal contains id, title & content
     // Modal / its content are created via the addModal-function in App.js
 
@@ -42,7 +42,7 @@ const ModalItem = memo(({modal}) => {
                 </div>
             </div>
             <div className="modal-content">
-                {modal.content}
+                {cloneElement(modal.content)}
             </div>
         </div>
     )

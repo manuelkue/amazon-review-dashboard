@@ -8,8 +8,6 @@ import { UpdatedParam } from "./UpdatedParam";
 
 export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, yetToLoadHistorySubItemsCount}) => {
 
-    const localeDateOptions = {year: '2-digit', month: '2-digit', day: '2-digit' };
-
     const updatedReviewsComponents = updatedReviews.map(review =>
             <div
                 key={review.externalId}
@@ -43,7 +41,7 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, yetT
     return(updatedReviewsComponents.length?
         <div className='reviewItemsWrapper'>
             <div className="historyItemsHeader">
-                {new Date(date).toLocaleDateString(config.language, localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
+                {new Date(date).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
             </div>
             <div>
                 {updatedReviewsComponents}
