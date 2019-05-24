@@ -56,8 +56,9 @@ ipcMain.on('crawlComments', async (event, {userProfileURL, reviewIds}) => {
     })
     .catch(err => {
       console.info(err);
-      console.log(`Count for reviews finished with ${commentsCounts.length} of ${reviewIds.length}`);
+      console.log(`Count of comments interrupted at ${commentsCounts.length} of ${reviewIds.length} reviews`);
       finishedWithErrors = true;
+      mainWindow.webContents.send('scrapeError', `Count of comments interrupted at ${commentsCounts.length} of ${reviewIds.length} reviews`)
     })
     mainWindow.webContents.send('commentsCrawled', commentsCounts)
     if(commentsCounts.length === reviewIds.length || finishedWithErrors){
@@ -156,7 +157,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
               await hideAutomatedScraping(jsonPage);
               await jsonPage.goto(jsonURL);
               const content = await jsonPage.content();
-              jsonObj = await jsonPage.evaluate(() =>  {
+              const jsonObj = await jsonPage.evaluate(() =>  {
                   return JSON.parse(document.querySelector("body").innerText);
               });
 
@@ -185,14 +186,21 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   await page.goto(userProfileURL)
   .then(async () => {
     name = await page.$eval('.name-container span', el => el.innerText)
-      .catch(() => console.error('$eval name not successfull'))
+      .catch(() => { 
+        console.error('$eval name not successfull')
+        return null;
+      })
 
     rank = await page.$eval('div.deck-container .desktop .a-row .a-section .a-section .a-row .a-column .a-row span.a-size-base', el => el.innerText.replace(/\D/g,''))
       .catch(async () =>
         page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-          .catch(() => console.error('$eval rank not successfull'))
+          .catch(() => { 
+            console.error('$eval rank not successfull')
+            return null;
+          })
       )
 
+    !(name || rank) && interruptedByAmazon('$eval of name && rank not successfull', page)
 
     rank = rank || 0;
     if(helpfulVotes && reviewsCount) mainWindow.webContents.send('profileScraped', {userProfileURL, name, rank, helpfulVotes, reviewsCount})
@@ -220,8 +228,8 @@ function makeJsonURL(userProfileURL, responseObj, firstResponse, startAfterRevie
   //Inject startAfterReview into nextPageToken
   if (startAfterReview){
     //Regex finds places, groups them and replaces the groups with $1,...$4
-    regex = /(?:({"st":{"n":")(\d+))(.+)(?:(amzn1\.productreview\.))(\w+)/g;
-    replace = '$1' + startAfterReview.date + '$3$4' + startAfterReview.externalId;
+    const regex = /(?:({"st":{"n":")(\d+))(.+)(?:(amzn1\.productreview\.))(\w+)/g;
+    const replace = '$1' + startAfterReview.date + '$3$4' + startAfterReview.externalId;
     responseObj.nextPageToken = responseObj.nextPageToken.replace(regex, replace)
   }
     const jsonURL = ""+
@@ -236,7 +244,7 @@ function makeJsonURL(userProfileURL, responseObj, firstResponse, startAfterRevie
 async function interruptedByAmazon(err, page){
   mainWindow.webContents.send('scrapeError', 'Interrupted by Amazon')
   isCrawlingReviews = false;
-  await closeConnection (page)
+  page && await closeConnection (page)
   console.error(err)
 }
 
