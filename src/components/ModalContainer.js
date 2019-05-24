@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, memo } from "react"
 import "./ModalContainer.css";
 
 export const ModalContainer = ({modals, closeModal}) => {
@@ -27,7 +27,7 @@ export const ModalContainer = ({modals, closeModal}) => {
     )
 }
 
-const ModalItem = ({modal}) => {
+const ModalItem = memo(({modal}) => {
 
     console.log('modal :', modal);
 
@@ -46,4 +46,4 @@ const ModalItem = ({modal}) => {
             </div>
         </div>
     )
-}
+})

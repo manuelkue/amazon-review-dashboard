@@ -32,7 +32,7 @@ export default class App extends Component {
         maxReviewNumberOnPartScrape: 100,
         language: 'en',
         languagesAvailable: [{short: 'en', long:'English'}, {short: 'de', long:'Deutsch'}],
-        defaultToastDuration: 95000,
+        defaultToastDuration: 5000,
         maxToastsCountVisible : 9,
         saveMessageAfterDuration: 2000,
         sortReviewsBy: initialValues.sortReviewsBy,
