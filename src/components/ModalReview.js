@@ -3,11 +3,6 @@ import "./ModalReview.css";
 
 export const ModalReview = ({config, review, copyToClipboard}) => {
 
-    const parser = new DOMParser();
-    const dom = parser.parseFromString(review.reviewText, 'text/html');
-    const reviewText = dom.body.textContent;
-    console.log('reviewText :', reviewText);
-
     return(
         <>
             <h2>Review</h2>
@@ -43,8 +38,8 @@ export const ModalReview = ({config, review, copyToClipboard}) => {
                     </div>
                 </div>
                 <div className="card reviewMain">
-                    <h3>{review.reviewTitle}</h3>
-                    {reviewText}
+                    <h3 dangerouslySetInnerHTML={{__html: review.reviewTitle}}></h3>
+                    <div dangerouslySetInnerHTML={{__html: review.reviewText}}></div>
                 </div>
             </div>
 
