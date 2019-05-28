@@ -1,20 +1,16 @@
 @import url("../containers/App.css");
 
 .modalReview{
-    display: flex;
-    flex-direction: column;
 }
 
-.modalReview .reviewSide{
+.modalReview .infoCardRow {
     display: flex;
     justify-content: stretch;
     flex-wrap: wrap;
 }
 
 .modalReview .card{
-    background: var(--color-white);
     margin:var(--spacing-s);
-    flex-direction: column;
     flex-grow: 1;
 }
 

@@ -37,15 +37,19 @@ export const methods = {
   fetchURLData(fetchURL){
       if(fetchURL){
           try{
-            let id = fetchURL.split('account.')[1].substring(0,28);
-            let profileURL = 'https://' + new URL(fetchURL).hostname + '/gp/profile/amzn1.account.' + id
-            let avatarURL = 'https://' + new URL(fetchURL).hostname + '/avatar/default/amzn1.account.' + id + '?square=true&max_width=460'
-            let reviewBaseURL = 'https://' + new URL(fetchURL).hostname + '/gp/customer-reviews/'
+            const id = fetchURL.split('account.')[1].substring(0,28);
+            const amazonURL = 'https://' + new URL(fetchURL).hostname
+            const profileURL = 'https://' + new URL(fetchURL).hostname + '/gp/profile/amzn1.account.' + id
+            const avatarURL = 'https://' + new URL(fetchURL).hostname + '/avatar/default/amzn1.account.' + id + '?square=true&max_width=460'
+            const reviewBaseURL = 'https://' + new URL(fetchURL).hostname + '/gp/customer-reviews/'
+            const productBaseURL = 'https://' + new URL(fetchURL).hostname + '/dp/'
             if (typeof id === 'string' && id.length === 28 && profileURL){
               return {
+                amazonURL,
                 profileURL,
                 avatarURL,
                 reviewBaseURL,
+                productBaseURL,
                 id
               }
             }
@@ -54,6 +58,23 @@ export const methods = {
           }
       }
       return false;
+  },
+
+  createURL(appConfig, options = {reviewID: undefined, productAsin: undefined, omitPartnerTag: false}){
+    const urlData = methods.fetchURLData(appConfig.fetchURL)
+    let urlSelect
+    let urlId
+    if(options.reviewID){
+      urlSelect = 'reviewBaseURL'
+      urlId = options.reviewID
+    }else if(options.productAsin){
+      urlSelect = 'productBaseURL'
+      urlId = options.productAsin
+    }else{
+      console.error('createURL: wrong options', options);
+      return urlData.amazonURL
+    }
+    return urlData[urlSelect] + urlId + (options.omitPartnerTag ? '' : ('/?tag=' + appConfig.amazonPartnerTag))
   },
 
   cloneElement(element) {

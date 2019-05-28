@@ -1,65 +1,61 @@
 import React from "react"
 import "./ModalReview.css";
+import { InfoCard } from "./InfoCard";
+import { methods } from "../utilities/methods";
 
-export const ModalReview = ({config, review, copyToClipboard}) => {
+export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) => {
 
     return(
-        <>
+        <div className="modalReview" id={review.externalId}>
             <h2>Review</h2>
-            <div className="modalReview">
-                <div className="reviewSide">
-                    <div className="card">
-                        <h3>Date</h3>
-                        {new Date(review.date).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(review.date).toLocaleTimeString(config.language)}
-                    </div>
-                    <div className="card">
-                        <h3>Your rating</h3>
-                        {review.userRating}
-                    </div>
-                    <div className="card">
-                        <h3>Helpful votes</h3>
-                        {review.helpfulVotes}
-                    </div>
-                    <div className="card">
-                        <h3>Comments</h3>
-                        {review.comments}
-                    </div>
-                    <div className="card">
-                        <h3>Review ID</h3>
-                        {review.externalId}
-                    </div>
-                    <div className="card">
-                        <h3>Verified Purchase</h3>
-                        {review.verifiedPurchase? 'Yes' : 'No'}
-                    </div>
-                    <div className="card">
-                        <h3>Vine</h3>
-                        {review.vine? 'Yes' : 'No'}
-                    </div>
-                </div>
-                <div className="card reviewMain">
-                    <h3 dangerouslySetInnerHTML={{__html: review.reviewTitle}}></h3>
-                    <div dangerouslySetInnerHTML={{__html: review.reviewText}}></div>
-                </div>
+            <div className="infoCardRow">
+                <InfoCard icon="date_range">
+                    {new Date(review.date).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(review.date).toLocaleTimeString(config.language)}
+                </InfoCard>
+                <InfoCard icon="thumb_up">
+                    {review.helpfulVotes}
+                </InfoCard>
+                <InfoCard icon="message">
+                    {review.comments}
+                </InfoCard>
+                <InfoCard head="Review ID">
+                    {review.externalId}
+                </InfoCard>
+                <InfoCard head="Verified Purchase">
+                    {review.verifiedPurchase? 'Yes' : 'No'}
+                </InfoCard>
+                <InfoCard head="Vine">
+                    {review.vine? 'Yes' : 'No'}
+                </InfoCard>
+            </div>
+            <div className="infoCardRow">
+                <InfoCard icon="open_in_new" onClick={event => reviewFunctions.reviewSelected(event)} externalLink/>
+                <InfoCard icon="link content_copy" onClick={() => copyToClipboard(methods.createURL(config, {reviewID: review.externalId}))}>
+                    <div>{methods.createURL(config, {reviewID: review.externalId, omitPartnerTag: true})}</div>    
+                </InfoCard>
+            </div>
+            <div className="card reviewMain">
+                <b dangerouslySetInnerHTML={{__html: review.reviewTitle}}></b>
+                <div dangerouslySetInnerHTML={{__html: review.reviewText}}></div>
             </div>
 
             <h2>Product Details</h2>
             
-            <div className="modalReview">
-                <div className="reviewSide">
-                    <div className="card">
-                        <h3>ASIN</h3>
-                        {review.productAsin}
-                    </div>
-                    <div className="card">
-                        <h3>Product available</h3>
-                        {review.productMissing? 'No' : 'Yes'}
-                    </div>
-                    <div className="card">
-                        <h3>Average Rating</h3>
-                        {review.averageRating}
-                    </div>
-                </div>
+            <div className="infoCardRow">
+                <InfoCard head="ASIN">
+                    {review.productAsin}
+                </InfoCard>
+                <InfoCard head="Product available">
+                    {review.productMissing? 'No' : 'Yes'}
+                </InfoCard>
+                <InfoCard head="Average Rating">
+                    {review.averageRating}
+                </InfoCard>
+            </div>
+            <div className="infoCardRow">
+                <InfoCard icon="link content_copy" onClick={() => copyToClipboard(methods.createURL(config, {productAsin: review.productAsin}))}>
+                    <div>{methods.createURL(config, {productAsin: review.productAsin, omitPartnerTag: true})}</div>    
+                </InfoCard>
             </div>
 
             <h2>Review History</h2>
@@ -82,6 +78,6 @@ export const ModalReview = ({config, review, copyToClipboard}) => {
 
             </div>
             )}
-        </>
+        </div>
     )
 }

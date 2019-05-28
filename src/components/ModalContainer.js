@@ -1,4 +1,4 @@
-import React, { useEffect, memo, cloneElement } from "react"
+import React, { useEffect, memo } from "react"
 import "./ModalContainer.css";
 
 export const ModalContainer = ({config, modals, closeModal}) => {
@@ -42,7 +42,7 @@ const ModalItem = memo(({modal}) => {
                 </div>
             </div>
             <div className="modal-content">
-                {cloneElement(modal.content)}
+                {modal.content}
             </div>
         </div>
     )

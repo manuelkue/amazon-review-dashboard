@@ -2,7 +2,6 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url('../assets/fonts/MaterialIcons-Regular.eot'); /* For IE6-8 */
   src: local('Material Icons'),
     local('MaterialIcons-Regular'),
     url(../assets/fonts/MaterialIcons-Regular.woff2) format('woff2'),
@@ -574,12 +573,12 @@ input:hover, input:focus{
 }
 
 .selectable{
-  background: var(--color-white);
   color: var(--color-text-dark);
   cursor: pointer;
+  background: var(--color-lighter);
 }
 .selectable:hover{
-  background: var(--color-lighter);
+  background: var(--color-white);
 }
 .reviewItem{
   display: grid;
@@ -684,6 +683,7 @@ input:hover, input:focus{
 }
 
 .card{
+  background: var(--color-lighter);
   border-radius: var(--border-radius-m);
   overflow: hidden;
   padding: var(--spacing-m);

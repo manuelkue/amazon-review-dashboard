@@ -1,0 +1,15 @@
+@import url("../containers/App.css");
+
+.infoCard{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.infoCard.externalLink{
+  max-width: fit-content;
+}
+
+.infoCard > div:nth-child(2){
+  margin-left: var(--spacing-m);
+}

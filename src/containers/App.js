@@ -37,7 +37,8 @@ export default class App extends Component {
         saveMessageAfterDuration: 2000,
         sortReviewsBy: initialValues.sortReviewsBy,
         sortReviewsAscending: initialValues.sortReviewsAscending,
-        localeDateOptions: {year: '2-digit', month: '2-digit', day: '2-digit' }
+        localeDateOptions: {year: '2-digit', month: '2-digit', day: '2-digit' },
+        amazonPartnerTag: 'reviewdashboard-21'
       },
       status:{
         fetchURLGetsValidated: "",
@@ -416,9 +417,9 @@ export default class App extends Component {
       const review = this.state.reviews.find(review => review.externalId === reviewId)
 
       if(event.target.className.split(" ").includes('externalLink')){
-        shell.openExternal(methods.fetchURLData(this.state.config.fetchURL).reviewBaseURL + reviewId + '/?tag=reviewdashboard-21');
+        shell.openExternal(methods.createURL(this.state.config, {reviewID: reviewId}));
       }else if(!review.selected){
-        await this.addModal(methods.getProductTitle(review), <ModalReview review={review} config={this.state.config} copyToClipboard={this.copyToClipboard.bind(this)}/>)
+        await this.addModal(methods.getProductTitle(review), <ModalReview review={review} config={this.state.config} reviewFunctions={this.reviewFunctions} copyToClipboard={this.copyToClipboard.bind(this)}/>)
         console.log("selected review:", review)
       }
       this.setState({
@@ -670,7 +671,7 @@ export default class App extends Component {
             {
               id: maxId + 1,
               title: title,
-              content: content
+              content
             }
             ]
           }
@@ -697,7 +698,6 @@ export default class App extends Component {
 
   async copyToClipboard(string){
     methods.copyToClipboard(string)
-    await this.newToast('notification', `Copied: ${string}`, 2000)
-    await this.addModal('Copied', string)
+    await this.newToast('notification', <span className="truncateString">Copied: {string}</span>, 2500)
   }
 }
