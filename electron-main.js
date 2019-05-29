@@ -186,7 +186,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
   await page.goto(userProfileURL)
   .then(async () => {
     name = await page.$eval('.name-container span', el => el.innerText)
-      .catch(() => { 
+      .catch(() => {
         console.error('$eval name not successfull')
         return null;
       })
@@ -194,7 +194,7 @@ async function crawlReviews(userProfileURL, isFullScrape, maxReviewNumber, onlyP
     rank = await page.$eval('div.deck-container .desktop .a-row .a-section .a-section .a-row .a-column .a-row span.a-size-base', el => el.innerText.replace(/\D/g,''))
       .catch(async () =>
         page.$eval('.a-spacing-base a.a-link-normal', el => +el.getAttribute('href').split('rank=')[1].split('#')[0])
-          .catch(() => { 
+          .catch(() => {
             console.error('$eval rank not successfull')
             return null;
           })
@@ -350,7 +350,11 @@ app.on('ready', async ()=>{
     height,
     x,
     y,
-    backgroundColor: '#f2f2f2'
+    backgroundColor: '#f2f2f2',
+    webPreferences: {
+      nodeIntegration:true
+    }
+
   })
 
   browser = await puppeteer.launch({ headless: headlessMode })
@@ -384,7 +388,7 @@ app.on('ready', async ()=>{
   //@TODO in production change to load file
   //mainWindow.loadFile('build/index.html')
   mainWindow.loadURL('http://localhost:3000/')
-  
+
   // @TODO: DELETE before release
   const path = require('path')
   const os = require('os')
