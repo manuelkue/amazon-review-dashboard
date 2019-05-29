@@ -234,8 +234,8 @@ export default class App extends Component {
               )}
               config={this.state.config}
               status={this.state.status}
-              startCrawlClickHandler={this.startCrawlClickHandler.bind(this)}
-              dismissToast={this.dismissToast.bind(this)}
+              startCrawlClickHandler={this.startCrawlClickHandler}
+              dismissToast={this.dismissToast}
             />
             <div className="nav">
               <NavLink exact to="/" className="link" activeClassName="selected">
@@ -293,7 +293,7 @@ export default class App extends Component {
                         config={this.state.config}
                         status={this.state.status}
                         settingsFunctions={this.settingsFunctions}
-                        crawlCommentsCounts={this.crawlCommentsCounts.bind(this)}
+                        crawlCommentsCounts={this.crawlCommentsCounts}
                       />
                     </Suspense>
                   } />
@@ -310,7 +310,7 @@ export default class App extends Component {
               </Switch>
             </div>
             { this.state.status.modals.length?
-                <ModalContainer config={this.state.config} modals={this.state.status.modals} closeModal={this.closeModal.bind(this)} />
+                <ModalContainer config={this.state.config} modals={this.state.status.modals} closeModal={this.closeModal} />
               : null }
           </div>
         }
@@ -345,7 +345,7 @@ export default class App extends Component {
 
   //@TODO: Implement autorefresh of profile at App-start / profile-URL change
   //Handler can crawl full (maxReviewNumber = null), partially (maxReviewNumber != null), only profileStats and can begin at/after a specific review = externalId
-  startCrawlClickHandler({isFullScrape = false, maxReviewNumber = null, onlyProfile = false, startAfterReviewId = null} = {}) {
+  startCrawlClickHandler = ({isFullScrape = false, maxReviewNumber = null, onlyProfile = false, startAfterReviewId = null} = {}) => {
 
     if (startAfterReviewId) isFullScrape = true;
 
@@ -417,15 +417,25 @@ export default class App extends Component {
       const review = this.state.reviews.find(review => review.externalId === reviewId)
 
       if(event.target.className.split(" ").includes('externalLink')){
-        shell.openExternal(methods.createURL(this.state.config, {reviewID: reviewId}));
+        shell.openExternal(methods.createURL(this.state.config, {reviewId: reviewId}));
       }else if(!review.selected){
-        await this.addModal(methods.getProductTitle(review), <ModalReview review={review} config={this.state.config} reviewFunctions={this.reviewFunctions} copyToClipboard={this.copyToClipboard.bind(this)}/>)
+        await this.addModal(methods.getProductTitle(review), <ModalReview review={review} config={this.state.config} openExternal={this.openExternal} copyToClipboard={this.copyToClipboard}/>)
         console.log("selected review:", review)
       }
       this.setState({
         reviews: [...this.state.reviews].map(r => r.externalId === review.externalId? {...r, selected: !r.selected} : {...r, selected: false})
       })
 
+    }
+  }
+
+  openExternal = {
+    review : reviewId => {
+      shell.openExternal(methods.createURL(this.state.config, {reviewId}));
+    },
+
+    product : productAsin => {
+      shell.openExternal(methods.createURL(this.state.config, {productAsin}));
     }
   }
 
@@ -607,11 +617,11 @@ export default class App extends Component {
     })
   }
 
-  crawlCommentsCounts(userProfileURL = this.state.config.fetchURL, reviewsToCrawlCommentsFrom = this.state.reviews.filter(review => this.state.config.fetchURL.includes(review.userId))){
+  crawlCommentsCounts = (userProfileURL = this.state.config.fetchURL, reviewsToCrawlCommentsFrom = this.state.reviews.filter(review => this.state.config.fetchURL.includes(review.userId))) => {
     ipcRenderer.send("crawlComments", {userProfileURL, reviewIds: reviewsToCrawlCommentsFrom.map(review => review.externalId)});
   }
 
-  async newToast(type, message, duration = this.state.config.defaultToastDuration){
+  newToast = async (type, message, duration = this.state.config.defaultToastDuration) => {
     const maxId = Math.max(...(this.state.status.toasts.map(toast => toast.id)), -1)
 
     await this.setState({
@@ -640,7 +650,7 @@ export default class App extends Component {
     }
   }
 
-  async dismissToast(id){
+  dismissToast = async (id) => {
     if(this.state.status.toasts.find(toast => toast.id === id)){
       await this.setState({
         status:{
@@ -659,7 +669,7 @@ export default class App extends Component {
     }
   }
 
-  async addModal(title, content){
+  addModal = async (title, content) => {
     // Content can be another component or just normal text / jsx
     const maxId = Math.max(...(this.state.status.modals.map(modal => modal.id)), -1)
     if(title && content){
@@ -696,8 +706,8 @@ export default class App extends Component {
     })
   }
 
-  async copyToClipboard(string){
+  copyToClipboard = async (string) => {
     methods.copyToClipboard(string)
-    await this.newToast('notification', <span className="truncateString">Copied: {string}</span>, 2500)
+    this.newToast('notification', <span className="truncateString">Copied: {string}</span>, 2500)
   }
 }

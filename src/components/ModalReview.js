@@ -3,7 +3,7 @@ import "./ModalReview.css";
 import { InfoCard } from "./InfoCard";
 import { methods } from "../utilities/methods";
 
-export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) => {
+export const ModalReview = ({config, review, openExternal, copyToClipboard}) => {
 
     return(
         <div className="modalReview" id={review.externalId}>
@@ -31,9 +31,9 @@ export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) 
                 </InfoCard>
             </div>
             <div className="infoCardRow">
-                <InfoCard icon="open_in_new" onClick={event => reviewFunctions.reviewSelected(event)} externalLink/>
-                <InfoCard icon="link content_copy" onClick={() => copyToClipboard(methods.createURL(config, {reviewID: review.externalId}))}>
-                    <div>{methods.createURL(config, {reviewID: review.externalId, omitPartnerTag: true})}</div>    
+                <InfoCard icon="open_in_new" onClick={() => openExternal.review(review.externalId)} externalLink/>
+                <InfoCard icon="link content_copy" onClick={() => copyToClipboard(methods.createURL(config, {reviewId: review.externalId}))}>
+                    <div>{methods.createURL(config, {reviewId: review.externalId, omitPartnerTag: true})}</div>
                 </InfoCard>
             </div>
             <div className="card reviewMain">
@@ -42,7 +42,7 @@ export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) 
             </div>
 
             <h2>Product Details</h2>
-            
+
             <div className="infoCardRow">
                 <InfoCard head="ASIN">
                     {review.productAsin}
@@ -55,14 +55,15 @@ export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) 
                 </InfoCard>
             </div>
             <div className="infoCardRow">
+                <InfoCard icon="open_in_new" onClick={() => openExternal.product(review.productAsin)} externalLink/>
                 <InfoCard icon="link content_copy" onClick={() => copyToClipboard(methods.createURL(config, {productAsin: review.productAsin}))}>
-                    <div>{methods.createURL(config, {productAsin: review.productAsin, omitPartnerTag: true})}</div>    
+                    <div>{methods.createURL(config, {productAsin: review.productAsin, omitPartnerTag: true})}</div>
                 </InfoCard>
             </div>
 
             <h2>Review History</h2>
 
-            {review.updatedParams.map((updatedParam, index) => 
+            {review.updatedParams.map((updatedParam, index) =>
             <div key={review.reviewHistory[index].syncTimestamp}>
                 <div>Change on {
                     new Date(review.reviewHistory[index].syncTimestamp).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(review.reviewHistory[index].syncTimestamp).toLocaleTimeString(config.language)

@@ -60,13 +60,13 @@ export const methods = {
       return false;
   },
 
-  createURL(appConfig, options = {reviewID: undefined, productAsin: undefined, omitPartnerTag: false}){
+  createURL(appConfig, options = {reviewId: undefined, productAsin: undefined, omitPartnerTag: false}){
     const urlData = methods.fetchURLData(appConfig.fetchURL)
     let urlSelect
     let urlId
-    if(options.reviewID){
+    if(options.reviewId){
       urlSelect = 'reviewBaseURL'
-      urlId = options.reviewID
+      urlId = options.reviewId
     }else if(options.productAsin){
       urlSelect = 'productBaseURL'
       urlId = options.productAsin
@@ -213,7 +213,7 @@ export const methods = {
               console.log("foundNew", u);
           }
           console.log("new savedUsers", savedUsers);
-  
+
           await userStorage.set("users", savedUsers);
           resolve(true)
       }else{
@@ -237,10 +237,10 @@ export const methods = {
     const el = document.createElement('textarea');
     el.value = string;
     el.setAttribute('readonly', ''); // Make it readonly to be tamper-proof
-    el.style.position = 'absolute';                 
+    el.style.position = 'absolute';
     el.style.left = '-9999px';
     document.body.appendChild(el);
-    const selected =            
+    const selected =
       document.getSelection().rangeCount > 0 // Check if there is any content selected previously
         ? document.getSelection().getRangeAt(0)
         : false;
