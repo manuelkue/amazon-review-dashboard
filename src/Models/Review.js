@@ -13,6 +13,7 @@ export class Review {
     reviewTitle
     reviewText
     averageRating
+    reviewCount
     userRating
     helpfulVotes
     comments
@@ -34,6 +35,7 @@ export class Review {
         reviewTitle,
         reviewText,
         averageRating,
+        reviewCount,
         userRating,
         helpfulVotes,
         comments,
@@ -52,6 +54,7 @@ export class Review {
         this.reviewTitle = typeof reviewTitle === 'string'? reviewTitle : ''
         this.reviewText = typeof reviewText === 'string'? reviewText : ''
         this.averageRating = !isNaN(averageRating)? averageRating : 0
+        this.reviewCount = !isNaN(reviewCount)? reviewCount : 0
         this.userRating = !isNaN(userRating)? userRating : 0
         this.helpfulVotes = !isNaN(helpfulVotes)? helpfulVotes : 0
         this.comments = !isNaN(comments)? comments : 0
@@ -68,6 +71,7 @@ export class Review {
             this.productMissing !== review.productMissing && updatedParams.push('productMissing')
             this.reviewTitle  !== review.reviewTitle && updatedParams.push('reviewTitle')
             this.reviewText !== review.reviewText && updatedParams.push('reviewText')
+            this.reviewCount !== review.reviewCount && updatedParams.push('reviewCount')
             this.userRating !== review.userRating && updatedParams.push('userRating')
             this.helpfulVotes !== review.helpfulVotes && updatedParams.push('helpfulVotes')
             this.comments !== review.comments && reviewsAlreadyReviewObjects && updatedParams.push('comments')
@@ -95,6 +99,7 @@ export class Review {
             })
             this.syncTimestamp = +review.syncTimestamp
             this.averageRating = review.averageRating + 0
+            this.reviewCount = review.reviewCount + 0
             this.updatedParams = [...review.updatedParams]
 
             console.log("review", review.externalId, 'has updates', review.updatedParams)

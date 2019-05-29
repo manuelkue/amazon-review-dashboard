@@ -73,6 +73,7 @@ export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) 
                         {updatedParam === 'newReview'? 'fiber_new assignment' : ''}
                         {updatedParam === 'reviewText'? 'assignment edit' : ''}
                         {updatedParam === 'comments'? 'comment' : ''}
+                        {updatedParam === 'reviewCount'? 'library_books' : ''}
                         {updatedParam === 'productMissing' && review.reviewHistory[index].productMissing ? 'delete' : 'undo delete'}
                         {updatedParam === 'productTitle'? 'title edit' : ''}
                     </i>

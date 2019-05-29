@@ -140,6 +140,7 @@ export const methods = {
             reviewTitle: r.title,
             reviewText: r.text,
             averageRating: +r.product.averageRating,
+            reviewCount: +r.product.reviewCount,
             userRating: +r.rating,
             helpfulVotes: +r.helpfulVotes,
             comments: 0,

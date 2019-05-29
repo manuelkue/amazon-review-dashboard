@@ -10,6 +10,7 @@ export const UpdatedParam = ({param, updateDifference}) => {
                 {param === 'newReview'? 'fiber_new assignment' : ''}
                 {param === 'reviewText'? 'assignment edit' : ''}
                 {param === 'comments'? 'comment' : ''}
+                {param === 'reviewCount'? 'library_books' : ''}
                 {param === 'productMissing' && !(updateDifference < 0) ? 'delete' : ''}
                 {param === 'productMissing' && updateDifference < 0 ? 'undo delete' : ''}
                 {param === 'productTitle'? 'title edit' : ''}
