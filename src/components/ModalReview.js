@@ -12,10 +12,12 @@ export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) 
                 <InfoCard icon="date_range">
                     {new Date(review.date).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(review.date).toLocaleTimeString(config.language)}
                 </InfoCard>
-                <InfoCard icon="thumb_up">
+                <InfoCard center icon={[0,0,0,0,0].map((item, index) => index < review.userRating ? 'star' : 'star_border')}>
+                </InfoCard>
+                <InfoCard center icon="thumb_up">
                     {review.helpfulVotes}
                 </InfoCard>
-                <InfoCard icon="message">
+                <InfoCard center icon="message">
                     {review.comments}
                 </InfoCard>
                 <InfoCard head="Review ID">
@@ -48,7 +50,7 @@ export const ModalReview = ({config, review, reviewFunctions, copyToClipboard}) 
                 <InfoCard head="Product available">
                     {review.productMissing? 'No' : 'Yes'}
                 </InfoCard>
-                <InfoCard head="Average Rating">
+                <InfoCard center icon={[0,0,0,0,0].map((item, index) => (index + 1) - review.averageRating < 0.25 ?  'star' : ((index + 1) - review.averageRating > 0.75 ? 'star_border' : 'star_half'))}>
                     {review.averageRating}
                 </InfoCard>
             </div>

@@ -6,9 +6,14 @@
   align-items: center;
 }
 
+.infoCard.center{
+  justify-content: center;
+}
+
 .infoCard.externalLink{
   max-width: fit-content;
 }
+
 
 .infoCard > div:nth-child(2){
   margin-left: var(--spacing-m);
