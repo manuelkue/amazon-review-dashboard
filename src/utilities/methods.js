@@ -131,7 +131,7 @@ export const methods = {
           r = new Review({
             externalId: r.externalId,
             userId: this.fetchURLData(fetchURL).id,
-            syncTimestamp: syncTimestamp,
+            syncTimestamp,
             productTitle: r.product.title,
             productAsin: r.product.asin,
             productMissing: r.product.missing,
@@ -151,7 +151,7 @@ export const methods = {
         }else{
           r = {
             ...r,
-            syncTimestamp: syncTimestamp
+            syncTimestamp
           }
         }
 

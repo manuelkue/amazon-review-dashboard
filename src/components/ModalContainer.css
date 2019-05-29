@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.3);
-  padding: calc(20vh - 200px) calc(30vw - 200px);
+  padding: calc(15vh - 200px) calc(30vw - 200px);
   box-sizing: border-box;
   transition: background 0.3s;
 }

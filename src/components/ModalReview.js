@@ -7,7 +7,6 @@ export const ModalReview = ({config, review, openExternal, copyToClipboard}) => 
 
     return(
         <div className="modalReview" id={review.externalId}>
-            <h2>Review</h2>
             <div className="infoCardRow">
                 <InfoCard icon="date_range">
                     {new Date(review.date).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(review.date).toLocaleTimeString(config.language)}
@@ -20,18 +19,18 @@ export const ModalReview = ({config, review, openExternal, copyToClipboard}) => 
                 <InfoCard center icon="message">
                     {review.comments}
                 </InfoCard>
+                <InfoCard icon={review.verifiedPurchase? 'shopping_cart' : 'remove_shopping_cart'} small>
+                    {review.verifiedPurchase? 'Yes' : 'No'}
+                </InfoCard>
+                <InfoCard head="Vine" small>
+                    {review.vine? 'Yes' : 'No'}
+                </InfoCard>
                 <InfoCard head="Review ID">
                     {review.externalId}
                 </InfoCard>
-                <InfoCard head="Verified Purchase">
-                    {review.verifiedPurchase? 'Yes' : 'No'}
-                </InfoCard>
-                <InfoCard head="Vine">
-                    {review.vine? 'Yes' : 'No'}
-                </InfoCard>
             </div>
             <div className="infoCardRow">
-                <InfoCard icon="open_in_new" onClick={() => openExternal.review(review.externalId)} externalLink/>
+                <InfoCard icon="open_in_new" onClick={() => openExternal.review(review.externalId)} externalLink small/>
                 <InfoCard icon="link content_copy" onClick={() => copyToClipboard(methods.createURL(config, {reviewId: review.externalId}))}>
                     <div>{methods.createURL(config, {reviewId: review.externalId, omitPartnerTag: true})}</div>
                 </InfoCard>
@@ -50,12 +49,15 @@ export const ModalReview = ({config, review, openExternal, copyToClipboard}) => 
                 <InfoCard head="Product available">
                     {review.productMissing? 'No' : 'Yes'}
                 </InfoCard>
+                <InfoCard icon="library_books" center>
+                    {review.reviewCount}
+                </InfoCard>
                 <InfoCard center icon={[0,0,0,0,0].map((item, index) => (index + 1) - review.averageRating < 0.25 ?  'star' : ((index + 1) - review.averageRating > 0.75 ? 'star_border' : 'star_half'))}>
                     {review.averageRating}
                 </InfoCard>
             </div>
             <div className="infoCardRow">
-                <InfoCard icon="open_in_new" onClick={() => openExternal.product(review.productAsin)} externalLink/>
+                <InfoCard icon="open_in_new" onClick={() => openExternal.product(review.productAsin)} externalLink small/>
                 <InfoCard icon="link content_copy" onClick={() => copyToClipboard(methods.createURL(config, {productAsin: review.productAsin}))}>
                     <div>{methods.createURL(config, {productAsin: review.productAsin, omitPartnerTag: true})}</div>
                 </InfoCard>

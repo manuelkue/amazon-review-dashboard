@@ -84,7 +84,7 @@ export default class App extends Component {
         })
         .catch(err => {
           console.error(err)
-          this.newToast('error', `${err}`)
+          this.newToast('error', `${err}`, 10000)
         });
     });
     ipcRenderer.on("reviewsScrapedSoFar", (event, reviewsCount) => {
@@ -122,7 +122,7 @@ export default class App extends Component {
                 reviews: methods.arr2ReviewClassArr(reviews)
               }, () => {
                 this.saveScrapeIncompleteData(methods.fetchURLData(userProfileURL).id, newReviews[newReviews.length-1].externalId, +new Date().getTime());
-                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString(this.state.config.language)}`);
+                this.newToast('error', `Scraping interrupted. Crawled reviews: ${newReviews.length.toLocaleString(this.state.config.language)}`, 10000);
                 this.crawlCommentsCounts(userProfileURL, newReviews)
               });
             })
@@ -208,7 +208,7 @@ export default class App extends Component {
     });
     ipcRenderer.on("scrapeError", (event, message) => {
       console.error(message);
-      this.newToast('error', message)
+      this.newToast('error', message, 10000)
       this.setState({
         status: {
           ...this.state.status,

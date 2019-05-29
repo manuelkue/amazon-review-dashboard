@@ -10,10 +10,13 @@
   justify-content: center;
 }
 
-.infoCard.externalLink{
+.infoCard.small{
   max-width: fit-content;
 }
 
+.infoCard .head{
+  font-weight: bold;
+}
 
 .infoCard > div:nth-child(2){
   margin-left: var(--spacing-m);

@@ -29,8 +29,7 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, yetT
                             return (
                                 <UpdatedParam key={param} param={param} updateDifference={updateDifference} />
                             )
-                        }
-                        ) :
+                        }) :
                             <UpdatedParam key={'newReview'} param={'newReview'} updateDifference={1} />
                         }
                     </div>
