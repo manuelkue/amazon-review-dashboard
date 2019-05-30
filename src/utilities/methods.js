@@ -4,6 +4,12 @@ import { Review } from "../Models/Review";
 import { User } from "../Models/User";
 
 export const methods = {
+  /**
+   * Method to round values to specific precision (eg 5.254 ...)
+   * @param {number} value - which number should be rounded
+   * @param {number} precision - to which precision. 0 -> 5, 1 -> 5.2, 2 -> 5.25, ...
+   * @return {number} rounded number
+   */
   round(value, precision) {
     var multiplier = Math.pow(10, precision || 0);
     return Math.round(value * multiplier) / multiplier;
