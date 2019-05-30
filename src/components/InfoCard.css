@@ -16,8 +16,12 @@
 
 .infoCard .head{
   font-weight: bold;
+  min-width: fit-content;
 }
 
 .infoCard > div:nth-child(2){
   margin-left: var(--spacing-m);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }

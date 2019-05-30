@@ -58,9 +58,11 @@ const History = ({config, status, reviews, reviewFunctions}) => {
                         mappedReview.reviewHistory = mappedReview.reviewHistory.filter(reviewUpdate => reviewUpdate.syncTimestamp < timestamp)
                         return mappedReview
                     })
+
+                    //@TODO: .filter(review => review.reviewHistory.includes('helpfulVotes...')) oder ähnlich, um eine Auswahl nach Neuigkeiten anzuzeigen
+
             alreadyLoadedHistorySubItems += updatedReviewsOnTimestamp.length
             const yetToLoadHistorySubItemsCount = maxHistorySubItemsCount - alreadyLoadedHistorySubItems + updatedReviewsOnTimestamp.length
-
             return yetToLoadHistorySubItemsCount > 0?
                 <HistoryItem
                     key = {timestamp}

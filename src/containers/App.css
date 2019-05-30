@@ -527,9 +527,9 @@ input:hover, input:focus{
 .paramUpdate{
   display: flex;
   padding: var(--spacing-s) var(--spacing-m);
-  margin-right: var(--spacing-s);
+  margin: var(--spacing-s);
   color: var(--color-text-light);
-  border-radius: var(--border-radius-max);
+  border-radius: 20px;
   background: var(--color-primary);
 }
 

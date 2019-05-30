@@ -37,7 +37,7 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, yetT
             </div>
         ).slice(0, yetToLoadHistorySubItemsCount - 1)
 
-    return(updatedReviewsComponents.length?
+    return(updatedReviewsComponents.length &&
         <div className='reviewItemsWrapper'>
             <div className="historyItemsHeader">
                 {new Date(date).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(date).toLocaleTimeString(config.language)}
@@ -46,6 +46,5 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, yetT
                 {updatedReviewsComponents}
             </div>
         </div>
-        : null
     )
 }

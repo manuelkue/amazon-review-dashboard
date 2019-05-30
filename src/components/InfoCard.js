@@ -12,7 +12,7 @@ export const InfoCard = ({children, icon, head, onClick, center, externalLink, s
     >
         {icon? 
             <div className="material-icons">{icon}</div> :
-            <div className="head">{head}</div>
+            <div className="head truncateString">{head}</div>
         }
         {children !== undefined?
             <div>{children}</div>:

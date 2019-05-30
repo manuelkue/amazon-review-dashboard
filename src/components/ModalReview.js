@@ -2,14 +2,17 @@ import React from "react"
 import "./ModalReview.css";
 import { InfoCard } from "./InfoCard";
 import { methods } from "../utilities/methods";
+import { UpdatedParam } from "./UpdatedParam";
 
 export const ModalReview = ({config, review, openExternal, copyToClipboard}) => {
+
+    const{language, localeDateOptions} = config
 
     return(
         <div className="modalReview" id={review.externalId}>
             <div className="infoCardRow">
                 <InfoCard icon="date_range">
-                    {new Date(review.date).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(review.date).toLocaleTimeString(config.language)}
+                    {new Date(review.date).toLocaleDateString(language, localeDateOptions) + ', ' + new Date(review.date).toLocaleTimeString(language)}
                 </InfoCard>
                 <InfoCard center icon={[0,0,0,0,0].map((item, index) => index < review.userRating ? 'star' : 'star_border')}>
                 </InfoCard>
@@ -43,6 +46,12 @@ export const ModalReview = ({config, review, openExternal, copyToClipboard}) => 
             <h2>Product Details</h2>
 
             <div className="infoCardRow">
+                <InfoCard head="Title">
+                    {review.productTitle}
+                </InfoCard>
+            </div>
+
+            <div className="infoCardRow">
                 <InfoCard head="ASIN">
                     {review.productAsin}
                 </InfoCard>
@@ -65,24 +74,40 @@ export const ModalReview = ({config, review, openExternal, copyToClipboard}) => 
 
             <h2>Review History</h2>
 
-            {review.updatedParams.map((updatedParam, index) =>
-            <div key={review.reviewHistory[index].syncTimestamp}>
-                <div>Change on {
-                    new Date(review.reviewHistory[index].syncTimestamp).toLocaleDateString(config.language, config.localeDateOptions) + ', ' + new Date(review.reviewHistory[index].syncTimestamp).toLocaleTimeString(config.language)
-                    }</div>
-                <div>
-                    <i className="material-icons">
-                        {updatedParam === 'helpfulVotes'? 'thumb_up' : ''}
-                        {updatedParam === 'newReview'? 'fiber_new assignment' : ''}
-                        {updatedParam === 'reviewText'? 'assignment edit' : ''}
-                        {updatedParam === 'comments'? 'comment' : ''}
-                        {updatedParam === 'reviewCount'? 'library_books' : ''}
-                        {updatedParam === 'productMissing' && review.reviewHistory[index].productMissing ? 'delete' : 'undo delete'}
-                        {updatedParam === 'productTitle'? 'title edit' : ''}
-                    </i>
-                </div>
+            {review.reviewHistory.map((historyItem, index) => {
+                const reviewReference = index === 0? review : review.reviewHistory[index-1]
 
-            </div>
+                return(
+                <InfoCard
+                    key={reviewReference.syncTimestamp}
+                    head={new Date(reviewReference.syncTimestamp).toLocaleDateString(language, localeDateOptions)}
+                >
+                    {reviewReference.updatedParams.map(param => {
+                        let updateDifference;
+                        console.log('reviewReference :', reviewReference);
+                        switch (typeof review[param]) {
+                            case 'number':
+                                if(!review.reviewHistory[index].updatedParams.length){
+                                    console.log('lastItemReached');
+                                    updateDifference = review.reviewHistory[index][param]
+                                }else{
+                                    updateDifference = (reviewReference[param] === undefined ? review[param] : reviewReference[param]) - review.reviewHistory[index][param]
+                                }
+                                break;
+                            case 'string':
+                                updateDifference = review.reviewHistory[index][param]
+                                break;
+                            case 'boolean':
+                                updateDifference = (reviewReference[param] === undefined ? review[param] : reviewReference[param])?  'Product not available anymore' : 'Product available again'
+                                break;
+                            default:
+                                break;
+                        }
+                        return <UpdatedParam key={param} param={param} updateDifference={updateDifference} />
+                    })}
+                </InfoCard>
+                )
+                }
             )}
         </div>
     )
