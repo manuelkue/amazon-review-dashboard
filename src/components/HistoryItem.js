@@ -25,10 +25,23 @@ export const HistoryItem = ({config, date, updatedReviews, reviewFunctions, yetT
                     <div className="paramUpdateWrapper">
                         {review.updatedParams.length ?
                             review.updatedParams.map(param => {
-                            const updateDifference = review[param] - review.reviewHistory[0][param]
-                            return (
-                                <UpdatedParam key={param} param={param} updateDifference={updateDifference} />
-                            )
+                                let updateDifference;
+                                switch (typeof review[param]) {
+                                    case 'number':
+                                        updateDifference = review[param] - review.reviewHistory[0][param]
+                                        break;
+                                    case 'string':
+                                        updateDifference = review.reviewHistory[0][param]
+                                        break;
+                                    case 'boolean':
+                                        updateDifference = review[param]
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                return (
+                                    <UpdatedParam key={param} param={param} updateDifference={updateDifference} />
+                                )
                         }) :
                             <UpdatedParam key={'newReview'} param={'newReview'} updateDifference={1} />
                         }

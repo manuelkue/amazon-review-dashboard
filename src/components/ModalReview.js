@@ -47,7 +47,7 @@ export const ModalReview = ({config, review, openExternal, copyToClipboard}) => 
 
             <div className="infoCardRow">
                 <InfoCard head="Title">
-                    {review.productTitle}
+                    {methods.getProductTitle(review)}
                 </InfoCard>
             </div>
 
@@ -84,7 +84,6 @@ export const ModalReview = ({config, review, openExternal, copyToClipboard}) => 
                 >
                     {reviewReference.updatedParams.map(param => {
                         let updateDifference;
-                        console.log('reviewReference :', reviewReference);
                         switch (typeof review[param]) {
                             case 'number':
                                 if(!review.reviewHistory[index].updatedParams.length){

@@ -11,8 +11,8 @@ export const UpdatedParam = ({param, updateDifference}) => {
                 {param === 'reviewText'? 'assignment edit' : ''}
                 {param === 'comments'? 'comment' : ''}
                 {param === 'reviewCount'? 'library_books' : ''}
-                {param === 'productMissing' && !(updateDifference < 0) ? 'delete' : ''}
-                {param === 'productMissing' && updateDifference < 0 ? 'undo delete' : ''}
+                {param === 'productMissing' && updateDifference ? 'delete' : ''}
+                {param === 'productMissing' && !updateDifference ? 'undo delete' : ''}
                 {param === 'productTitle'? 'title edit' : ''}
             </i>
             <span className="updateDifference">{ (typeof updateDifference === 'number' && updateDifference > 0) && '+' }{ updateDifference }</span>
