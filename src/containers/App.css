@@ -526,6 +526,7 @@ input:hover, input:focus{
 
 .paramUpdate{
   display: flex;
+  align-items: center;
   padding: var(--spacing-s) var(--spacing-m);
   margin: var(--spacing-s);
   color: var(--color-text-light);

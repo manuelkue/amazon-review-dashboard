@@ -233,7 +233,7 @@ export const methods = {
   /**
    * Method that searches for the product title. Can be used if current title was deleted. Looks for former title in review history
    * @param {Review} review Review the title should be fetched from
-   * @returns {string} found title
+   * @returns {string} found title, either string or JSX <span> element
    */
   getProductTitle(review){
     let formerProductTitle = <span className="productDeleted">not available anymore</span>
